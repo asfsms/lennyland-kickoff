@@ -4,34 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lenny's Daily Kickoff · All games</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Nunito:wght@700;800&display=swap">
-<style>
-body{margin:0;background:#FBF5E6;color:#1E2140;font-family:Nunito,Arial,sans-serif;font-size:19px;font-weight:700}
-main{max-width:720px;margin:0 auto;padding:28px 20px 60px}
-h1{font-family:Fredoka,Nunito,sans-serif;font-size:2.2rem;margin:0 0 6px}
-p{color:#5D6078;margin:0 0 20px}
-a.game{display:flex;gap:14px;align-items:center;background:#fff;border:2px solid #E6D8B6;border-radius:16px;padding:16px 18px;margin:12px 0;text-decoration:none;color:inherit}
-a.game b{font-family:Fredoka,Nunito,sans-serif;font-size:1.25rem}
-.n{width:46px;height:46px;border-radius:50%;background:#F4A100;display:grid;place-items:center;font-family:Fredoka,sans-serif;flex:none}
-small{display:block;color:#5D6078}
-a.back{color:#167C8A}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../assets/engine.css">
 </head>
 <body>
-<main>
-  <h1>All games</h1>
-  <p>Missed a day? Play it here. <a class="back" href="../">Back to today's game</a></p>
-  <div id="list">Loading...</div>
-</main>
+<div id="app">
+  <header class="topbar"><div class="topbar-in"><a class="brand" href="../" id="brand"></a><div style="flex:1"></div></div></header>
+  <main><section class="step hero shown"><h1>All games</h1><p class="lede">Missed a day? Play it here. Replays still score goals.</p><div class="weeklist" id="list">Loading...</div>
+  <div class="next"><a class="btn ghost small" id="home" href="../">Back to today</a></div></section></main>
+</div>
+<script src="../assets/common.js"></script>
 <script>
-fetch('../editions.json',{cache:'no-store'}).then(r=>r.json()).then(list=>{
-  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  list.sort((a,b)=>b.n-a.n);
-  document.getElementById('list').innerHTML=list.map(g=>{
-    const d=new Date(g.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-    return '<a class="game" href="../'+esc(g.path)+'"><span class="n">'+g.n+'</span><span><b>'+esc(g.title)+'</b><small>'+esc(d)+'</small></span></a>';
-  }).join('')||'No games yet.';
-}).catch(()=>{ document.getElementById('list').textContent='Could not load the list. Try again.'; });
+(function(){
+  const L=window.LDK, esc=L.esc, TODAY=L.today(), p=L.currentPlayer(), QS = L.LOCAL && location.search ? location.search : '';
+  document.getElementById('brand').innerHTML=L.ICON.ball+'<span class="t">Lenny\'s Daily Kickoff</span>';
+  document.getElementById('home').href='../'+QS;
+  fetch('../editions.json',{cache:'no-store'}).then(r=>r.json()).then(data=>{
+    const list=(data.editions||[]).filter(e=>e.date<=TODAY).sort((a,b)=>b.n-a.n);
+    document.getElementById('list').innerHTML=list.map(e=>{ const d=!!(p&&p.history&&p.history[e.code]&&p.history[e.code].complete);
+      return '<a class="weekrow'+(d?' done':'')+'" href="../'+esc(e.path)+QS+'"><span class="st">'+(d?'&#10003;':e.n)+'</span><span>'+esc(e.title)+'<small>'+esc(L.prettyDate(e.date))+'</small></span><span class="go">'+(d?'Done':e.date<TODAY?'Replay':'Play')+'</span></a>'; }).join('')||'No games yet.';
+  }).catch(()=>{ document.getElementById('list').textContent='Could not load the list. Try again.'; });
+})();
 </script>
 </body>
 </html>

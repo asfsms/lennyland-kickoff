@@ -4,1170 +4,226 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lenny's Daily Kickoff #1 · The Great Elephant Test</title>
-<!--
-  Lenny's Daily Kickoff, Game #1.
-  Built on The Daily Wow kit (https://github.com/raphacoh/daily-wow-kit), MIT License,
-  Copyright (c) 2026 Raphael Cohen. The page engine (steps and progress, question renderer,
-  tap-to-order task, number tasks, explain-it-back with a self-check fallback, results screen,
-  password vault, points/levels/streak/badges, assistant chat and the AI backend switch) is
-  adapted from template/edition-template.html: translated to English, left-to-right,
-  one level, and reskinned for soccer.
--->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
-<style>
-:root{
-  --bg:#FBF5E6; --card:#FFFFFF; --card2:#FFF9EC; --ink:#1E2140; --muted:#5D6078;
-  --sun:#F4A100; --sun-deep:#B86F00; --sun-soft:#FFE7B3;
-  --nile:#167C8A; --nile-soft:#D6EEF1; --shadow:#6A4FB3; --shadow-soft:#E6DFF7;
-  --sand:#E6D8B6; --line:#E9DFC6; --ok:#1F8A5B; --ok-soft:#DDF3E7; --bad:#C8452D; --bad-soft:#FBE3DE;
-  --sky2:#EAF6FF; --pitch:#2E9E5B; --focus:#F4A100;
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#141930; --card:#1E2443; --card2:#252B4F; --ink:#F4EEDD; --muted:#B7BAD0;
-    --sun:#FFB324; --sun-deep:#FFC757; --sun-soft:#4A3A12;
-    --nile:#5BC7D4; --nile-soft:#173A44; --shadow:#B9A2F2; --shadow-soft:#302A52;
-    --sand:#3B4268; --line:#343B62; --ok:#4FD08F; --ok-soft:#173A2C; --bad:#F2806F; --bad-soft:#4A2320;
-    --sky2:#0F1B3A; --pitch:#3DBE74;
-  }
-}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,"Trebuchet MS",Arial,sans-serif;font-size:19px;line-height:1.6;font-weight:500}
-#app{overflow-x:hidden}
-h1,h2,h3{font-family:Fredoka,Nunito,Arial,sans-serif;font-weight:600;line-height:1.15;text-wrap:balance;margin:0}
-h1{font-size:clamp(2.2rem,7vw,3.4rem)}
-h2{font-size:clamp(1.6rem,4.5vw,2.1rem)}
-h3{font-size:1.25rem}
-p{margin:0 0 1em}
-.num{font-variant-numeric:tabular-nums}
-.math{display:inline-block;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:800}
-a{color:var(--nile)}
-button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
-button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-[hidden]{display:none!important}
-
-/* top bar */
-.topbar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:780px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
-.brand{display:flex;align-items:center;gap:9px;font-family:Fredoka,Nunito,sans-serif;font-weight:600;font-size:1.1rem;white-space:nowrap}
-.brand svg{width:26px;height:26px;flex:none}
-.progress{flex:1;display:grid;grid-template-columns:repeat(14,1fr);gap:3px}
-.progress span{height:8px;border-radius:4px;background:var(--line);transition:background .3s}
-.progress span.done{background:var(--pitch)}
-.progress span.cur{background:var(--sun);box-shadow:0 0 0 2px var(--sun-soft)}
-.who{font-size:.92rem;color:var(--muted);white-space:nowrap;display:flex;gap:7px;align-items:center}
-.who b{color:var(--ink)}
-.who .kit svg{display:block}
-.statpill{display:inline-flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:.85rem;white-space:nowrap;font-weight:800;color:var(--ink)}
-.statpill svg{width:15px;height:15px}
-@media (max-width:640px){.brand span.t{display:none}}
-
-main{max-width:780px;margin:0 auto;padding:0 20px 130px}
-.step{display:none;padding:26px 0 8px}
-.step.shown{display:block;animation:rise .4s ease-out both}
-@keyframes rise{from{opacity:.001;transform:translateY(12px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.step.shown{animation:none} *{transition:none!important}}
-
-/* page marker */
-.ch{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:var(--muted);font-size:.95rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
-.ch .half{background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:2px 12px;letter-spacing:.03em}
-.ch .say{margin-left:auto}
-.say{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:2px solid var(--sand);border-radius:999px;padding:6px 14px;font-weight:800;font-size:.9rem;cursor:pointer;text-transform:none;letter-spacing:0;color:var(--ink)}
-.say svg{width:18px;height:18px}
-.say.on{border-color:var(--sun);background:var(--sun-soft)}
-
-/* story */
-.pic{border-radius:16px;overflow:hidden;border:2px solid var(--sand);margin:6px 0 18px;background:var(--sky2)}
-.pic svg{display:block;width:100%;height:auto}
-.story{font-size:1.5rem;line-height:1.55;font-weight:700;margin:0 0 .6em}
-.story .big{font-family:Fredoka,Nunito,sans-serif;color:var(--sun-deep)}
-.word{background:none;border:0;border-bottom:3px dotted var(--sun);padding:0;cursor:pointer;font-weight:inherit}
-.nb{white-space:nowrap}
-.defbox{display:none;background:var(--sun-soft);border-radius:12px;padding:10px 16px;margin:0 0 14px;font-size:1.05rem}
-.defbox.show{display:block}
-.lede{font-size:1.35rem;font-weight:700;max-width:30em;margin-top:14px}
-
-/* hero */
-.hero{position:relative}
-.hero .deco{position:absolute;top:8px;right:-30px;width:200px;height:200px;opacity:.22;z-index:0;pointer-events:none}
-.hero > *:not(.deco){position:relative;z-index:1}
-.eyebrow{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:.95rem;margin-bottom:12px;flex-wrap:wrap;font-weight:700}
-.eyebrow .tag{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 12px}
-
-/* cards & panels */
-.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:20px 0}
-.panel.instrument{border:2px solid var(--sand);background:var(--card2)}
-.panel h3{margin-bottom:10px}
-.panel .cap{color:var(--muted);font-size:1rem;margin:0}
-.aha{border-left:6px solid var(--sun);padding:6px 18px;margin:20px 0;font-size:1.15rem;font-weight:700}
-.aha b{color:var(--sun-deep)}
-.twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (max-width:640px){.twocol{grid-template-columns:1fr}}
-.controls{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:14px}
-.controls label{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px;font-size:1rem;color:var(--muted);font-weight:700}
-input[type=text],textarea{font:inherit;font-weight:700;padding:12px 14px;border:2px solid var(--sand);border-radius:12px;background:var(--card);color:var(--ink);width:100%;font-size:1.2rem}
-input.numin{max-width:170px;text-align:center;font-family:Fredoka,Nunito,sans-serif;font-size:1.6rem;padding:8px 10px}
-textarea{min-height:130px;resize:vertical;line-height:1.5}
-.readout{font-size:1.05rem;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:inline-flex;gap:8px;align-items:baseline;font-weight:700}
-.readout b{font-family:Fredoka,Nunito,sans-serif;font-size:1.6rem;color:var(--sun-deep)}
-.seg{display:inline-flex;border:2px solid var(--sand);border-radius:999px;overflow:hidden}
-.seg button{background:transparent;border:0;padding:10px 18px;cursor:pointer;font-weight:800}
-.seg button.on{background:var(--ink);color:var(--bg)}
-
-.btn{display:inline-flex;align-items:center;gap:8px;background:var(--sun);color:#1E2140;border:0;border-radius:999px;padding:13px 26px;font-weight:800;font-size:1.1rem;cursor:pointer;box-shadow:0 3px 0 var(--sun-deep);transition:transform .08s}
-.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--sun-deep)}
-.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
-.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--sand);box-shadow:none}
-.btn.small{padding:9px 16px;font-size:1rem}
-.next{margin:22px 0 12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.next .hintline{color:var(--muted);font-size:.95rem;font-weight:700}
-
-/* players */
-.tracks{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
-@media (max-width:560px){.tracks{grid-template-columns:1fr}}
-.track{border:3px solid var(--line);background:var(--card);border-radius:16px;padding:12px 16px;cursor:pointer;text-align:left;display:flex;gap:14px;align-items:center;transition:border-color .2s,transform .1s}
-.track.on{border-color:var(--pitch)}
-.track small{display:block;color:var(--muted);font-weight:700}
-.kitlab{display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center}
-@media (max-width:560px){.kitlab{grid-template-columns:1fr;justify-items:center}}
-.kitprev{display:grid;place-items:center;background:var(--ok-soft);border-radius:16px;padding:10px}
-.swatches{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
-.sw{width:40px;height:40px;border-radius:50%;border:3px solid var(--line);cursor:pointer;padding:0}
-.sw.on{border-color:var(--ink);box-shadow:0 0 0 3px var(--sun)}
-.sw:disabled{opacity:.2;cursor:not-allowed}
-.swhint{font-weight:700}
-.swlabel{font-size:.95rem;color:var(--muted);font-weight:800}
-
-/* quiz */
-.q{margin:18px 0;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
-.q .qt{font-weight:800;font-size:1.2rem;margin-bottom:12px;line-height:1.4}
-.q .opts{display:grid;gap:8px}
-.q .opt{text-align:left;background:var(--card2);border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;gap:12px;align-items:center;font-weight:700;font-size:1.1rem}
-.q .opt .k{width:30px;height:30px;border-radius:50%;border:2px solid var(--sand);display:grid;place-items:center;font-size:.9rem;flex:none;font-weight:800}
-.q.locked .opt{cursor:default}
-.q .opt:disabled{opacity:.75;cursor:default}
-.q .opt.right{border-color:var(--ok);background:var(--ok-soft)} .q .opt.right .k{background:var(--ok);border-color:var(--ok);color:#fff}
-.q .opt.wrong{border-color:var(--bad);background:var(--bad-soft)} .q .opt.wrong .k{background:var(--bad);border-color:var(--bad);color:#fff}
-.fb{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--sun-soft);display:none;font-weight:700}
-.fb.show{display:block}
-.qc-label{font-size:.85rem;letter-spacing:.06em;color:var(--muted);margin-bottom:6px;font-weight:800;text-transform:uppercase}
-.golden{border:2px dashed var(--sun);background:linear-gradient(180deg,var(--sun-soft),var(--card))}
-.ninoSay{display:flex;gap:10px;align-items:flex-start}
-.ninoSay .av{flex:none;line-height:0}
-.board{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0 4px}
-.board .dot{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:.9rem;color:var(--muted);background:var(--card)}
-.board .dot.goal{background:var(--ok);border-color:var(--ok);color:#fff}
-.board .dot.miss{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
-.board .dot.star{border-style:dashed;border-color:var(--sun)}
-.board .dot.star.goal{background:var(--sun);border-style:solid;color:#1E2140}
-.board .lbl{font-weight:800;color:var(--muted);font-size:.9rem;margin-right:4px}
-.stack{font-family:Fredoka,Nunito,sans-serif;font-size:1.9rem;line-height:1.25;display:inline-grid;text-align:right;margin:4px 18px 4px 0;font-variant-numeric:tabular-nums}
-.stack .bar{border-top:3px solid var(--ink);margin-top:2px;height:6px}
-
-/* ordering */
-.order{display:grid;gap:8px}
-.order .card{background:var(--card2);border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;gap:12px;align-items:center;text-align:left;font-weight:700;font-size:1.1rem}
-.order .card .n{width:32px;height:32px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-weight:800;flex:none}
-.order .card.picked{border-color:var(--sun);background:var(--sun-soft)} .order .card.picked .n{background:var(--sun);color:#1E2140}
-.order .card.ok{border-color:var(--ok)} .order .card.ok .n{background:var(--ok);color:#fff}
-.order .card.ko{border-color:var(--bad)} .order .card.ko .n{background:var(--bad);color:#fff}
-
-/* results */
-.score{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
-.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--pitch) calc(var(--p)*1%),var(--line) 0);position:relative;flex:none}
-.ring::after{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--card)}
-.ring b{position:relative;z-index:1;font-family:Fredoka,Nunito,sans-serif;font-size:2.6rem;line-height:1;text-align:center}
-.ring b small{display:block;font-size:.85rem;font-family:Nunito,sans-serif;color:var(--muted)}
-.stars{font-size:1.7rem;letter-spacing:.1em;color:var(--sun)}
-.stars .off{color:var(--line)}
-.small{font-size:.95rem;color:var(--muted);font-weight:700}
-details.src{margin-top:30px;color:var(--muted);font-size:.92rem}
-details.src summary{cursor:pointer;font-weight:800}
-.chk{display:flex;gap:12px;align-items:flex-start;margin:10px 0;cursor:pointer;font-weight:700}
-.chk input{width:26px;height:26px;margin-top:2px;accent-color:var(--sun);flex:none}
-.pill-ok{color:var(--ok);font-weight:800}
-.pill-bad{color:var(--bad);font-weight:800}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:40;font-weight:800}
-.toast.show{opacity:1}
-
-/* game layer */
-.xpbar{height:12px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:8px}
-.xpbar i{display:block;height:100%;background:var(--pitch);width:0;transition:width 1s ease-out}
-.badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.badge{display:inline-flex;align-items:center;gap:8px;background:var(--sun-soft);border-radius:999px;padding:6px 14px 6px 8px;font-weight:800}
-.badge .dot{width:28px;height:28px;border-radius:50%;background:var(--sun);display:grid;place-items:center;color:#1E2140;font-family:Fredoka,sans-serif;font-size:.95rem}
-.badge.new{outline:2px solid var(--sun)}
-.vault{position:relative;border:3px dashed var(--sand);border-radius:16px;padding:22px;text-align:center;margin:22px 0;background:var(--card2)}
-.vault.open{border-style:solid;border-color:var(--sun);background:linear-gradient(180deg,var(--sun-soft),var(--card2))}
-.vault .lock{line-height:1}
-.vault .lock svg{width:46px;height:46px}
-.vault .pw{font-family:Fredoka,Nunito,sans-serif;font-weight:700;font-size:clamp(1.7rem,6vw,2.6rem);letter-spacing:.02em;color:var(--sun-deep);margin:8px 0 4px;user-select:all;-webkit-user-select:all}
-.vault .todo{display:inline-block;text-align:left;margin-top:8px;font-weight:700}
-.vault .todo span{display:block}
-.vault .todo .ok{color:var(--ok)} .vault .todo .no{color:var(--bad)}
-
-/* helper chat: El Nino */
-.fab{position:fixed;right:18px;bottom:18px;z-index:30;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:8px 18px 8px 8px;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18)}
-.fab .av{line-height:0}
-.chat{position:fixed;right:14px;bottom:14px;z-index:31;width:min(430px,calc(100vw - 28px));height:min(620px,calc(100vh - 28px));background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);display:none;flex-direction:column;overflow:hidden}
-.chat.open{display:flex}
-.chat header{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--sun-soft);border-bottom:1px solid var(--line)}
-.chat header .av{line-height:0;flex:none}
-.chat header b{display:block;font-family:Fredoka,sans-serif;font-weight:600;font-size:1.15rem}
-.chat header small{color:var(--muted);font-weight:700}
-.chat header .x{margin-left:auto;background:transparent;border:0;font-size:1.7rem;cursor:pointer;color:var(--muted);line-height:1;padding:4px 10px}
-.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:88%;padding:10px 14px;border-radius:14px;line-height:1.5;font-size:1.05rem;font-weight:700}
-.msg.bot{background:var(--card2);border:1px solid var(--line);align-self:flex-start;border-top-left-radius:4px}
-.msg.me{background:var(--ok-soft);align-self:flex-end;border-top-right-radius:4px}
-.msg.sys{background:transparent;color:var(--muted);font-size:.92rem;align-self:center;text-align:center}
-.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 8px}
-.chips button{background:var(--card);border:1px solid var(--sand);border-radius:999px;padding:6px 12px;font-size:.9rem;cursor:pointer;font-weight:700}
-.composer{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);align-items:flex-end}
-.composer textarea{min-height:48px;max-height:120px;padding:10px 12px;border-radius:12px;resize:none;font-size:1.05rem}
-.composer .send{background:var(--sun);border:0;border-radius:12px;width:48px;height:48px;cursor:pointer;display:grid;place-items:center;flex:none;box-shadow:0 2px 0 var(--sun-deep)}
-.composer .send:disabled{opacity:.4;box-shadow:none}
-.composer .send svg{width:22px;height:22px}
-.typing{display:inline-flex;gap:4px;align-items:center}
-.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
-.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
-@keyframes blink{50%{opacity:.2}}
-@media (max-width:640px){.fab span.lbl{display:none}.fab{padding:8px}}
-.pop{animation:pop .35s ease-out both}
-@keyframes pop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-</style>
+<link rel="stylesheet" href="../../assets/engine.css">
 </head>
 <body>
-<div id="app">
-<header class="topbar"><div class="topbar-in">
-  <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="#fff" stroke="#1E2140" stroke-width="1.6"/><path d="M12 7.2l4.3 3.1-1.6 5h-5.4l-1.6-5z" fill="#1E2140"/><path d="M12 7.2V2M16.3 10.3l5-1.6M14.7 15.3l3.1 4.2M9.3 15.3l-3.1 4.2M7.7 10.3l-5-1.6" stroke="#1E2140" stroke-width="1.4"/></svg><span class="t">Lenny's Daily Kickoff</span></div>
-  <div class="progress" id="progress" aria-hidden="true"></div>
-  <div class="who" id="who">Game 1</div>
-</div></header>
-
-<main>
-
-<!-- 0 · LOCKER ROOM (player and shirt) -->
-<section class="step hero shown" data-step="0">
-  <svg class="deco" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="#fff" stroke="#1E2140" stroke-width="1"/><path d="M12 7.2l4.3 3.1-1.6 5h-5.4l-1.6-5z" fill="#1E2140"/><path d="M12 7.2V2M16.3 10.3l5-1.6M14.7 15.3l3.1 4.2M9.3 15.3l-3.1 4.2M7.7 10.3l-5-1.6" stroke="#1E2140" stroke-width="1"/></svg>
-  <div class="eyebrow"><span class="tag">Game 1</span><span class="tag">About 10 minutes</span></div>
-  <h1>Lenny's Daily Kickoff</h1>
-  <p class="lede">Welcome to the locker room of the <b>Futbol Rebels</b>. Who is playing today?</p>
-
-  <div id="playerBox" hidden>
-    <div class="tracks" id="playerList"></div>
-    <button class="btn ghost small" id="addBtn" onclick="showNewPlayer()">Add a new player</button>
-  </div>
-
-  <div class="panel instrument" id="newPlayer" hidden>
-    <h3>New player</h3>
-    <div class="controls" style="margin-top:0">
-      <label>Type your name
-        <input type="text" id="pName" maxlength="14" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Your name" data-enter="joinBtn">
-      </label>
-    </div>
-    <h3 style="margin-top:20px">Design your shirt</h3>
-    <div class="kitlab">
-      <div class="kitprev" id="kitPrev"></div>
-      <div>
-        <div class="swlabel">Shirt color</div>
-        <div class="swatches" id="swA"></div>
-        <div class="swlabel">Stripe color <span class="swhint" id="swBHint"></span></div>
-        <div class="swatches" id="swB"></div>
-      </div>
-    </div>
-    <div class="next" style="margin-bottom:0">
-      <button class="btn" id="joinBtn" onclick="createPlayer()">Join the Futbol Rebels</button>
-      <span class="hintline" id="joinMsg"></span>
-    </div>
-  </div>
-
-  <div class="next">
-    <button class="btn" id="startBtn" disabled onclick="startGame()">Kick off</button>
-  </div>
-</section>
-
-<!-- 1 · KICKOFF -->
-<section class="step" data-step="1">
-  <div class="ch"><span>Page 1 of 14</span><span class="half">Kickoff</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <h1>The Great Elephant Test</h1>
-  <p class="lede story">A giant new bridge. A nervous city. And one man with a LOT of elephants. This really happened, right here in Brooklyn.</p>
-  <div class="panel instrument">
-    <h3>Before we start: take a guess!</h3>
-    <p class="cap">How many elephants do you think walked across the Brooklyn Bridge in one night?</p>
-    <div class="controls">
-      <input class="numin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" id="guessIn" placeholder="?" aria-label="My guess" data-enter="guessBtn">
-      <button class="btn small" id="guessBtn" onclick="lockGuess()">Lock in my guess</button>
-    </div>
-    <p class="cap" id="guessMsg" style="margin-top:12px"></p>
-  </div>
-  <div class="next"><button class="btn" id="next1" disabled onclick="next()">Next</button></div>
-</section>
-
-<!-- 2 -->
-<section class="step" data-step="2">
-  <div class="ch"><span>Page 2 of 14</span><span class="half">First half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="pic" data-scene="ferry"></div>
-  <p class="story">A long time ago, there was NO bridge between Brooklyn and Manhattan. To cross the river, you had to take a boat. Every. Single. Time.</p>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" onclick="next()">Next</button></div>
-</section>
-
-<!-- 3 -->
-<section class="step" data-step="3">
-  <div class="ch"><span>Page 3 of 14</span><span class="half">First half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="pic" data-scene="bridge"></div>
-  <p class="story">So builders made the Brooklyn Bridge. It took 14 years! When it opened in 1883, it was the longest bridge of its kind in the whole world.</p>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" onclick="next()">Next</button></div>
-</section>
-
-<!-- 4 · TOY: build a cable -->
-<section class="step" data-step="4">
-  <div class="ch"><span>Page 4 of 14</span><span class="half">First half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <p class="story">Here is the trick. The road HANGS from four giant <span class="nb"><button class="word" data-def="Super thick ropes made of metal.">cables</button>.</span> Each cable is made of more than 5,000 thin steel wires squeezed together. One wire is wimpy. Thousands are mighty!</p>
-  <div class="defbox"></div>
-  <div class="panel instrument">
-    <h3>Your turn: build a cable</h3>
-    <p class="cap">Tap the button to squeeze in more wires. Count by thousands!</p>
-    <div class="pic" id="cablePic" style="margin:12px 0 0"></div>
-    <div class="controls">
-      <button class="btn small" id="wireBtn" onclick="addWires()">Add 1,000 wires</button>
-      <div class="readout">Wires: <b class="num" id="wireOut">1</b></div>
-    </div>
-    <p class="cap" id="wireMsg" style="margin-top:12px">One wire. Pretty wimpy.</p>
-  </div>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" id="next4" disabled onclick="next()">Next</button><span class="hintline" id="hint4">Build the cable first.</span></div>
-</section>
-
-<!-- 5 -->
-<section class="step" data-step="5">
-  <div class="ch"><span>Page 5 of 14</span><span class="half">First half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="pic" data-scene="worry"></div>
-  <p class="story">But lots of people were nervous. The bridge was SO big and SO new. Would it really hold? Nobody wanted to find out the hard way.</p>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" onclick="next()">Next</button></div>
-</section>
-
-<!-- 6 -->
-<section class="step" data-step="6">
-  <div class="ch"><span>Page 6 of 14</span><span class="half">First half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="pic" data-scene="barnum"></div>
-  <p class="story">Then a <button class="word" data-def="A traveling show with acrobats and clowns. Back then, it had animals too.">circus</button> man named P. T. Barnum had a wild idea. He would show everyone the bridge was strong... by walking his elephants across it!</p>
-  <div class="defbox"></div>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" onclick="next()">Next</button></div>
-</section>
-
-<!-- 7 · HALFTIME RIDDLE -->
-<section class="step" data-step="7">
-  <div class="ch"><span>Page 7 of 14</span><span class="half">Halftime riddle</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="panel instrument">
-    <div class="ninoSay"><span class="av" data-nino="72"></span>
-      <div><h3>Halftime! El Niño has a riddle for you.</h3>
-      <p class="story" style="margin-top:8px">What is as big as an elephant, but weighs nothing at all?</p></div>
-    </div>
-    <div class="controls">
-      <label>Type your answer
-        <input type="text" id="riddleIn" maxlength="30" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="It is..." data-enter="riddleBtn">
-      </label>
-      <button class="btn small" id="riddleBtn" onclick="checkRiddle()">Check</button>
-    </div>
-    <div class="fb" id="riddleFb"></div>
-  </div>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" id="next7" disabled onclick="next()">Second half</button><span class="hintline" id="hint7">Try the riddle first.</span></div>
-</section>
-
-<!-- 8 -->
-<section class="step" data-step="8">
-  <div class="ch"><span>Page 8 of 14</span><span class="half">Second half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="pic" data-scene="parade"></div>
-  <p class="story">One night in May 1884, the parade began. <span class="big">21 elephants and 17 camels</span> marched from Manhattan to Brooklyn. People stopped and stared.</p>
-  <p class="aha" id="guessBack"></p>
-  <div class="q">
-    <div class="qc-label">Quick check · type it</div>
-    <div class="qt">21 elephants and 17 camels. How many animals is that altogether?</div>
-    <div class="controls" style="margin-top:0">
-      <span class="math" style="font-size:1.5rem">21 + 17 =</span>
-      <input class="numin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" id="qcIn" placeholder="?" aria-label="21 plus 17" data-enter="qcBtn">
-      <button class="btn small" id="qcBtn" onclick="checkQC()">Check</button>
-    </div>
-    <div class="fb" id="qcFb"></div>
-  </div>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" id="next8" disabled onclick="next()">Next</button><span class="hintline" id="hint8">Answer the quick check first.</span></div>
-</section>
-
-<!-- 9 -->
-<section class="step" data-step="9">
-  <div class="ch"><span>Page 9 of 14</span><span class="half">Second half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="pic" data-scene="jumbo"></div>
-  <p class="story">At the very back walked Jumbo, the most famous elephant in the world. He weighed more than 6 <span class="nb"><button class="word" data-def="A ton is 2,000 pounds. That is about as heavy as a small car.">tons</button>.</span> That is heavier than three cars!</p>
-  <div class="defbox"></div>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" onclick="next()">Next</button></div>
-</section>
-
-<!-- 10 · TOY: send the parade -->
-<section class="step" data-step="10">
-  <div class="ch"><span>Page 10 of 14</span><span class="half">Second half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <p class="story">Your turn! Send the parade across the bridge. Keep your eye on the wobble meter.</p>
-  <div class="panel instrument">
-    <div class="pic" id="paradePic" style="margin:0"></div>
-    <div class="controls">
-      <button class="btn small" id="sendBtn" onclick="sendElephants()">Send 3 elephants</button>
-      <div class="readout">On the bridge: <b class="num" id="sentOut">0</b></div>
-      <div class="readout">Wobbles: <b class="num">0</b></div>
-    </div>
-    <p class="cap" id="sendMsg" style="margin-top:12px">Count by threes as they go: 3, 6, 9...</p>
-  </div>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" id="next10" disabled onclick="next()">Next</button><span class="hintline" id="hint10">Send all 21 elephants first.</span></div>
-</section>
-
-<!-- 11 -->
-<section class="step" data-step="11">
-  <div class="ch"><span>Page 11 of 14</span><span class="half">Second half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="pic" data-scene="cheer"></div>
-  <p class="story">The bridge did not budge. People felt a lot better about crossing it. And Barnum? Now everybody was talking about his circus. Pretty sneaky.</p>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" onclick="next()">Next</button></div>
-</section>
-
-<!-- 12 · SPOT IT -->
-<section class="step" data-step="12">
-  <div class="ch"><span>Page 12 of 14</span><span class="half">Second half</span><button class="say" hidden onclick="sayPage(this)"></button></div>
-  <div class="pic" data-scene="today"></div>
-  <p class="story"><span class="big">Spot it in Brooklyn!</span> Next time you see the Brooklyn Bridge, find the two stone towers and the cables swooping down. They have held up the road for more than 140 years.</p>
-  <div class="panel"><p class="story" style="margin:0;font-size:1.25rem">Bonus fact: The first person to ride across was Emily Roebling, who helped build the bridge. She had a rooster on her lap!</p></div>
-  <div class="next"><button class="btn ghost small" onclick="back()">Back</button><button class="btn" onclick="next()">To the penalty shootout</button></div>
-</section>
-
-<!-- 13 · PENALTY SHOOTOUT -->
-<section class="step" data-step="13">
-  <div class="ch"><span>Page 13 of 14</span><span class="half">Penalty shootout</span></div>
-  <h2>Five shots. Take your time.</h2>
-  <p>Miss one? You get a hint and one rebound. Then there is a Golden Goal for extra brave players.</p>
-  <div class="board" id="board" aria-label="Scoreboard"></div>
-
-  <div class="q" id="shot1"></div>
-  <div class="q" id="shot2"></div>
-
-  <div class="q" id="shot3">
-    <div class="qc-label">Shot 3 of 5 · tap in order</div>
-    <div class="qt">What happened first? Tap the cards in order, from first to last. (Tap a card again to undo.)</div>
-    <div class="order" id="order"></div>
-    <div class="controls" style="margin-top:12px">
-      <button class="btn small" id="orderCheck" onclick="checkOrder()" disabled>Shoot!</button>
-      <button class="btn small ghost" id="orderReset" onclick="resetOrder()">Start over</button>
-    </div>
-    <div class="fb" id="orderFb"></div>
-  </div>
-
-  <div class="q" id="shot4">
-    <div class="qc-label">Shot 4 of 5 · type it</div>
-    <div class="qt">The tower tops are about 276 feet above the water. The road is 135 feet above the water. How many feet higher are the tower tops than the road?</div>
-    <div class="controls" style="margin-top:0">
-      <span class="stack" aria-hidden="true"><span>276</span><span>&minus; 135</span><span class="bar"></span></span>
-      <input class="numin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" id="mathIn" placeholder="?" aria-label="276 minus 135" data-enter="mathBtn">
-      <button class="btn small" id="mathBtn" onclick="checkMath()">Shoot!</button>
-    </div>
-    <div class="fb" id="mathFb"></div>
-  </div>
-
-  <div class="q" id="shot5">
-    <div class="qc-label">Shot 5 of 5 · type or talk</div>
-    <div class="qt">You are the coach! Tell your team: How does the Brooklyn Bridge hold up the road? And why did the elephants walk across?</div>
-    <textarea id="coachIn" placeholder="The road hangs from..." autocapitalize="sentences"></textarea>
-    <p class="small" style="margin:8px 0 0">Tip: want to talk instead of type? Tap the microphone on the iPad keyboard.</p>
-    <div class="controls"><button class="btn small" id="coachBtn" onclick="gradeCoach()">Send it to El Niño</button></div>
-    <div class="fb" id="coachFb"></div>
-  </div>
-
-  <div class="q golden" id="golden">
-    <div class="qc-label">Golden Goal · extra hard · you can skip it</div>
-    <div class="qt">Jumbo weighed about 6 tons. Imagine 6 elephants as heavy as Jumbo. How many tons is that altogether?</div>
-    <div class="controls" style="margin-top:0">
-      <span class="math" style="font-size:1.6rem">6 &times; 6 =</span>
-      <input class="numin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" id="goldIn" placeholder="?" aria-label="6 times 6" data-enter="goldBtn">
-      <button class="btn small" id="goldBtn" onclick="checkGolden()">Shoot!</button>
-    </div>
-    <div class="fb" id="goldFb"></div>
-  </div>
-
-  <div class="next"><button class="btn ghost small" onclick="back()">Back to the story</button><button class="btn" id="finishBtn" onclick="finish()">Final whistle</button></div>
-</section>
-
-<!-- 14 · FINAL WHISTLE -->
-<section class="step" data-step="14">
-  <div class="ch"><span>Page 14 of 14</span><span class="half">Final whistle</span></div>
-  <h2 id="resTitle">Full time!</h2>
-  <div class="panel">
-    <div class="score">
-      <div class="ring" id="ring" style="--p:0"><b><span class="num" id="ringTxt">0</span><small>goals today</small></b></div>
-      <div style="flex:1;min-width:220px">
-        <p id="resLine" style="font-size:1.2rem;font-weight:800;margin-bottom:.4em"></p>
-        <p class="small" id="resDetail" style="margin:0"></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="vault" id="vault">
-    <div class="lock" id="vaultLock" aria-hidden="true"></div>
-    <h3 id="vaultTitle">Today's secret passcode</h3>
-    <div id="vaultBody"></div>
-  </div>
-
-  <div class="twocol">
-    <div class="panel">
-      <h3>My league</h3>
-      <p style="margin:0;font-weight:800" id="leagueLine"></p>
-      <div class="xpbar"><i id="leagueBar"></i></div>
-      <p class="small" id="leagueNext" style="margin:6px 0 0"></p>
-    </div>
-    <div class="panel">
-      <h3>My streak</h3>
-      <p style="margin:0;font-weight:800" id="streakLine"></p>
-      <p class="small" id="streakNext" style="margin:6px 0 0"></p>
-    </div>
-  </div>
-
-  <div class="panel">
-    <h3>Badges I won today</h3>
-    <div class="badges" id="badges"></div>
-    <p class="small" id="badgeNone" style="margin:8px 0 0"></p>
-  </div>
-
-  <div class="panel">
-    <h3>My guess and the real number</h3>
-    <p id="resGuess" style="margin:0;font-weight:700"></p>
-  </div>
-
-  <div class="panel">
-    <h3>3 things to tell at dinner</h3>
-    <p style="margin:0;font-weight:700">1. 21 elephants and 17 camels once walked across the Brooklyn Bridge to show it was strong.<br>
-    2. The road hangs from four cables, and each cable has more than 5,000 steel wires.<br>
-    3. The first person to ride across was Emily Roebling. She had a rooster on her lap!</p>
-  </div>
-
-  <div class="controls">
-    <button class="btn" onclick="copyResults()">Copy my result for Dad</button>
-    <button class="btn ghost small" onclick="goTo(13)">Back to the shootout</button>
-    <button class="btn ghost small" onclick="restart()">Play again</button>
-  </div>
-
-  <details class="src"><summary>For grown-ups: sources and accuracy</summary>
-    <p style="margin-top:10px">The parade took place on the night of May 17, 1884, about a year after the bridge opened on May 24, 1883. Contemporary reports list 21 elephants, 7 camels and 10 dromedaries, which later accounts shorten to 17 camels. Most accounts put Jumbo at the rear of the line; a few say he led it. Jumbo's weight is usually given as 6 to 6.5 tons.</p>
-    <p>The story leaves out why New Yorkers were nervous: a week after the opening, a rumor that the bridge was collapsing caused a crowd panic on the stairs and 12 people died. Barnum had offered the elephant walk before the opening and was turned down; the 1884 walk was also publicity for his circus.</p>
-    <p>Numbers used: construction 1869 to 1883 (14 years); tower tops 276.5 feet above high water and 135 feet of clearance at mid-span (the shot uses 276 and 135); four main cables, about 15.75 inches thick, each with more than 5,000 wires (5,434 is the usual count, and sources vary). The cables were designed to be about six times stronger than needed, later judged closer to four times because a supplier slipped in poor wire. The cable toy shows the idea, not real strength figures.</p>
-    <p>Sources: <a href="https://www.history.com/articles/brooklyn-bridge-elephant-procession-p-t-barnum-jumbo-1884" target="_blank" rel="noopener">History.com on the elephant walk</a>; <a href="https://www.bkwaterfronthistory.org/?p=88" target="_blank" rel="noopener">Brooklyn Waterfront History</a>; <a href="https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/brooklyn-bridge" target="_blank" rel="noopener">American Society of Civil Engineers</a>; <a href="https://en.wikipedia.org/wiki/Jumbo" target="_blank" rel="noopener">Wikipedia on Jumbo</a>; <a href="https://savingplaces.org/stories/emily-warren-roebling-cornerstone-construction-brooklyn-bridge" target="_blank" rel="noopener">National Trust on Emily Roebling</a>.</p>
-    <p>Progress (players, goals, streaks) is saved in this browser on this device.</p>
-  </details>
-</section>
-
-</main>
-
-<button class="fab" id="fab" hidden onclick="openChat()" aria-label="Ask El Niño"><span class="av" data-nino="38"></span><span class="lbl">Stuck? Ask El Niño</span></button>
-<section class="chat" id="chat" aria-label="Chat with El Niño">
-  <header>
-    <span class="av" data-nino="44"></span>
-    <div><b>El Niño</b><small>Number-one helper of the Futbol Rebels</small></div>
-    <button class="x" onclick="closeChat()" aria-label="Close">&times;</button>
-  </header>
-  <div class="msgs" id="msgs"></div>
-  <div class="chips" id="chips"></div>
-  <div class="composer">
-    <textarea id="chatIn" rows="1" placeholder="Ask me anything about today's story"></textarea>
-    <button class="send" id="chatSend" onclick="sendChat()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="#1E2140" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
-  </div>
-</section>
-</div>
+<div id="app"></div>
 <div class="toast" id="toast"></div>
-
+<script src="../../assets/common.js"></script>
 <script>
-/* ---------- edition data ---------- */
-const EDITION = { n:1, code:'LDK-001', date:'2026-11-16', week:'2026-W47', title:'The Great Elephant Test' };
-const CLUB = 'Futbol Rebels';
-const PW_ENC = 'c3RuYWhwZWxFIGduaWVvdHBpVCBlbk8teXRuZXdU'; // base64 of the reversed passcode (same scheme as the kit)
-const REAL_ELEPHANTS = 21;
-const PAGES = 14;
-const LEAGUES = [[0,'Bed-Stuy Block League'],[25,'Brooklyn League'],[75,'New York City League'],[150,'New York State League'],[300,'USA League'],[500,'World League'],[800,'Legends League']];
-const STREAK_BADGES = {3:'Hat Trick',7:'Captain',14:'Unbeaten Run',30:'MVP'};
-const IN_CLAUDE = !!(window.claude && typeof window.claude.use==='function');   // opened inside Claude vs. a plain web page
-
-/* ---------- state ---------- */
-const S = { pid:null, step:0, guess:null, wires:1, sent:0, riddle:{tries:0,done:false,ok:false}, qc:{tries:0,done:false},
-  shots:{}, order:[], orderLocked:false, coach:{graded:false,stars:0,text:'',offTopic:0}, golden:{tries:0,done:false,ok:false}, result:null, game:null };
-const $ = id => document.getElementById(id);
-const fmt = n => Math.round(n).toLocaleString('en-US');
-function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function decodePw(){ try{ return decodeURIComponent(escape(atob(PW_ENC))).split('').reverse().join(''); }catch(e){ return '?'; } }
-function leagueFor(goals){ let i=0; LEAGUES.forEach((l,k)=>{ if(goals>=l[0]) i=k; }); return { i, name:LEAGUES[i][1], at:LEAGUES[i][0], next: LEAGUES[i+1]||null }; }
-function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
-
-/* ---------- saved players (this browser, this device) ---------- */
-const Store = { mem:{},
-  get(k){ try{ const v=localStorage.getItem(k); if(v) return JSON.parse(v); }catch(e){} return this.mem[k]||null; },
-  set(k,v){ this.mem[k]=v; try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
-let DB = Store.get('ldk-v1') || { players:{}, order:[] };
-if(!DB.players||!DB.order) DB = { players:{}, order:[] };
-const P = () => DB.players[S.pid];
-function saveDB(){ Store.set('ldk-v1', DB); }
-
-/* ---------- art: shirt, helper, ball ---------- */
-const PALETTE = [['Red','#D7263D'],['Orange','#F46036'],['Yellow','#F9C80E'],['Green','#1F9D6B'],['Sky blue','#3FA7D6'],['Blue','#1D4ED8'],['Navy','#1B2A6B'],['Purple','#7B2CBF'],['Pink','#EF5DA8'],['Maroon','#8C1C3A'],['Black','#1E1E24'],['White','#FFFFFF']];
-let uid=0;
-function shirt(kit, size){
-  const id='sh'+(++uid), path='M38 12 L20 20 L4 42 L22 56 L30 46 L30 110 L90 110 L90 46 L98 56 L116 42 L100 20 L82 12 Q60 28 38 12 Z';
-  const stripes = kit.style==='stripes' ? [6,30,54,78,102].map(x=>'<rect x="'+x+'" y="0" width="12" height="120" fill="'+kit.c2+'"/>').join('') : '';
-  return '<svg viewBox="0 0 120 120" width="'+size+'" height="'+size+'" aria-hidden="true"><defs><clipPath id="'+id+'"><path d="'+path+'"/></clipPath></defs><g clip-path="url(#'+id+')"><rect width="120" height="120" fill="'+kit.c1+'"/>'+stripes+'</g><path d="'+path+'" fill="none" stroke="#1E2140" stroke-width="3" stroke-linejoin="round"/><text x="60" y="86" text-anchor="middle" font-family="Fredoka,Arial,sans-serif" font-weight="700" font-size="38" fill="#fff" stroke="#1E2140" stroke-width="6" paint-order="stroke" stroke-linejoin="round">10</text></svg>';
-}
-/* El Nino: an original helper character */
-function nino(size){
-  return '<svg viewBox="0 0 64 64" width="'+size+'" height="'+size+'" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#CDEFD9"/><path d="M11 64c0-12 9-18 21-18s21 6 21 18z" fill="#F9C80E"/><path d="M26 47l6 7 6-7" fill="none" stroke="#1E2140" stroke-width="2" stroke-linejoin="round"/><circle cx="32" cy="29" r="15" fill="#E9B48A"/><path d="M17 27c-1-11 6-18 15-18s16 7 15 18l-4-6-4 4-4-5-3 5-4-5-4 5-3-4z" fill="#2B2B33"/><rect x="16.5" y="24" width="31" height="5" rx="2.5" fill="#E4572E"/><circle cx="26.5" cy="33.5" r="1.9" fill="#1E2140"/><circle cx="37.5" cy="33.5" r="1.9" fill="#1E2140"/><path d="M26 38.5q6 5 12 0" fill="none" stroke="#1E2140" stroke-width="2" stroke-linecap="round"/></svg>';
-}
-function ninoSay(html){ return '<span class="ninoSay"><span class="av">'+nino(36)+'</span><span>'+html+'</span></span>'; }
-const BALL = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff" stroke="#1E2140" stroke-width="2"/><path d="M12 7.5l4 2.9-1.5 4.7h-5L8 10.4z" fill="#1E2140"/></svg>';
-const SPEAKER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h3l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>';
-const LOCK_SHUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
-const LOCK_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg>';
-
-/* ---------- art: scenes ---------- */
-const FONT = 'font-family="Nunito,Arial,sans-serif" font-weight="800"';
-function frame(inner, night){
-  const id='sky'+(++uid), c = night ? ['#0E1838','#2A3A74'] : ['#BFE3FA','#EEF8FF'];
-  return '<svg viewBox="0 0 640 300" role="img"><defs><linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+c[0]+'"/><stop offset="1" stop-color="'+c[1]+'"/></linearGradient></defs><rect width="640" height="300" fill="url(#'+id+')"/>'+inner+'</svg>';
-}
-function nightSky(){ return [[40,30],[100,74],[150,24],[250,46],[310,22],[372,58],[500,34],[604,80],[280,96],[470,100],[30,110]].map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="1.9" fill="#FFF6C9"/>').join('')+'<circle cx="566" cy="50" r="22" fill="#FFF3B8"/>'; }
-function sun(){ return '<circle cx="570" cy="52" r="26" fill="#FFD34D"/>'; }
-function elephant(x, y, s, o){
-  o=o||{}; const f=o.fill||'#9AA3B5', d=o.dark||'#7A8498';
-  return '<g'+(o.cls?' class="'+o.cls+'"':'')+'><g transform="translate('+x+','+(y-70*s)+') scale('+s+')">'
-    +'<path d="M13 28q-8 6-5 16" fill="none" stroke="'+d+'" stroke-width="3" stroke-linecap="round"/>'
-    +'<rect x="20" y="44" width="11" height="26" rx="4" fill="'+d+'"/><rect x="52" y="44" width="11" height="26" rx="4" fill="'+d+'"/>'
-    +'<ellipse cx="45" cy="32" rx="32" ry="22" fill="'+f+'"/>'
-    +'<rect x="33" y="46" width="11" height="24" rx="4" fill="'+f+'"/><rect x="64" y="46" width="11" height="24" rx="4" fill="'+f+'"/>'
-    +'<circle cx="80" cy="26" r="16" fill="'+f+'"/>'
-    +'<path d="M91 30q11 6 5 27" fill="none" stroke="'+f+'" stroke-width="8" stroke-linecap="round"/>'
-    +'<ellipse cx="70" cy="25" rx="9" ry="14" fill="'+d+'"/>'
-    +'<circle cx="85" cy="22" r="2.3" fill="#1E2140"/>'
-    +'<path d="M88 36q5 5 10 2" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g></g>';
-}
-function camel(x, y, s){
-  return '<g transform="translate('+x+','+(y-70*s)+') scale('+s+')"><rect x="18" y="40" width="8" height="30" rx="3" fill="#B98A4E"/><rect x="60" y="40" width="8" height="30" rx="3" fill="#B98A4E"/><ellipse cx="45" cy="36" rx="30" ry="14" fill="#D9AC6A"/><circle cx="36" cy="24" r="11" fill="#D9AC6A"/><circle cx="56" cy="24" r="11" fill="#D9AC6A"/><rect x="28" y="42" width="8" height="28" rx="3" fill="#D9AC6A"/><rect x="50" y="42" width="8" height="28" rx="3" fill="#D9AC6A"/><path d="M72 34Q84 30 84 10" fill="none" stroke="#D9AC6A" stroke-width="9" stroke-linecap="round"/><ellipse cx="88" cy="9" rx="9" ry="6" fill="#D9AC6A"/><circle cx="91" cy="7" r="1.7" fill="#1E2140"/></g>';
-}
-function person(x, y, color, up, q){
-  return '<g><rect x="'+(x-7)+'" y="'+(y-22)+'" width="14" height="22" rx="5" fill="'+color+'"/><circle cx="'+x+'" cy="'+(y-30)+'" r="8" fill="#F1C9A5"/>'
-    +(up?'<path d="M'+(x-6)+' '+(y-18)+'l-8 -14M'+(x+6)+' '+(y-18)+'l8 -14" stroke="'+color+'" stroke-width="4" stroke-linecap="round"/>':'')
-    +(q?'<text x="'+(x+12)+'" y="'+(y-42)+'" font-size="22" fill="#C8452D" '+FONT+'>?</text>':'')+'</g>';
-}
-function shores(night, waterTop){
-  const wt=waterTop||236, land=night?'#57566A':'#CDBB93', water=night?'#17335F':'#4A9BD1', txt=night?'#F4EEDD':'#1E2140';
-  return '<rect y="'+wt+'" width="640" height="'+(300-wt)+'" fill="'+water+'"/>'
-    +'<path d="M150 '+(wt+22)+'q12 -7 24 0t24 0M300 '+(wt+40)+'q12 -7 24 0t24 0M430 '+(wt+24)+'q12 -7 24 0t24 0" fill="none" stroke="#fff" stroke-width="2" opacity=".45"/>'
-    +'<rect x="0" y="'+(wt-14)+'" width="108" height="'+(300-wt+14)+'" fill="'+land+'"/><rect x="532" y="'+(wt-14)+'" width="108" height="'+(300-wt+14)+'" fill="'+land+'"/>'
-    +'<text x="54" y="286" text-anchor="middle" font-size="15" fill="'+txt+'" '+FONT+'>Manhattan</text><text x="586" y="286" text-anchor="middle" font-size="15" fill="'+txt+'" '+FONT+'>Brooklyn</text>';
-}
-function skyline(x0, hs, color){ let s='', x=x0; hs.forEach(h=>{ s+='<rect x="'+x+'" y="'+(222-h)+'" width="20" height="'+h+'" fill="'+color+'"/>'; x+=23; }); return s; }
-function bridge(night){
-  const stone=night?'#9C8C78':'#BBA689', dark=night?'#6E6252':'#8E7B62', cable=night?'#C9CEE0':'#4A4F63';
-  const cy=t=>(1-t)*(1-t)*78+2*t*(1-t)*310+t*t*78;
-  let s='';
-  for(let x=212;x<=428;x+=12){ const t=(x-200)/240; s+='<line x1="'+x+'" y1="'+cy(t).toFixed(1)+'" x2="'+x+'" y2="199" stroke="'+cable+'" stroke-width="1"/>'; }
-  for(let t=0.12;t<0.95;t+=0.11){ const xl=(1-t)*(1-t)*200+2*t*(1-t)*110+t*t*0, yl=(1-t)*(1-t)*78+2*t*(1-t)*176+t*t*198; s+='<line x1="'+xl.toFixed(1)+'" y1="'+yl.toFixed(1)+'" x2="'+xl.toFixed(1)+'" y2="199" stroke="'+cable+'" stroke-width="1"/><line x1="'+(640-xl).toFixed(1)+'" y1="'+yl.toFixed(1)+'" x2="'+(640-xl).toFixed(1)+'" y2="199" stroke="'+cable+'" stroke-width="1"/>'; }
-  s+='<path d="M0 198Q110 176 200 78Q320 310 440 78Q530 176 640 198" fill="none" stroke="'+cable+'" stroke-width="4" stroke-linejoin="round"/>';
-  [200,440].forEach(x=>{
-    s+='<rect x="'+(x-19)+'" y="66" width="38" height="186" fill="'+stone+'"/><rect x="'+(x-23)+'" y="60" width="46" height="10" rx="2" fill="'+stone+'"/>';
-    [-13,3].forEach(dx=>{ const a=x+dx; s+='<path d="M'+a+' 196V128q5 -16 10 0V196z" fill="'+dark+'"/>'; });
-  });
-  s+='<rect x="0" y="198" width="640" height="9" fill="'+(night?'#3B3447':'#5B4B3A')+'"/>';
-  return s;
-}
-const SCENES = {
-  ferry(){
-    return frame(sun()
-      +'<rect y="196" width="640" height="104" fill="#4A9BD1"/><path d="M160 226q12 -7 24 0t24 0M410 250q12 -7 24 0t24 0M250 270q12 -7 24 0t24 0" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>'
-      +skyline(6,[46,70,40,58,34],'#9E96A8')+'<rect x="0" y="180" width="124" height="120" fill="#CDBB93"/>'
-      +'<g transform="translate(516,0)">'+skyline(6,[30,44,26,38,22],'#B49A84')+'</g><rect x="516" y="180" width="124" height="120" fill="#CDBB93"/>'
-      +'<text x="62" y="286" text-anchor="middle" font-size="15" fill="#1E2140" '+FONT+'>Manhattan</text><text x="578" y="286" text-anchor="middle" font-size="15" fill="#1E2140" '+FONT+'>Brooklyn</text>'
-      +'<path d="M136 244H500" stroke="#fff" stroke-width="3" stroke-dasharray="9 11" opacity=".85"/>'
-      +'<g transform="translate(262,186)"><circle cx="66" cy="-22" r="7" fill="#fff" opacity=".85"/><circle cx="80" cy="-34" r="10" fill="#fff" opacity=".7"/><rect x="56" y="-14" width="11" height="20" fill="#1E2140"/><rect x="18" y="4" width="76" height="18" rx="3" fill="#FFF6E0"/><rect x="26" y="9" width="9" height="8" fill="#4A9BD1"/><rect x="42" y="9" width="9" height="8" fill="#4A9BD1"/><rect x="58" y="9" width="9" height="8" fill="#4A9BD1"/><rect x="74" y="9" width="9" height="8" fill="#4A9BD1"/><path d="M0 22h114l-14 22H12z" fill="#8A3F2B"/></g>');
+/* ===== Game 1: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 1, code: 'LDK-001', date: '2026-11-15', week: '2026-W46',
+  title: 'The Great Elephant Test',
+  theme: 'Bed-Stuy, Brooklyn and New York',
+  pw: 'c3RuYWhwZWxFIGduaWVvdHBpVCBlbk8teXRuZXdU',
+  lede: 'A giant new bridge. A nervous city. And one man with a LOT of elephants. This really happened, right here in Brooklyn.',
+  guess: { q: 'How many elephants do you think walked across the Brooklyn Bridge in one night?', answer: 21, close: 3 },
+  pages: [
+    { scene: 'ferry',  text: 'A long time ago, there was NO bridge between Brooklyn and Manhattan. To cross the river, you had to take a boat. Every. Single. Time.' },
+    { scene: 'bridge', text: 'So builders made the Brooklyn Bridge. It took 14 years! When it opened in 1883, it was the longest bridge of its kind in the whole world.' },
+    { toy: 'cable',    text: 'Here is the trick. The road HANGS from four giant {cables|Super thick ropes made of metal.}. Each cable is made of more than 5,000 thin steel wires squeezed together. One wire is wimpy. Thousands are mighty!' },
+    { scene: 'worry',  text: 'But lots of people were nervous. The bridge was SO big and SO new. Would it really hold? Nobody wanted to find out the hard way.' },
+    { scene: 'barnum', text: 'Then a {circus|A traveling show with acrobats and clowns. Back then, it had animals too.} man named P. T. Barnum had a wild idea. He would show everyone the bridge was strong... by walking his elephants across it!' },
+    { scene: 'parade', text: 'One night in May 1884, the parade began. **21 elephants and 17 camels** marched from Manhattan to Brooklyn. People stopped and stared.', guessBack: true,
+      quick: { q: '21 elephants and 17 camels. How many animals is that altogether?', expr: '21 + 17 =', answer: 38,
+               hint: 'Add the ones first: [[1 + 7]]. Then the tens: [[2 + 1]].', fb: '[[21 + 17 = 38]] animals on one bridge.' } },
+    { scene: 'jumbo',  text: 'At the very back walked Jumbo, the most famous elephant in the world. He weighed more than 6 {tons|A ton is 2,000 pounds. That is about as heavy as a small car.}. That is heavier than three cars!' },
+    { toy: 'parade',   text: 'Your turn! Send the parade across the bridge. Keep your eye on the wobble meter.' },
+    { scene: 'cheer',  text: 'The bridge did not budge. People felt a lot better about crossing it. And Barnum? Now everybody was talking about his circus. Pretty sneaky.' },
+    { scene: 'today',  text: '**Spot it in Brooklyn!** Next time you see the Brooklyn Bridge, find the two stone towers and the cables swooping down. They have held up the road for more than 140 years.',
+      bonus: 'Bonus fact: The first person to ride across was Emily Roebling, who helped build the bridge. She had a rooster on her lap!' }
+  ],
+  riddle: { q: 'What is as big as an elephant, but weighs nothing at all?', accept: ['shad'], answer: 'its shadow',
+            hint: 'It follows the elephant everywhere on a sunny day.', explain: 'Its shadow! A shadow is as big as the elephant, and it weighs nothing at all.' },
+  shots: {
+    1: { q: 'Why did Barnum walk his elephants across the bridge?',
+         opts: ['The elephants wanted to go for a swim', 'He got lost on the way to the circus', 'To show everyone the bridge was strong', 'To win a race against the camels'], a: 2,
+         hint: 'People were nervous about the new bridge. What would calm them down?', fb: 'If the bridge could hold 21 elephants, it could hold people. That was the whole idea.' },
+    2: { q: 'What holds up the road on the Brooklyn Bridge?',
+         opts: ['Giant balloons', 'Four cables made of thousands of steel wires', 'Super strong magnets', 'The elephants'], a: 1,
+         hint: 'Think about the wires you squeezed together.', fb: 'The road hangs from four cables, and each cable has more than 5,000 wires.' },
+    order: { q: 'What happened first? Tap the cards in order, from first to last.',
+             cards: ['People cross the river by boat.', 'Builders spend 14 years making the bridge.', 'The bridge opens in 1883.', '21 elephants march across.'],
+             hint: 'The boats came first, and the elephants came last.', fb: 'First came the boats. Then 14 years of building. The bridge opened in 1883. One year later, the elephants marched across.' },
+    math: { q: 'The tower tops are about 276 feet above the water. The road is 135 feet above the water. How many feet higher are the tower tops than the road?',
+            stack: ['276', '− 135'], answer: 141,
+            hint: 'Subtract the ones ([[6 − 5]]), then the tens ([[7 − 3]]), then the hundreds ([[2 − 1]]).',
+            fb: '[[276 − 135 = 141]] feet. That is about as tall as a 12-story building!' },
+    coach: { q: 'You are the coach! Tell your team: How does the Brooklyn Bridge hold up the road? And why did the elephants walk across?', starter: 'The road hangs from...',
+             ideas: ['how the bridge works: cables made of many wires hold up the road', 'why the elephants crossed: to show people the bridge was strong and safe'],
+             rubric: ['I said the road hangs from cables.', 'I said the cables are made of lots of wires, so they are super strong.', 'I said the elephants walked across to show the bridge was strong.'],
+             model: 'The road hangs from four big cables. Each cable is thousands of steel wires squeezed together, so it is super strong. People were nervous about the new bridge, so 21 elephants walked across to show everyone it was safe.' },
+    golden: { q: 'Jumbo weighed about 6 tons. Imagine 6 elephants as heavy as Jumbo. How many tons is that altogether?', expr: '6 × 6 =', answer: 36,
+              hint: '[[6 × 5 = 30]]. Now add one more 6.', fb: '[[6 × 6 = 36]] tons. That is a lot of elephant.' }
   },
-  bridge(){
-    return frame(sun()+skyline(4,[52,78,44,60],'#A9A2B5')+shores(false)+bridge(false)
-      +'<g transform="translate(288,18)"><rect width="64" height="30" rx="8" fill="#1E2140"/><text x="32" y="22" text-anchor="middle" font-size="20" fill="#fff" '+FONT+'>1883</text></g>');
-  },
-  worry(){
-    return frame('<circle cx="560" cy="50" r="24" fill="#FFE08A"/>'+shores(false)+bridge(false)
-      +person(26,222,'#C8452D',false,true)+person(56,222,'#167C8A',false,true)+person(86,222,'#6A4FB3',false,true)
-      +'<g transform="translate(250,20)"><rect width="140" height="34" rx="10" fill="#fff" stroke="#1E2140" stroke-width="2"/><text x="70" y="24" text-anchor="middle" font-size="18" fill="#1E2140" '+FONT+'>Is it strong?</text></g>');
-  },
-  barnum(){
-    let tent='<path d="M70 110L170 40L270 110z" fill="#D7263D"/><path d="M130 68L170 40L210 68z" fill="#fff"/><rect x="80" y="110" width="180" height="120" fill="#fff"/>';
-    for(let x=80;x<260;x+=40) tent+='<rect x="'+x+'" y="110" width="20" height="120" fill="#D7263D"/>';
-    tent+='<path d="M150 230v-60q20 -22 40 0v60z" fill="#1E2140"/><path d="M170 40V18l22 8-22 8" fill="#F4A100" stroke="#1E2140" stroke-width="2" stroke-linejoin="round"/>';
-    return frame('<rect y="230" width="640" height="70" fill="#8FCB7A"/>'+tent
-      +'<g><rect x="322" y="176" width="26" height="54" rx="8" fill="#6A4FB3"/><circle cx="335" cy="160" r="13" fill="#F1C9A5"/><rect x="321" y="143" width="28" height="6" rx="2" fill="#1E2140"/><rect x="326" y="118" width="18" height="27" rx="2" fill="#1E2140"/><path d="M345 190l22 -22" stroke="#6A4FB3" stroke-width="7" stroke-linecap="round"/></g>'
-      +'<g transform="translate(372,54)"><ellipse cx="62" cy="34" rx="62" ry="34" fill="#fff" stroke="#1E2140" stroke-width="2"/><circle cx="6" cy="78" r="8" fill="#fff" stroke="#1E2140" stroke-width="2"/><circle cx="-10" cy="96" r="5" fill="#fff" stroke="#1E2140" stroke-width="2"/><path d="M22 44Q62 4 102 44" fill="none" stroke="#4A4F63" stroke-width="3"/><rect x="18" y="44" width="88" height="5" fill="#5B4B3A"/><rect x="40" y="18" width="7" height="34" fill="#BBA689"/><rect x="77" y="18" width="7" height="34" fill="#BBA689"/></g>'
-      +elephant(430,232,1.25));
-  },
-  parade(){
-    let a='';
-    for(let i=0;i<6;i++) a+=camel(540-i*30,199,0.26);
-    for(let i=0;i<8;i++) a+=elephant(352-i*30,199,0.26,{fill:'#C3CADB',dark:'#9AA3B8'});
-    a+=elephant(86,199,0.4,{fill:'#C3CADB',dark:'#9AA3B8'});
-    return frame(nightSky()+shores(true)+bridge(true)+a, true);
-  },
-  jumbo(){
-    const car=(x,c)=>'<g transform="translate('+x+',0)"><path d="M14 196q4 -22 26 -22h34q20 0 28 22z" fill="'+c+'"/><rect x="0" y="194" width="124" height="26" rx="10" fill="'+c+'"/><rect x="34" y="180" width="24" height="14" rx="3" fill="#EAF6FF"/><rect x="64" y="180" width="24" height="14" rx="3" fill="#EAF6FF"/><circle cx="30" cy="222" r="12" fill="#1E2140"/><circle cx="96" cy="222" r="12" fill="#1E2140"/><circle cx="30" cy="222" r="5" fill="#C9CEE0"/><circle cx="96" cy="222" r="5" fill="#C9CEE0"/></g>';
-    return frame('<rect y="234" width="640" height="66" fill="#8FCB7A"/>'+elephant(14,236,2.25)
-      +'<text x="124" y="278" text-anchor="middle" font-size="24" fill="#1E2140" '+FONT+'>Jumbo</text>'
-      +'<text x="312" y="160" text-anchor="middle" font-size="44" fill="#1E2140" '+FONT+'>&gt;</text>'
-      +'<g transform="translate(400,-58) scale(.82)">'+car(0,'#D7263D')+'</g><g transform="translate(400,-8) scale(.82)">'+car(0,'#1D4ED8')+'</g><g transform="translate(400,42) scale(.82)">'+car(0,'#F4A100')+'</g>'
-      +'<text x="451" y="278" text-anchor="middle" font-size="24" fill="#1E2140" '+FONT+'>3 cars</text>');
-  },
-  cheer(){
-    let c='';
-    [[60,40,'#D7263D'],[120,70,'#F4A100'],[180,30,'#1F9D6B'],[260,56,'#6A4FB3'],[330,28,'#D7263D'],[400,60,'#3FA7D6'],[470,36,'#F4A100'],[520,80,'#1F9D6B'],[90,100,'#3FA7D6'],[360,96,'#EF5DA8'],[600,44,'#6A4FB3'],[230,110,'#EF5DA8']].forEach(p=>{ c+='<rect x="'+p[0]+'" y="'+p[1]+'" width="9" height="5" rx="1" fill="'+p[2]+'" transform="rotate(24 '+p[0]+' '+p[1]+')"/>'; });
-    return frame(sun()+c+shores(false)+bridge(false)
-      +elephant(470,199,0.3)+elephant(430,199,0.3)+elephant(390,199,0.3)
-      +person(552,222,'#C8452D',true)+person(580,222,'#167C8A',true)+person(608,222,'#6A4FB3',true)+person(30,222,'#1F9D6B',true)+person(62,222,'#F46036',true));
-  },
-  today(){
-    const tag=(x,y,w,t)=>'<g transform="translate('+x+','+y+')"><rect width="'+w+'" height="28" rx="8" fill="#1E2140"/><text x="'+(w/2)+'" y="20" text-anchor="middle" font-size="16" fill="#fff" '+FONT+'>'+t+'</text></g>';
-    return frame(sun()+skyline(2,[96,130,84,150,110,70],'#8E97B5')+'<g transform="translate(540,0)">'+skyline(4,[44,60,36,52],'#B49A84')+'</g>'+shores(false)+bridge(false)
-      +tag(232,22,76,'tower')+'<path d="M238 50L212 64" stroke="#1E2140" stroke-width="3" stroke-linecap="round"/>'
-      +tag(332,112,70,'cable')+'<path d="M336 140L318 176" stroke="#1E2140" stroke-width="3" stroke-linecap="round"/>');
-  }
+  lesson: 'Today\'s story, "The Great Elephant Test": Long ago there was no bridge between Brooklyn and Manhattan, so people crossed the East River by boat. Builders made the Brooklyn Bridge. It took 14 years and opened in 1883 as the longest bridge of its kind in the world. The road hangs from four giant cables. Each cable is made of more than 5,000 thin steel wires squeezed together, which makes it very strong. Many people were nervous that the new bridge was not strong enough. So in May 1884 the circus man P. T. Barnum walked 21 elephants and 17 camels (38 animals) across the bridge from Manhattan to Brooklyn to show it was strong. Jumbo, the most famous elephant, walked at the back and weighed more than 6 tons. The bridge did not budge, and Barnum also got attention for his circus. The first person to ride across the finished bridge was Emily Roebling, who helped build it, with a rooster on her lap. The tower tops are about 276 feet above the water and the road is 135 feet above the water.',
+  chips: ['Why do bridges need cables?', 'How heavy is an elephant?', 'Who was Emily Roebling?', 'How long is the Brooklyn Bridge?', 'Tell me a soccer fact'],
+  helperQA: [
+    { q: 'Why do bridges need cables?', a: 'The road is super heavy. The cables hold it up from above, like you holding a bucket by its handle.' },
+    { q: 'Why so many wires?', a: 'One wire can snap. Thousands of wires share the work, so the cable is mighty.' }
+  ],
+  dinner: [
+    '21 elephants and 17 camels once walked across the Brooklyn Bridge to show it was strong.',
+    'The road hangs from four cables, and each cable has more than 5,000 steel wires.',
+    'The first person to ride across was Emily Roebling. She had a rooster on her lap!'
+  ],
+  notes: [
+    'The parade took place on the night of May 17, 1884, about a year after the bridge opened on May 24, 1883. Contemporary reports list 21 elephants, 7 camels and 10 dromedaries, which later accounts shorten to 17 camels. Most accounts put Jumbo at the rear of the line; a few say he led it. Jumbo\'s weight is usually given as 6 to 6.5 tons.',
+    'The story leaves out why New Yorkers were nervous: a week after the opening, a rumor that the bridge was collapsing caused a crowd panic on the stairs and 12 people died. Barnum had offered the elephant walk before the opening and was turned down; the 1884 walk was also publicity for his circus.',
+    'Numbers used: construction 1869 to 1883 (14 years); tower tops 276.5 feet above high water and 135 feet of clearance at mid-span (the shot uses 276 and 135); four main cables, about 15.75 inches thick, each with more than 5,000 wires (5,434 is the usual count, and sources vary). The cables were designed to be about six times stronger than needed, later judged closer to four times because a supplier slipped in poor wire. The cable toy shows the idea, not real strength figures.'
+  ],
+  sources: [
+    { t: 'History.com on the elephant walk', u: 'https://www.history.com/articles/brooklyn-bridge-elephant-procession-p-t-barnum-jumbo-1884' },
+    { t: 'Brooklyn Waterfront History', u: 'https://www.bkwaterfronthistory.org/?p=88' },
+    { t: 'American Society of Civil Engineers', u: 'https://www.asce.org/about-civil-engineering/history-and-heritage/historic-landmarks/brooklyn-bridge' },
+    { t: 'Wikipedia on Jumbo', u: 'https://en.wikipedia.org/wiki/Jumbo' },
+    { t: 'National Trust on Emily Roebling', u: 'https://savingplaces.org/stories/emily-warren-roebling-cornerstone-construction-brooklyn-bridge' }
+  ]
 };
-document.querySelectorAll('[data-scene]').forEach(el=>{ el.innerHTML = SCENES[el.dataset.scene](); });
-document.querySelectorAll('[data-nino]').forEach(el=>{ el.innerHTML = nino(+el.dataset.nino); });
-document.querySelectorAll('.say').forEach(b=>{ b.innerHTML = SPEAKER+'<span>Read it to me</span>'; });
 
-/* ---------- progress / navigation (adapted from the kit; one page at a time) ---------- */
-const prog = $('progress');
-for(let i=0;i<PAGES;i++){ prog.appendChild(document.createElement('span')); }
-function paintProgress(){ [...prog.children].forEach((s,i)=>{ const k=i+1; s.className = k<S.step?'done':(k===S.step?'cur':''); }); }
-function next(){ goTo(S.step+1); }
-function back(){ if(S.step>1) goTo(S.step-1); }
-function goTo(n){
-  const sec = document.querySelector('.step[data-step="'+n+'"]');
-  if(!sec) return;
-  stopSpeak();
-  try{ const ae=document.activeElement; if(ae && ae!==document.body && ae.blur) ae.blur(); }catch(e){}
-  $('fab').style.visibility='';
-  document.querySelectorAll('.step.shown').forEach(s=>s.classList.remove('shown'));
-  S.step = n; sec.classList.add('shown'); paintProgress();
-  try{ window.scrollTo(0,0); }catch(e){}
-  $('fab').hidden = n===0;
-  if(n===4) drawCable();
-  if(n===8) showGuessBack();
-  if(n===10) drawParade();
-  if(n===13) buildShootout();
-}
-
-/* ---------- locker room: players and shirts ---------- */
-/* no stripe color picked = a one-color shirt; tap a stripe color to add stripes, tap it again to take them off */
-let kitDraft = { style:'solid', c1:'#1F9D6B', c2:'' };
-function renderSwatches(){
-  const sw=(which,p)=>{ const on=kitDraft[which]===p[1], same=which==='c2'&&p[1]===kitDraft.c1;
-    return '<button class="sw'+(on?' on':'')+'" style="background:'+p[1]+'" title="'+p[0]+'" aria-label="'+p[0]+(which==='c2'?' stripes':'')+'" aria-pressed="'+on+'"'+(same?' disabled':'')+' onclick="setKitColor(\''+which+'\',\''+p[1]+'\')"></button>'; };
-  $('swA').innerHTML = PALETTE.map(p=>sw('c1',p)).join(''); $('swB').innerHTML = PALETTE.map(p=>sw('c2',p)).join('');
-  $('swBHint').textContent = kitDraft.c2 ? '(tap it again for one color)' : '(tap one to add stripes)';
-  $('kitPrev').innerHTML = shirt(kitDraft, 150);
-}
-function setKitColor(which, c){
-  if(which==='c2') kitDraft.c2 = kitDraft.c2===c ? '' : c;
-  else { kitDraft.c1=c; if(kitDraft.c2===c) kitDraft.c2=''; }
-  kitDraft.style = kitDraft.c2 ? 'stripes' : 'solid';
-  renderSwatches();
-}
-function renderLocker(){
-  const has = DB.order.length>0;
-  $('playerBox').hidden = !has;
-  $('playerList').innerHTML = DB.order.map(id=>{ const p=DB.players[id]; return '<button class="track'+(S.pid===id?' on':'')+'" onclick="pickPlayer(\''+id+'\')"><span class="kit">'+shirt(p.kit,56)+'</span><span><b>'+esc(p.name)+'</b><small>'+leagueFor(p.goals).name+' · '+p.goals+' goals</small></span></button>'; }).join('');
-  if(!has) showNewPlayer();
-}
-function showNewPlayer(){ $('newPlayer').hidden=false; $('addBtn').hidden=true; renderSwatches(); }
-function createPlayer(){
-  const name = $('pName').value.trim().replace(/\s+/g,' ');
-  if(name.length<1){ $('joinMsg').textContent='Type your name first!'; $('pName').focus(); return; }
-  const id='p'+Date.now().toString(36);
-  DB.players[id] = { name, kit:{...kitDraft}, goals:0, streak:0, best:0, lastN:0, subWeek:'', badges:[], history:{} };
-  DB.order.push(id); saveDB();
-  $('pName').value=''; $('joinMsg').textContent=''; $('newPlayer').hidden=true; $('addBtn').hidden=false;
-  pickPlayer(id);
-}
-function pickPlayer(id){
-  if(!DB.players[id]) return;
-  S.pid=id; renderLocker(); paintWho();
-  $('startBtn').disabled=false; $('startBtn').textContent='Kick off, '+P().name+'!';
-}
-function paintWho(){
-  const p=P(); if(!p){ $('who').textContent='Game '+EDITION.n; return; }
-  $('who').innerHTML='<span class="kit">'+shirt(p.kit,30)+'</span><b>'+esc(p.name)+'</b><span class="statpill" title="Total goals">'+BALL+'<span class="num">'+p.goals+'</span></span>';
-}
-function startGame(){ if(!S.pid) return; goTo(1); }
-
-/* ---------- read aloud ---------- */
-let ttsNS=null; const hasSynth = ('speechSynthesis' in window) && (typeof SpeechSynthesisUtterance!=='undefined');
-function refreshSay(){ const on=!!ttsNS||hasSynth; document.querySelectorAll('.say').forEach(b=>{ b.hidden=!on; }); }
-if(IN_CLAUDE){ try{ window.claude.use('tts').then(t=>{ ttsNS=t||null; refreshSay(); }).catch(()=>{}); }catch(e){} }
-refreshSay();
-function sayPage(btn){
-  if(btn.classList.contains('on')){ stopSpeak(); return; }
-  const sec=btn.closest('.step'); const txt=[...sec.querySelectorAll('.story')].map(e=>e.textContent.replace(/\s+/g,' ').trim()).join(' ');
-  if(!txt) return; stopSpeak(); btn.classList.add('on');
-  const done=()=>btn.classList.remove('on');
-  if(ttsNS){ try{ ttsNS.speak(txt,{rate:0.9,language:'en'}).then(done,done); }catch(e){ done(); } return; }
-  if(hasSynth){ try{ const u=new SpeechSynthesisUtterance(txt); u.lang='en-US'; u.rate=0.9; u.onend=done; u.onerror=done; window.speechSynthesis.speak(u); }catch(e){ done(); } return; }
-  done();
-}
-function stopSpeak(){
-  try{ if(ttsNS){ const r=ttsNS.stop(); if(r&&r.catch) r.catch(()=>{}); } }catch(e){}
-  try{ if(hasSynth) window.speechSynthesis.cancel(); }catch(e){}
-  document.querySelectorAll('.say.on').forEach(b=>b.classList.remove('on'));
-}
-
-/* tricky words: tap for the meaning */
-document.addEventListener('click', e=>{ const w=e.target.closest('.word'); if(!w) return; const box=w.closest('.step').querySelector('.defbox'); if(!box) return; box.innerHTML='<b>'+esc(w.textContent)+':</b> '+esc(w.dataset.def); box.classList.add('show'); });
-$('pName').addEventListener('input', ()=>{ $('joinMsg').textContent=''; });
-/* Enter in a field presses its button */
-document.addEventListener('keydown', e=>{ if(e.key!=='Enter') return; const t=e.target; if(t&&t.dataset&&t.dataset.enter){ e.preventDefault(); const b=$(t.dataset.enter); if(b&&!b.disabled) b.click(); } });
-function readNum(id){ const v=$(id).value.replace(/[^0-9]/g,''); return v===''?NaN:parseInt(v,10); }
-
-/* ---------- page 1: the guess ---------- */
-function lockGuess(){
-  const v=readNum('guessIn');
-  if(isNaN(v)){ $('guessMsg').textContent='Type a number first!'; return; }
-  S.guess=v; $('guessIn').blur(); $('guessIn').disabled=true; $('guessBtn').disabled=true;
-  $('guessMsg').innerHTML='Locked in: <b class="num">'+fmt(v)+'</b>. We will find out soon!';
-  $('next1').disabled=false;
-}
-function guessLine(){
-  if(S.guess===null) return '';
-  const d=Math.abs(S.guess-REAL_ELEPHANTS);
-  return 'You guessed <b class="num">'+fmt(S.guess)+'</b>. The real number: <b class="num">'+REAL_ELEPHANTS+'</b>. '+(d===0?'Exactly right. Wow!':d<=3?'So close!':S.guess<REAL_ELEPHANTS?'Even more than you thought!':'Not quite that many, but still a LOT of elephants.');
-}
-function showGuessBack(){ $('guessBack').innerHTML=guessLine(); $('guessBack').hidden = S.guess===null; }
-
-/* ---------- page 4: build a cable ---------- */
-const WIRE_MSG = {1:'One wire. Pretty wimpy.',1000:'1,000 wires. Getting stronger!',2000:'2,000 wires. Keep going!',3000:'3,000 wires. Now we are talking.',4000:'4,000 wires. Almost there!',5000:'5,000 wires. MIGHTY! A real Brooklyn Bridge cable has even a few more. The builders planned it to be way stronger than it needed to be. Just to be safe!'};
-function addWires(){
-  if(S.wires>=5000) return;
-  S.wires = S.wires<1000 ? 1000 : S.wires+1000;
-  drawCable();
-  if(S.wires>=5000){ $('wireBtn').disabled=true; $('next4').disabled=false; $('hint4').hidden=true; }
-}
-function drawCable(){
-  const w=S.wires, n=Math.max(1,Math.round(w/100)), k=w/5000;
-  let dots=''; for(let i=0;i<n;i++){ const r=88*Math.sqrt((i+0.5)/50), a=i*2.39996; dots+='<circle cx="'+(130+r*Math.cos(a)).toFixed(1)+'" cy="'+(128+r*Math.sin(a)).toFixed(1)+'" r="6" fill="#4A4F63"/>'; }
-  const thick=(2+k*18).toFixed(1), bar=Math.round(260*Math.max(k,0.02));
-  $('cablePic').innerHTML = '<svg viewBox="0 0 640 260" role="img" aria-label="A cable with '+fmt(w)+' wires"><rect width="640" height="260" fill="#EEF8FF"/>'
-    +'<circle cx="130" cy="128" r="100" fill="#fff" stroke="#1E2140" stroke-width="3"/>'+dots
-    +'<text x="130" y="252" text-anchor="middle" font-size="16" fill="#1E2140" '+FONT+'>A slice of the cable</text>'
-    +'<rect x="330" y="26" width="280" height="14" rx="4" fill="#BBA689"/>'
-    +'<line x1="470" y1="40" x2="470" y2="150" stroke="#4A4F63" stroke-width="'+thick+'" stroke-linecap="round"/>'
-    +'<rect x="380" y="150" width="180" height="20" rx="4" fill="#5B4B3A"/><text x="470" y="165" text-anchor="middle" font-size="13" fill="#fff" '+FONT+'>THE ROAD</text>'
-    +'<text x="330" y="202" font-size="16" fill="#1E2140" '+FONT+'>Strength</text>'
-    +'<rect x="330" y="210" width="264" height="22" rx="11" fill="#fff" stroke="#1E2140" stroke-width="2"/><rect x="332" y="212" width="'+bar+'" height="18" rx="9" fill="'+(k>=1?'#1F8A5B':'#F4A100')+'"/></svg>';
-  $('wireOut').textContent=fmt(w); $('wireMsg').textContent=WIRE_MSG[w]||'';
-}
-
-/* ---------- page 7: halftime riddle ---------- */
-function checkRiddle(){
-  const r=S.riddle; if(r.done) return;
-  const v=$('riddleIn').value.trim().toLowerCase(), fb=$('riddleFb'); fb.classList.add('show');
-  if(!v){ fb.innerHTML='Type your answer first!'; return; }
-  r.tries++;
-  if(/shad/.test(v)){ r.done=true; r.ok=true; fb.innerHTML='<span class="pill-ok">Yes! </span>Its shadow! A shadow is as big as the elephant, and it weighs nothing at all.'; }
-  else if(r.tries===1){ fb.innerHTML=ninoSay('Not yet! Hint: it follows the elephant everywhere on a sunny day.'); }
-  else { r.done=true; fb.innerHTML='<span class="pill-bad">Good try! </span>The answer is: its <b>shadow</b>. A shadow is as big as the elephant, and it weighs nothing at all.'; }
-  if(r.done){ $('riddleIn').blur(); $('riddleIn').disabled=true; $('riddleBtn').disabled=true; $('next7').disabled=false; $('hint7').hidden=true; }
-}
-
-/* ---------- page 8: quick check ---------- */
-function checkQC(){
-  const q=S.qc; if(q.done) return;
-  const v=readNum('qcIn'), fb=$('qcFb'); fb.classList.add('show');
-  if(isNaN(v)){ fb.innerHTML='Type a number first!'; return; }
-  q.tries++;
-  if(v===38){ q.done=true; fb.innerHTML='<span class="pill-ok">Yes! </span><span class="math">21 + 17 = 38</span> animals on one bridge.'; }
-  else if(q.tries===1){ fb.innerHTML=ninoSay('Almost! Add the ones first: <span class="math">1 + 7</span>. Then the tens: <span class="math">2 + 1</span>.'); }
-  else { q.done=true; fb.innerHTML='<span class="pill-bad">Good try! </span><span class="math">21 + 17 = 38</span>. Ones: <span class="math">1 + 7 = 8</span>. Tens: <span class="math">2 + 1 = 3</span>.'; }
-  if(q.done){ $('qcIn').blur(); $('qcIn').disabled=true; $('qcBtn').disabled=true; $('next8').disabled=false; $('hint8').hidden=true; }
-}
-
-/* ---------- page 10: send the parade ---------- */
-function sendElephants(){
-  if(S.sent>=REAL_ELEPHANTS) return;
-  S.sent+=3; drawParade(true);
-  if(S.sent>=REAL_ELEPHANTS){ $('sendBtn').disabled=true; $('next10').disabled=false; $('hint10').hidden=true; }
-}
-function drawParade(fresh){
-  let a='';
-  for(let i=0;i<S.sent;i++){ const isNew = fresh && i>=S.sent-3, jumbo = i===REAL_ELEPHANTS-1;
-    a+=elephant(jumbo?52:556-i*24, 199, jumbo?0.36:0.22, {fill:'#C3CADB',dark:'#9AA3B8',cls:isNew?'pop':''}); }
-  $('paradePic').innerHTML = frame(nightSky()+shores(true)+bridge(true)+a, true);
-  $('sentOut').textContent=S.sent;
-  $('sendMsg').textContent = S.sent===0 ? 'Count by threes as they go: 3, 6, 9...' : S.sent<REAL_ELEPHANTS ? S.sent+' elephants on the bridge. Still steady!' : 'All 21 elephants are on the bridge, with big Jumbo at the back. Wobbles: zero!';
-}
-
-/* ---------- page 13: the penalty shootout ---------- */
-const SHOTS = {
-  1:{ q:'Why did Barnum walk his elephants across the bridge?', opts:['The elephants wanted to go for a swim','He got lost on the way to the circus','To show everyone the bridge was strong','To win a race against the camels'], a:2,
-      hint:'People were nervous about the new bridge. What would calm them down?', fb:'If the bridge could hold 21 elephants, it could hold people. That was the whole idea.' },
-  2:{ q:'What holds up the road on the Brooklyn Bridge?', opts:['Giant balloons','Four cables made of thousands of steel wires','Super strong magnets','The elephants'], a:1,
-      hint:'Think about the wires you squeezed together.', fb:'The road hangs from four cables, and each cable has more than 5,000 wires.' }
-};
-const ORDER = [ {id:'a', t:'People cross the river by boat.'}, {id:'b', t:'Builders spend 14 years making the bridge.'}, {id:'c', t:'The bridge opens in 1883.'}, {id:'d', t:'21 elephants march across.'} ];
-function shot(k){ return S.shots[k] || (S.shots[k]={tries:0,done:false,first:false}); }
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-let shootoutBuilt=false;
-function buildShootout(){
-  if(shootoutBuilt){ paintBoard(); return; } shootoutBuilt=true;
-  renderShot(1); renderShot(2); buildOrder(); paintBoard();
-}
-function renderShot(k){
-  const d=SHOTS[k], el=$('shot'+k); shot(k);
-  el.innerHTML='<div class="qc-label">Shot '+k+' of 5 · tap</div><div class="qt">'+d.q+'</div><div class="opts">'+d.opts.map((o,i)=>'<button class="opt" data-i="'+i+'"><span class="k">'+'ABCD'[i]+'</span><span>'+o+'</span></button>').join('')+'</div><div class="fb"></div>';
-  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
-    const st=shot(k); if(st.done||b.disabled) return;
-    st.tries++; const ok=(+b.dataset.i)===d.a, fb=el.querySelector('.fb');
-    if(ok){ b.classList.add('right'); st.done=true; st.first=st.tries===1; fb.innerHTML='<span class="pill-ok">'+(st.first?'GOAL! ':'Scored on the rebound! ')+'</span>'+d.fb; }
-    else if(st.tries===1){ b.classList.add('wrong'); b.disabled=true; fb.innerHTML=ninoSay('Off the post! Take the rebound. Hint: '+d.hint); }
-    else { b.classList.add('wrong'); el.querySelector('.opt[data-i="'+d.a+'"]').classList.add('right'); st.done=true; fb.innerHTML='<span class="pill-bad">Saved by the keeper. </span>'+d.fb; }
-    if(st.done) el.classList.add('locked');
-    fb.classList.add('show'); paintBoard();
-  });
-}
-function buildOrder(){
-  let cards=shuffle([...ORDER]); if(cards.map(c=>c.id).join('')==='abcd') cards=[cards[1],cards[0],cards[3],cards[2]];
-  const box=$('order'); box.innerHTML='';
-  cards.forEach(c=>{ const el=document.createElement('button'); el.className='card'; el.dataset.id=c.id; el.innerHTML='<span class="n"></span><span>'+c.t+'</span>'; el.onclick=()=>pickOrder(c.id); box.appendChild(el); });
-}
-function paintOrder(){ document.querySelectorAll('#order .card').forEach(c=>{ const k=S.order.indexOf(c.dataset.id); c.classList.toggle('picked',k>=0); c.classList.remove('ok','ko'); c.querySelector('.n').textContent=k>=0?k+1:''; }); $('orderCheck').disabled = S.order.length!==ORDER.length; }
-function pickOrder(id){ if(shot(3).done) return; const i=S.order.indexOf(id); if(i>=0) S.order.splice(i,1); else S.order.push(id); paintOrder(); }
-function resetOrder(){ if(shot(3).done) return; S.order=[]; paintOrder(); }
-function checkOrder(){
-  const st=shot(3); if(st.done||S.order.length!==ORDER.length) return;
-  st.tries++; const ok=S.order.join('')==='abcd', fb=$('orderFb'); fb.classList.add('show');
-  const story='First came the boats. Then 14 years of building. The bridge opened in 1883. One year later, the elephants marched across.';
-  if(ok){ st.done=true; st.first=st.tries===1; document.querySelectorAll('#order .card').forEach(c=>c.classList.add('ok')); fb.innerHTML='<span class="pill-ok">'+(st.first?'GOAL! ':'Scored on the rebound! ')+'</span>'+story; }
-  else if(st.tries===1){ fb.innerHTML=ninoSay('Off the post! Take the rebound. Hint: the boats came first, and the elephants came last.'); S.order=[]; paintOrder(); }
-  else { st.done=true; document.querySelectorAll('#order .card').forEach(c=>{ const right='abcd'.indexOf(c.dataset.id); c.classList.remove('picked'); c.classList.add(S.order.indexOf(c.dataset.id)===right?'ok':'ko'); c.querySelector('.n').textContent=right+1; }); fb.innerHTML='<span class="pill-bad">Saved by the keeper. </span>The numbers now show the right order. '+story; }
-  if(st.done){ $('orderCheck').disabled=true; $('orderReset').disabled=true; }
-  paintBoard();
-}
-function checkMath(){
-  const st=shot(4); if(st.done) return;
-  const v=readNum('mathIn'), fb=$('mathFb'); fb.classList.add('show');
-  if(isNaN(v)){ fb.innerHTML='Type a number first!'; return; }
-  st.tries++; const ok=v===141, how='<span class="math">276 &minus; 135 = 141</span> feet. That is about as tall as a 12-story building!';
-  if(ok){ st.done=true; st.first=st.tries===1; fb.innerHTML='<span class="pill-ok">'+(st.first?'GOAL! ':'Scored on the rebound! ')+'</span>'+how; }
-  else if(st.tries===1){ fb.innerHTML=ninoSay('Off the post! Take the rebound. Hint: subtract the ones (<span class="math">6 &minus; 5</span>), then the tens (<span class="math">7 &minus; 3</span>), then the hundreds (<span class="math">2 &minus; 1</span>).'); }
-  else { st.done=true; fb.innerHTML='<span class="pill-bad">Saved by the keeper. </span>'+how+' Ones: <span class="math">6 &minus; 5 = 1</span>. Tens: <span class="math">7 &minus; 3 = 4</span>. Hundreds: <span class="math">2 &minus; 1 = 1</span>.'; }
-  if(st.done){ $('mathIn').blur(); $('mathIn').disabled=true; $('mathBtn').disabled=true; }
-  paintBoard();
-}
-function checkGolden(){
-  const g=S.golden; if(g.done) return;
-  const v=readNum('goldIn'), fb=$('goldFb'); fb.classList.add('show');
-  if(isNaN(v)){ fb.innerHTML='Type a number first!'; return; }
-  g.tries++;
-  if(v===36){ g.done=true; g.ok=true; fb.innerHTML='<span class="pill-ok">GOLDEN GOAL! </span><span class="math">6 &times; 6 = 36</span> tons. That is a lot of elephant.'; }
-  else if(g.tries===1){ fb.innerHTML=ninoSay('So close! Hint: <span class="math">6 &times; 5 = 30</span>. Now add one more 6.'); }
-  else { g.done=true; fb.innerHTML='<span class="pill-bad">Just wide! </span><span class="math">6 &times; 6 = 36</span>. Six groups of six: <span class="math">30 + 6</span>.'; }
-  if(g.done){ $('goldIn').blur(); $('goldIn').disabled=true; $('goldBtn').disabled=true; }
-  paintBoard();
-}
-function shotState(k){ if(k===5) return !S.coach.graded ? '' : (S.coach.stars>=2?'goal':'miss'); const st=shot(k); return !st.done ? '' : (st.first?'goal':'miss'); }
-function paintBoard(){
-  let h='<span class="lbl">Shots</span>';
-  for(let k=1;k<=5;k++){ const s=shotState(k); h+='<span class="dot '+s+'" title="Shot '+k+'">'+(s==='goal'?'&#10003;':s==='miss'?'&times;':k)+'</span>'; }
-  h+='<span class="dot star '+(S.golden.ok?'goal':'')+'" title="Golden Goal">&#9733;</span>';
-  $('board').innerHTML=h;
-}
-
-/* ---------- AI backend (adapted from the kit): Claude's `sample` capability when the page is opened inside Claude, else none.
-   The kit's proxy client (for a public site) plugs in here when the game moves to its own site. ---------- */
-let samplePromise = IN_CLAUDE ? Promise.resolve().then(()=>window.claude.use('sample')).catch(()=>null) : Promise.resolve(null);
-const AI = {
-  mode:null,
-  async init(){ if(this.mode) return this.mode; const s=await samplePromise; this.mode = s?'sample':'none'; return this.mode; },
-  async chat(system, history, onText){
-    const m=await this.init();
-    if(m==='sample'){ const s=await samplePromise; const turns=[{role:'user', content: system+'\n\n(Answer the child\'s question below.)\n\n'+history[0].content}, ...history.slice(1)]; const r=await s(turns,{modelTier:'default', cache:false, onText:({text})=>onText&&onText(text)}); return r.text; }
-    const e=new Error('no_ai'); e.code='no_ai'; throw e;
-  },
-  async json(prompt){
-    const m=await this.init();
-    if(m==='sample'){ const s=await samplePromise; return await s.json(prompt,{modelTier:'quick', cache:false}); }
-    const e=new Error('no_ai'); e.code='no_ai'; throw e;
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART, FONT = A.FONT;
+  function elephant(x, y, s, o){
+    o=o||{}; const f=o.fill||'#9AA3B5', d=o.dark||'#7A8498';
+    return '<g'+(o.cls?' class="'+o.cls+'"':'')+'><g transform="translate('+x+','+(y-70*s)+') scale('+s+')">'
+      +'<path d="M13 28q-8 6-5 16" fill="none" stroke="'+d+'" stroke-width="3" stroke-linecap="round"/>'
+      +'<rect x="20" y="44" width="11" height="26" rx="4" fill="'+d+'"/><rect x="52" y="44" width="11" height="26" rx="4" fill="'+d+'"/>'
+      +'<ellipse cx="45" cy="32" rx="32" ry="22" fill="'+f+'"/>'
+      +'<rect x="33" y="46" width="11" height="24" rx="4" fill="'+f+'"/><rect x="64" y="46" width="11" height="24" rx="4" fill="'+f+'"/>'
+      +'<circle cx="80" cy="26" r="16" fill="'+f+'"/>'
+      +'<path d="M91 30q11 6 5 27" fill="none" stroke="'+f+'" stroke-width="8" stroke-linecap="round"/>'
+      +'<ellipse cx="70" cy="25" rx="9" ry="14" fill="'+d+'"/>'
+      +'<circle cx="85" cy="22" r="2.3" fill="#1E2140"/>'
+      +'<path d="M88 36q5 5 10 2" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g></g>';
   }
-};
-function withTimeout(p, ms){ return Promise.race([p, new Promise((_,rej)=>setTimeout(()=>{ const e=new Error('timeout'); e.code='timeout'; rej(e); }, ms))]); }
-
-/* ---------- shot 5: you are the coach (explain it back; self-check fallback as in the kit) ---------- */
-const LESSON = 'Today\'s story, "The Great Elephant Test": Long ago there was no bridge between Brooklyn and Manhattan, so people crossed the East River by boat. Builders made the Brooklyn Bridge. It took 14 years and opened in 1883 as the longest bridge of its kind in the world. The road hangs from four giant cables. Each cable is made of more than 5,000 thin steel wires squeezed together, which makes it very strong. Many people were nervous that the new bridge was not strong enough. So in May 1884 the circus man P. T. Barnum walked 21 elephants and 17 camels (38 animals) across the bridge from Manhattan to Brooklyn to show it was strong. Jumbo, the most famous elephant, walked at the back and weighed more than 6 tons. The bridge did not budge, and Barnum also got attention for his circus. The first person to ride across the finished bridge was Emily Roebling, who helped build it, with a rooster on her lap. The tower tops are about 276 feet above the water and the road is 135 feet above the water.';
-const RUBRIC = ['I said the road hangs from cables.','I said the cables are made of lots of wires, so they are super strong.','I said the elephants walked across to show the bridge was strong.'];
-const MODEL = 'The road hangs from four big cables. Each cable is thousands of steel wires squeezed together, so it is super strong. People were nervous about the new bridge, so 21 elephants walked across to show everyone it was safe.';
-function starsHtml(n){ return '<div class="stars">'+'&#9733;'.repeat(n)+'<span class="off">'+'&#9733;'.repeat(3-n)+'</span></div>'; }
-function coachDone(){ $('coachBtn').textContent='Checked'; $('coachIn').blur(); $('coachIn').readOnly=true; $('fab').style.visibility=''; paintBoard(); }
-async function gradeCoach(){
-  const txt=$('coachIn').value.trim(); S.coach.text=txt; const fb=$('coachFb'); fb.classList.add('show');
-  if(txt.length<15 || txt.split(/\s+/).length<4){ fb.innerHTML=ninoSay('Coaches use full sentences! Write or say a little more. You know this.'); return; }
-  $('coachBtn').disabled=true; fb.innerHTML=ninoSay('Let me read that...');
-  const mode = await AI.init();
-  if(mode!=='none'){
-    try{
-      const prompt = 'You are El Niño, a friendly young soccer player who helps a second grader (about 7 years old) named '+P().name+' in a learning game.\n'+LESSON+'\n\nThe child was asked: "How does the Brooklyn Bridge hold up the road? And why did the elephants walk across?"\nThe child\'s answer:\n"""'+txt+'"""\n\nReply with JSON only, no other text: {"on_topic": true or false, "stars": 1, 2 or 3, "praise": "one short sentence naming something specific the child got right", "tip": "one short, kind sentence about what to add next time"}.\non_topic is false only if the answer is gibberish or is not about the bridge or the elephants at all. stars: 3 if the answer says BOTH how the bridge works (cables or wires hold up the road) AND why the elephants crossed (to show the bridge was strong or safe); 2 if it gets one of the two; 1 for a real try that gets neither. Ignore spelling and grammar mistakes. Use very simple words a 7-year-old can read. No emoji.';
-      const r = await withTimeout(AI.json(prompt), 30000);
-      if(r && r.on_topic===false && S.coach.offTopic<1){ S.coach.offTopic++; $('coachBtn').disabled=false; fb.innerHTML=ninoSay('Hmm, I need to hear about the bridge and the elephants! Try again, coach.'); return; }
-      const stars=Math.max(1,Math.min(3,+r.stars||1)); S.coach.stars=stars; S.coach.graded=true;
-      fb.innerHTML=starsHtml(stars)+ninoSay('<b>'+esc(r.praise||'Nice work, coach!')+'</b>')+'<p class="small" style="margin:8px 0 0">'+esc(r.tip||'')+'</p><details style="margin-top:10px"><summary>How El Niño would say it</summary><p style="margin:8px 0 0">'+MODEL+'</p></details>';
-      coachDone(); return;
-    }catch(e){ /* fall through to the self-check */ }
+  function camel(x, y, s){
+    return '<g transform="translate('+x+','+(y-70*s)+') scale('+s+')"><rect x="18" y="40" width="8" height="30" rx="3" fill="#B98A4E"/><rect x="60" y="40" width="8" height="30" rx="3" fill="#B98A4E"/><ellipse cx="45" cy="36" rx="30" ry="14" fill="#D9AC6A"/><circle cx="36" cy="24" r="11" fill="#D9AC6A"/><circle cx="56" cy="24" r="11" fill="#D9AC6A"/><rect x="28" y="42" width="8" height="28" rx="3" fill="#D9AC6A"/><rect x="50" y="42" width="8" height="28" rx="3" fill="#D9AC6A"/><path d="M72 34Q84 30 84 10" fill="none" stroke="#D9AC6A" stroke-width="9" stroke-linecap="round"/><ellipse cx="88" cy="9" rx="9" ry="6" fill="#D9AC6A"/><circle cx="91" cy="7" r="1.7" fill="#1E2140"/></g>';
   }
-  S.coach.graded=true; S.coach.stars=0;
-  fb.innerHTML='<p style="margin:0 0 8px">Read your answer again. Tap each thing you said:</p>'+RUBRIC.map((r,i)=>'<label class="chk"><input type="checkbox" data-r="'+i+'" onchange="rubricChange()"><span>'+r+'</span></label>').join('')+'<div id="rubStars">'+starsHtml(0)+'</div><details style="margin-top:10px"><summary>How El Niño would say it</summary><p style="margin:8px 0 0">'+MODEL+'</p></details>';
-  coachDone();
-}
-function rubricChange(){ const n=[...document.querySelectorAll('#coachFb input:checked')].length; S.coach.stars=Math.min(3,n); $('rubStars').innerHTML=starsHtml(S.coach.stars); paintBoard(); }
-
-/* ---------- final whistle (adapted from the kit's finish()) ---------- */
-function finish(){
-  const first=k=>{ const st=shot(k); return st.done&&st.first?1:0; };
-  const shotGoals = first(1)+first(2)+first(3)+first(4)+(S.coach.graded&&S.coach.stars>=2?1:0);
-  const todo = [
-    [shot(1).done, 'Finish shot 1'], [shot(2).done, 'Finish shot 2'], [shot(3).done, 'Finish shot 3 (the order)'],
-    [shot(4).done, 'Finish shot 4 (the math)'], [S.coach.graded, 'Send your coach talk to El Niño (shot 5)']
-  ];
-  const complete = todo.every(t=>t[0]);
-  const p=P(); const rec=p.history[EDITION.code];
-  let game;
-  if(rec && rec.complete){ game={...rec, already:true}; }
-  else if(complete){
-    let streakAfter, sub=false;
-    if(p.lastN===EDITION.n-1 && p.lastN>0) streakAfter=p.streak+1;
-    else if(p.lastN===EDITION.n-2 && p.lastN>0 && p.subWeek!==EDITION.week){ streakAfter=p.streak+1; sub=true; }
-    else streakAfter=1;
-    const golden=S.golden.ok?2:0, bonus=streakAfter>=3?1:0, today=shotGoals+1+golden+bonus;
-    const badges=[];
-    if(Object.keys(p.history).length===0) badges.push(['1','Kickoff']);
-    if(S.guess!==null && Math.abs(S.guess-REAL_ELEPHANTS)<=3) badges.push(['&#9678;','Sharp Shooter']);
-    if(shotGoals===5) badges.push(['&#10003;','Clean Sheet']);
-    if(S.coach.stars===3) badges.push(['&#9733;','Playmaker']);
-    if(S.golden.ok) badges.push(['G','Golden Boot']);
-    if(STREAK_BADGES[streakAfter]) badges.push([String(streakAfter),STREAK_BADGES[streakAfter]]);
-    p.goals+=today; p.streak=streakAfter; p.best=Math.max(p.best||0,streakAfter); p.lastN=EDITION.n; if(sub) p.subWeek=EDITION.week;
-    badges.forEach(b=>{ if(!p.badges.includes(b[1])) p.badges.push(b[1]); });
-    game={ complete:true, today, shotGoals, golden, bonus, streakAfter, sub, stars:S.coach.stars, badges, guess:S.guess, at:new Date().toISOString() };
-    p.history[EDITION.code]=game; saveDB(); paintWho();
-  } else {
-    game={ complete:false, today:shotGoals+(S.golden.ok?2:0), shotGoals, golden:S.golden.ok?2:0, bonus:0, streakAfter:p.streak, stars:S.coach.stars, badges:[] };
+  function shores(night){
+    const wt=236, land=night?'#57566A':'#CDBB93', water=night?'#17335F':'#4A9BD1', txt=night?'#F4EEDD':'#1E2140';
+    return '<rect y="'+wt+'" width="640" height="'+(300-wt)+'" fill="'+water+'"/>'
+      +'<path d="M150 '+(wt+22)+'q12 -7 24 0t24 0M300 '+(wt+40)+'q12 -7 24 0t24 0M430 '+(wt+24)+'q12 -7 24 0t24 0" fill="none" stroke="#fff" stroke-width="2" opacity=".45"/>'
+      +'<rect x="0" y="'+(wt-14)+'" width="108" height="'+(300-wt+14)+'" fill="'+land+'"/><rect x="532" y="'+(wt-14)+'" width="108" height="'+(300-wt+14)+'" fill="'+land+'"/>'
+      +A.text(54,286,15,'Manhattan',txt)+A.text(586,286,15,'Brooklyn',txt);
   }
-  S.game=game;
-  goTo(14);
-  const name=esc(p.name), max=8;
-  $('ringTxt').textContent=game.today; const ring=$('ring'); ring.style.setProperty('--p',0); setTimeout(()=>ring.style.setProperty('--p',Math.min(100,Math.round(game.today/max*100))),60);
-  $('resTitle').textContent = !game.complete ? 'Not full time yet, '+p.name+'!' : game.shotGoals===5 ? 'Full time, '+p.name+'! A perfect shootout!' : game.shotGoals>=3 ? 'Full time, '+p.name+'! Great match!' : 'Full time, '+p.name+'! You played it all the way through!';
-  $('resLine').innerHTML = game.complete ? '<span class="num">'+game.today+'</span> goal'+(game.today===1?'':'s')+' banked today'+(game.already?' (you already banked this game)':'')+'.' : 'Finish every shot to bank your goals.';
-  $('resDetail').innerHTML = 'Shots: <span class="math">'+game.shotGoals+' of 5</span>'+(game.complete?' · Finished the game: <span class="math">+1</span>':'')+(game.golden?' · Golden Goal: <span class="math">+2</span>':'')+(game.bonus?' · Streak bonus: <span class="math">+1</span>':'');
-
-  /* the vault */
-  const vault=$('vault');
-  if(game.complete){
-    vault.classList.add('open'); $('vaultLock').innerHTML=LOCK_OPEN;
-    $('vaultTitle').textContent='Today\'s secret passcode is:';
-    $('vaultBody').innerHTML='<div class="pw">'+esc(decodePw())+'</div><p class="small" style="margin:0">Tell it to Dad or Mom. They know what it unlocks. The passcode changes every day.</p>';
-  } else {
-    vault.classList.remove('open'); $('vaultLock').innerHTML=LOCK_SHUT;
-    $('vaultTitle').textContent='The vault is still locked';
-    $('vaultBody').innerHTML='<p style="margin:0 0 6px;font-weight:700">To open it, finish the whole shootout:</p><div class="todo">'+todo.map(t=>'<span class="'+(t[0]?'ok':'no')+'">'+(t[0]?'&#10003; ':'&#9675; ')+t[1]+'</span>').join('')+'</div><div style="margin-top:12px"><button class="btn small" onclick="goTo(13)">Back to the shootout</button></div>';
+  function bridge(night){
+    const stone=night?'#9C8C78':'#BBA689', dark=night?'#6E6252':'#8E7B62', cable=night?'#C9CEE0':'#4A4F63';
+    const cy=t=>(1-t)*(1-t)*78+2*t*(1-t)*310+t*t*78;
+    let s='';
+    for(let x=212;x<=428;x+=12){ const t=(x-200)/240; s+='<line x1="'+x+'" y1="'+cy(t).toFixed(1)+'" x2="'+x+'" y2="199" stroke="'+cable+'" stroke-width="1"/>'; }
+    for(let t=0.12;t<0.95;t+=0.11){ const xl=(1-t)*(1-t)*200+2*t*(1-t)*110+t*t*0, yl=(1-t)*(1-t)*78+2*t*(1-t)*176+t*t*198; s+='<line x1="'+xl.toFixed(1)+'" y1="'+yl.toFixed(1)+'" x2="'+xl.toFixed(1)+'" y2="199" stroke="'+cable+'" stroke-width="1"/><line x1="'+(640-xl).toFixed(1)+'" y1="'+yl.toFixed(1)+'" x2="'+(640-xl).toFixed(1)+'" y2="199" stroke="'+cable+'" stroke-width="1"/>'; }
+    s+='<path d="M0 198Q110 176 200 78Q320 310 440 78Q530 176 640 198" fill="none" stroke="'+cable+'" stroke-width="4" stroke-linejoin="round"/>';
+    [200,440].forEach(x=>{
+      s+='<rect x="'+(x-19)+'" y="66" width="38" height="186" fill="'+stone+'"/><rect x="'+(x-23)+'" y="60" width="46" height="10" rx="2" fill="'+stone+'"/>';
+      [-13,3].forEach(dx=>{ const a=x+dx; s+='<path d="M'+a+' 196V128q5 -16 10 0V196z" fill="'+dark+'"/>'; });
+    });
+    s+='<rect x="0" y="198" width="640" height="9" fill="'+(night?'#3B3447':'#5B4B3A')+'"/>';
+    return s;
   }
 
-  /* league */
-  const lg=leagueFor(p.goals);
-  $('leagueLine').innerHTML='<span class="num">'+p.goals+'</span> total goal'+(p.goals===1?'':'s')+' · '+lg.name;
-  const span = lg.next ? lg.next[0]-lg.at : 1, into = lg.next ? p.goals-lg.at : 1;
-  setTimeout(()=>{ $('leagueBar').style.width=Math.max(4,Math.round(into/span*100))+'%'; },200);
-  $('leagueNext').textContent = lg.next ? (lg.next[0]-p.goals)+' more goals to reach the '+lg.next[1]+'.' : 'The top league. Legend!';
+  window.SCENES = {
+    ferry(){
+      return A.frame(A.sun()
+        +'<rect y="196" width="640" height="104" fill="#4A9BD1"/><path d="M160 226q12 -7 24 0t24 0M410 250q12 -7 24 0t24 0M250 270q12 -7 24 0t24 0" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>'
+        +A.skyline(6,[46,70,40,58,34],'#9E96A8')+'<rect x="0" y="180" width="124" height="120" fill="#CDBB93"/>'
+        +'<g transform="translate(516,0)">'+A.skyline(6,[30,44,26,38,22],'#B49A84')+'</g><rect x="516" y="180" width="124" height="120" fill="#CDBB93"/>'
+        +A.text(62,286,15,'Manhattan')+A.text(578,286,15,'Brooklyn')
+        +'<path d="M136 244H500" stroke="#fff" stroke-width="3" stroke-dasharray="9 11" opacity=".85"/>'
+        +'<g transform="translate(262,186)"><circle cx="66" cy="-22" r="7" fill="#fff" opacity=".85"/><circle cx="80" cy="-34" r="10" fill="#fff" opacity=".7"/><rect x="56" y="-14" width="11" height="20" fill="#1E2140"/><rect x="18" y="4" width="76" height="18" rx="3" fill="#FFF6E0"/><rect x="26" y="9" width="9" height="8" fill="#4A9BD1"/><rect x="42" y="9" width="9" height="8" fill="#4A9BD1"/><rect x="58" y="9" width="9" height="8" fill="#4A9BD1"/><rect x="74" y="9" width="9" height="8" fill="#4A9BD1"/><path d="M0 22h114l-14 22H12z" fill="#8A3F2B"/></g>');
+    },
+    bridge(){
+      return A.frame(A.sun()+A.skyline(4,[52,78,44,60],'#A9A2B5')+shores(false)+bridge(false)
+        +'<g transform="translate(288,18)"><rect width="64" height="30" rx="8" fill="#1E2140"/><text x="32" y="22" text-anchor="middle" font-size="20" fill="#fff" '+FONT+'>1883</text></g>');
+    },
+    worry(){
+      return A.frame('<circle cx="560" cy="50" r="24" fill="#FFE08A"/>'+shores(false)+bridge(false)
+        +A.person(26,222,'#C8452D',false,true)+A.person(56,222,'#167C8A',false,true)+A.person(86,222,'#6A4FB3',false,true)
+        +'<g transform="translate(250,20)"><rect width="140" height="34" rx="10" fill="#fff" stroke="#1E2140" stroke-width="2"/><text x="70" y="24" text-anchor="middle" font-size="18" fill="#1E2140" '+FONT+'>Is it strong?</text></g>');
+    },
+    barnum(){
+      let tent='<path d="M70 110L170 40L270 110z" fill="#D7263D"/><path d="M130 68L170 40L210 68z" fill="#fff"/><rect x="80" y="110" width="180" height="120" fill="#fff"/>';
+      for(let x=80;x<260;x+=40) tent+='<rect x="'+x+'" y="110" width="20" height="120" fill="#D7263D"/>';
+      tent+='<path d="M150 230v-60q20 -22 40 0v60z" fill="#1E2140"/><path d="M170 40V18l22 8-22 8" fill="#F4A100" stroke="#1E2140" stroke-width="2" stroke-linejoin="round"/>';
+      return A.frame('<rect y="230" width="640" height="70" fill="#8FCB7A"/>'+tent
+        +'<g><rect x="322" y="176" width="26" height="54" rx="8" fill="#6A4FB3"/><circle cx="335" cy="160" r="13" fill="#F1C9A5"/><rect x="321" y="143" width="28" height="6" rx="2" fill="#1E2140"/><rect x="326" y="118" width="18" height="27" rx="2" fill="#1E2140"/><path d="M345 190l22 -22" stroke="#6A4FB3" stroke-width="7" stroke-linecap="round"/></g>'
+        +'<g transform="translate(372,54)"><ellipse cx="62" cy="34" rx="62" ry="34" fill="#fff" stroke="#1E2140" stroke-width="2"/><circle cx="6" cy="78" r="8" fill="#fff" stroke="#1E2140" stroke-width="2"/><circle cx="-10" cy="96" r="5" fill="#fff" stroke="#1E2140" stroke-width="2"/><path d="M22 44Q62 4 102 44" fill="none" stroke="#4A4F63" stroke-width="3"/><rect x="18" y="44" width="88" height="5" fill="#5B4B3A"/><rect x="40" y="18" width="7" height="34" fill="#BBA689"/><rect x="77" y="18" width="7" height="34" fill="#BBA689"/></g>'
+        +elephant(430,232,1.25));
+    },
+    parade(){
+      let a='';
+      for(let i=0;i<6;i++) a+=camel(540-i*30,199,0.26);
+      for(let i=0;i<8;i++) a+=elephant(352-i*30,199,0.26,{fill:'#C3CADB',dark:'#9AA3B8'});
+      a+=elephant(86,199,0.4,{fill:'#C3CADB',dark:'#9AA3B8'});
+      return A.frame(A.nightSky()+shores(true)+bridge(true)+a, true);
+    },
+    jumbo(){
+      const car=c=>'<path d="M14 196q4 -22 26 -22h34q20 0 28 22z" fill="'+c+'"/><rect x="0" y="194" width="124" height="26" rx="10" fill="'+c+'"/><rect x="34" y="180" width="24" height="14" rx="3" fill="#EAF6FF"/><rect x="64" y="180" width="24" height="14" rx="3" fill="#EAF6FF"/><circle cx="30" cy="222" r="12" fill="#1E2140"/><circle cx="96" cy="222" r="12" fill="#1E2140"/><circle cx="30" cy="222" r="5" fill="#C9CEE0"/><circle cx="96" cy="222" r="5" fill="#C9CEE0"/>';
+      return A.frame('<rect y="234" width="640" height="66" fill="#8FCB7A"/>'+elephant(14,236,2.25)
+        +A.text(124,278,24,'Jumbo')+A.text(312,160,44,'&gt;')
+        +'<g transform="translate(400,-58) scale(.82)">'+car('#D7263D')+'</g><g transform="translate(400,-8) scale(.82)">'+car('#1D4ED8')+'</g><g transform="translate(400,42) scale(.82)">'+car('#F4A100')+'</g>'
+        +A.text(451,278,24,'3 cars'));
+    },
+    cheer(){
+      let c='';
+      [[60,40,'#D7263D'],[120,70,'#F4A100'],[180,30,'#1F9D6B'],[260,56,'#6A4FB3'],[330,28,'#D7263D'],[400,60,'#3FA7D6'],[470,36,'#F4A100'],[520,80,'#1F9D6B'],[90,100,'#3FA7D6'],[360,96,'#EF5DA8'],[600,44,'#6A4FB3'],[230,110,'#EF5DA8']].forEach(p=>{ c+='<rect x="'+p[0]+'" y="'+p[1]+'" width="9" height="5" rx="1" fill="'+p[2]+'" transform="rotate(24 '+p[0]+' '+p[1]+')"/>'; });
+      return A.frame(A.sun()+c+shores(false)+bridge(false)
+        +elephant(470,199,0.3)+elephant(430,199,0.3)+elephant(390,199,0.3)
+        +A.person(552,222,'#C8452D',true)+A.person(580,222,'#167C8A',true)+A.person(608,222,'#6A4FB3',true)+A.person(30,222,'#1F9D6B',true)+A.person(62,222,'#F46036',true));
+    },
+    today(){
+      return A.frame(A.sun()+A.skyline(2,[96,130,84,150,110,70],'#8E97B5')+'<g transform="translate(540,0)">'+A.skyline(4,[44,60,36,52],'#B49A84')+'</g>'+shores(false)+bridge(false)
+        +A.tag(232,22,76,'tower')+'<path d="M238 50L212 64" stroke="#1E2140" stroke-width="3" stroke-linecap="round"/>'
+        +A.tag(332,112,70,'cable')+'<path d="M336 140L318 176" stroke="#1E2140" stroke-width="3" stroke-linecap="round"/>');
+    }
+  };
 
-  /* streak */
-  const st=p.streak;
-  $('streakLine').innerHTML = game.complete ? '<span class="num">'+st+'</span> school day'+(st===1?'':'s')+' in a row'+(st===1?'. A great start!':'!')+(game.sub?' Your substitute kept the streak alive.':'') : 'Your streak: <span class="num">'+st+'</span>. Today does not count until you finish.';
-  const nextM=[3,7,14,30].find(m=>m>st);
-  $('streakNext').textContent = game.complete && nextM ? (nextM-st)+' more day'+(nextM-st===1?'':'s')+' to the '+STREAK_BADGES[nextM]+' badge.' : '';
-
-  /* badges */
-  $('badges').innerHTML = game.badges.map(b=>'<span class="badge new"><span class="dot">'+b[0]+'</span>'+b[1]+'</span>').join('');
-  $('badgeNone').textContent = game.badges.length ? '' : (game.complete ? 'None this time. Badges go to players with no misses, a three-star coach talk, a Golden Goal, or a streak.' : 'Finish the shootout to win badges.');
-  $('resGuess').innerHTML = guessLine() || 'No guess today.';
-}
-function summaryText(){
-  const p=P(), g=S.game||{};
-  return 'Lenny\'s Daily Kickoff #'+EDITION.n+' · '+EDITION.title+'\n'+p.name+': '+(g.today||0)+' goals today (shots '+(g.shotGoals||0)+' of 5'+(g.golden?', Golden Goal scored':'')+')'+(g.complete?' · finished':' · not finished yet')+'\nTotal: '+p.goals+' goals · '+leagueFor(p.goals).name+' · streak '+p.streak+(g.badges&&g.badges.length?'\nBadges: '+g.badges.map(b=>b[1]).join(', '):'')+(S.coach.text?'\nMy coach talk: '+S.coach.text:'')+'\n'+EDITION.code+'|'+p.name+'|'+(g.today||0)+'|'+(g.complete?'done':'partial');
-}
-async function copyResults(){
-  const txt=summaryText();
-  try{ await navigator.clipboard.writeText(txt); toast('Copied! Paste it in a message to Dad.'); }
-  catch(e){ toast('Could not copy here. Show Dad this page instead!'); }
-}
-function restart(){ try{ location.reload(); }catch(e){} }
-
-/* ---------- El Nino, the helper (adapted from the kit's assistant chat) ---------- */
-const CHIPS = ['Why do bridges need cables?','How heavy is an elephant?','Who was Emily Roebling?','How long is the Brooklyn Bridge?','Tell me a soccer fact'];
-const CHAT_MAX = 12;
-let chatHistory=[], chatBusy=false, chatInit=false, chatCount=0;
-function personaPrompt(){
-  const p=P();
-  return 'You are El Niño, a cheerful young soccer player who is the helper in "Lenny\'s Daily Kickoff", a daily learning game for kids. You are talking with '+(p?p.name:'a child')+', a second grader (about 7 years old) in Brooklyn, New York.\n'+LESSON+'\n\nRules: Use very simple words and short sentences a 7-year-old can read. Answer in 2 or 3 short sentences. Use examples from a kid\'s life (soccer, the playground, pizza, the subway). If the child asks about a question from the quiz, do not give the answer: give a hint or a guiding question. If they ask about something beyond the story (animals, space, soccer, how things work), answer happily and accurately, and link it back to the story if you can. Only talk about things that are right for young children. If something is not right for kids, or is about personal or private things, gently say a grown-up is the best person to ask and go back to the story. Never ask for personal information. No emoji. Do not make up facts. If you are not sure, say so.';
-}
-function openChat(){ $('chat').classList.add('open'); $('fab').style.display='none'; if(!chatInit){ chatInit=true; initChat(); } }
-function closeChat(){ $('chat').classList.remove('open'); $('fab').style.display=''; }
-function addMsg(kind, html){ const m=document.createElement('div'); m.className='msg '+kind; m.innerHTML=html; $('msgs').appendChild(m); $('msgs').scrollTop=$('msgs').scrollHeight; return m; }
-function renderChips(){ $('chips').innerHTML=CHIPS.map(c=>'<button onclick="askChip(this)">'+esc(c)+'</button>').join(''); }
-function askChip(b){ $('chatIn').value=b.textContent; sendChat(); }
-function fmtBot(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>'); }
-function chatOff(placeholder){ $('chatIn').disabled=true; $('chatSend').disabled=true; $('chatIn').placeholder=placeholder||'El Niño is not here right now'; $('chips').innerHTML=''; }
-function helperError(e){
-  const c=e&&e.code;
-  if(c==='rate_limited') return 'El Niño needs a quick water break. Try again in a minute.';
-  if(c==='timeout') return 'That took too long. Try again!';
-  if(c==='not_granted'||c==='no_ai') return 'El Niño cannot answer questions here.';
-  return 'Something went wrong. Try again!';
-}
-async function initChat(){
-  const name = P()?P().name:'';
-  const mode = await AI.init();
-  if(mode==='none'){
-    addMsg('bot','Hi'+(name?' '+esc(name):'')+'! I am El Niño. I cannot answer new questions here, but here are two quick ones:');
-    addMsg('bot','<b>Why do bridges need cables?</b> The road is super heavy. The cables hold it up from above, like you holding a bucket by its handle.<br><br><b>Why so many wires?</b> One wire can snap. Thousands of wires share the work, so the cable is mighty.');
-    chatOff('El Niño cannot answer here'); return;
-  }
-  addMsg('bot','Hi'+(name?' '+esc(name):'')+'! I am El Niño. Stuck on something? Curious about something? Ask me!');
-  renderChips();
-}
-async function sendChat(){
-  const txt=$('chatIn').value.trim(); if(!txt||chatBusy||$('chatIn').disabled) return;
-  $('chatIn').value=''; chatBusy=true; $('chatSend').disabled=true; $('chips').innerHTML='';
-  addMsg('me', esc(txt));
-  chatHistory.push({role:'user', content: txt});
-  const bubble=addMsg('bot','<span class="typing"><i></i><i></i><i></i></span>');
-  try{
-    const text = await withTimeout(AI.chat(personaPrompt(), chatHistory.slice(), t=>{ bubble.innerHTML=fmtBot(t); $('msgs').scrollTop=$('msgs').scrollHeight; }), 45000);
-    bubble.innerHTML=fmtBot(text); chatHistory.push({role:'assistant', content:text}); chatCount++;
-  }catch(e){
-    bubble.className='msg sys'; bubble.textContent=helperError(e); chatHistory.pop();
-    if(e&&(e.code==='not_granted'||e.code==='no_ai')) chatOff();
-  }
-  chatBusy=false;
-  if(chatCount>=CHAT_MAX){ addMsg('sys','That is a lot of great questions! El Niño is resting now. See you tomorrow.'); chatOff('El Niño is resting'); }
-  if(!$('chatIn').disabled){ $('chatSend').disabled=false; renderChips(); }
-  $('msgs').scrollTop=$('msgs').scrollHeight;
-}
-$('chatIn').addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendChat(); } });
-/* hide the helper button while a field is being typed in, so it never covers a button (from the kit) */
-document.addEventListener('focusin', e=>{ if(e.target.matches('input, textarea') && !$('chat').contains(e.target)) $('fab').style.visibility='hidden'; });
-document.addEventListener('focusout', e=>{ if(e.target.matches('input, textarea')) setTimeout(()=>{ if(!document.activeElement || !document.activeElement.matches('input, textarea')) $('fab').style.visibility=''; },150); });
-
-/* ---------- init ---------- */
-renderLocker(); paintProgress(); paintWho(); $('vaultLock').innerHTML=LOCK_SHUT;
+  /* ===== the two things to play with. Each toy draws itself in `box`, moves forward with .toybtn buttons,
+     and calls api.done() when the player has finished it. ===== */
+  window.TOYS = {
+    cable: {
+      title: 'Your turn: build a cable', cap: 'Tap the button to squeeze in more wires. Count by thousands!', hint: 'Build the cable first.',
+      init(box, api){
+        let wires=1;
+        const MSG={1:'One wire. Pretty wimpy.',1000:'1,000 wires. Getting stronger!',2000:'2,000 wires. Keep going!',3000:'3,000 wires. Now we are talking.',4000:'4,000 wires. Almost there!',5000:'5,000 wires. MIGHTY! A real Brooklyn Bridge cable has even a few more. The builders planned it to be way stronger than it needed to be. Just to be safe!'};
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Add 1,000 wires</button><div class="readout">Wires: <b class="num out">1</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          const n=Math.max(1,Math.round(wires/100)), k=wires/5000;
+          let dots=''; for(let i=0;i<n;i++){ const r=88*Math.sqrt((i+0.5)/50), a=i*2.39996; dots+='<circle cx="'+(130+r*Math.cos(a)).toFixed(1)+'" cy="'+(128+r*Math.sin(a)).toFixed(1)+'" r="6" fill="#4A4F63"/>'; }
+          pic.innerHTML='<svg viewBox="0 0 640 260" role="img" aria-label="A cable with '+api.fmt(wires)+' wires"><rect width="640" height="260" fill="#EEF8FF"/><circle cx="130" cy="128" r="100" fill="#fff" stroke="#1E2140" stroke-width="3"/>'+dots
+            +A.text(130,252,16,'A slice of the cable')+'<rect x="330" y="26" width="280" height="14" rx="4" fill="#BBA689"/><line x1="470" y1="40" x2="470" y2="150" stroke="#4A4F63" stroke-width="'+(2+k*18).toFixed(1)+'" stroke-linecap="round"/>'
+            +'<rect x="380" y="150" width="180" height="20" rx="4" fill="#5B4B3A"/>'+A.text(470,165,13,'THE ROAD','#fff')+A.text(330,202,16,'Strength','#1E2140','start')
+            +'<rect x="330" y="210" width="264" height="22" rx="11" fill="#fff" stroke="#1E2140" stroke-width="2"/><rect x="332" y="212" width="'+Math.round(260*Math.max(k,0.02))+'" height="18" rx="9" fill="'+(k>=1?'#1F8A5B':'#F4A100')+'"/></svg>';
+          out.textContent=api.fmt(wires); msg.textContent=MSG[wires]||'';
+        }
+        btn.onclick=()=>{ if(wires>=5000) return; wires = wires<1000?1000:wires+1000; draw(); if(wires>=5000){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    parade: {
+      title: 'Send the parade', cap: 'Count by threes as they go: 3, 6, 9...', hint: 'Send all 21 elephants first.',
+      init(box, api){
+        let sent=0; const ALL=21;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Send 3 elephants</button><div class="readout">On the bridge: <b class="num out">0</b></div><div class="readout">Wobbles: <b class="num">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(fresh){
+          let a='';
+          for(let i=0;i<sent;i++){ const jumbo=i===ALL-1; a+=elephant(jumbo?52:556-i*24, 199, jumbo?0.36:0.22, {fill:'#C3CADB',dark:'#9AA3B8',cls:(fresh&&i>=sent-3)?'pop':''}); }
+          pic.innerHTML=A.frame(A.nightSky()+shores(true)+bridge(true)+a, true);
+          out.textContent=sent;
+          msg.textContent = sent===0 ? 'Ready when you are.' : sent<ALL ? sent+' elephants on the bridge. Still steady!' : 'All 21 elephants are on the bridge, with big Jumbo at the back. Wobbles: zero!';
+        }
+        btn.onclick=()=>{ if(sent>=ALL) return; sent+=3; draw(true); if(sent>=ALL){ btn.disabled=true; api.done(); } };
+        draw(false);
+      }
+    }
+  };
+})();
 </script>
+<script src="../../assets/engine.js"></script>
 </body>
 </html>

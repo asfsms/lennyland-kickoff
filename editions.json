@@ -1,3 +1,19 @@
-[
-  { "n": 1, "code": "LDK-001", "date": "2026-11-16", "title": "The Great Elephant Test", "path": "e/001/" }
-]
+{
+  "series": "Lenny's Daily Kickoff",
+  "editions": [
+    {
+      "n": 1,
+      "code": "LDK-001",
+      "date": "2026-11-15",
+      "week": "2026-W46",
+      "title": "The Great Elephant Test",
+      "path": "e/001/",
+      "theme": "Bed-Stuy, Brooklyn and New York",
+      "topic": "The Brooklyn Bridge, its wire cables, and P. T. Barnum's 1884 elephant walk",
+      "riddle": "shadow",
+      "golden": "6 x 6",
+      "pw": "c3RuYWhwZWxFIGduaWVvdHBpVCBlbk8teXRuZXdU"
+    }
+  ],
+  "weeks": {}
+}
