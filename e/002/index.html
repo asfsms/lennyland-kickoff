@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenny's Daily Kickoff #2 · Inky's Great Escape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/engine.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="../../assets/common.js"></script>
+<script>
+/* ===== Game 2: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 2, code: 'LDK-002', date: '2026-11-16', week: '2026-W47',
+  title: 'Inky\'s Great Escape',
+  theme: 'Animals',
+  pw: 'c21yQSB5a2FlblMgeWhzaXVxUyB0aGdpRQ==',
+  lede: 'A dark aquarium. A tank with a tiny gap. And one very squishy animal with a plan. This really happened!',
+  guess: { q: 'How many hearts do you think one octopus has?', answer: 3, close: 1 },
+  pages: [
+    { scene: 'tank',  text: 'Meet Inky. He was an octopus who lived in an {aquarium|A place with big tanks where people visit sea animals.} in New Zealand, a country far across the ocean. His body was about as big as a ball.' },
+    { scene: 'body',  text: 'An octopus is a seriously strange animal. It has blue blood. It has NO bones at all. Its whole body is soft and squishy, like a water balloon.' },
+    { toy: 'arms',    text: 'It also has a LOT of arms. Count them by twos! Every arm is lined with {suckers|Little round cups that stick to things, like a suction cup.}.' },
+    { scene: 'beak',  text: 'Only one part of an octopus is hard: its {beak|A hard mouth, a bit like a parrot\'s beak.}. So here is the rule. If the beak fits through a hole, the WHOLE octopus fits through!' },
+    { scene: 'gap',   text: 'One night in 2016, everyone went home. But there was a tiny gap at the top of Inky\'s tank. Uh-oh.' },
+    { scene: 'floor', text: 'Inky squeezed out through the gap. He slid down to the floor and scooted across the room. He left a wet trail behind him, like a snail.' },
+    { scene: 'pipe',  text: 'Then he found a drain hole, only 6 inches wide. SQUEEZE! He slid down a pipe 164 feet long. That is about half a big soccer field. Splash! He was back in the ocean.' },
+    { toy: 'escape',  text: 'Your turn! Help Inky get from his tank all the way to the sea. Tap for each sneaky move.' },
+    { scene: 'hearts', text: 'One more octopus surprise. Inky did all of that with **3 hearts** beating inside him! Two push blood through his {gills|The parts a sea animal breathes with under water.}. One sends blood around his body.', guessBack: true,
+      quick: { q: 'Inky has 8 arms and 2 eyes. That makes 10. Now add his 3 hearts. How many is that altogether?', expr: '10 + 3 =', answer: 13,
+               hint: 'Start at 10 and count on three more.', fb: '[[10 + 3 = 13]]. Arms, eyes and hearts: Inky has a lot going on!' } },
+    { scene: 'home',  text: '**Try it at home!** Wet a suction cup and press it on a window or a smooth tile. Feel it grab? An octopus has hundreds of suckers that grab just like that.',
+      bonus: 'Bonus fact: The aquarium had another octopus named Blotchy. Blotchy stayed home.' }
+  ],
+  riddle: { q: 'Inky is squishy and loves water. I am squishy too. I am full of holes, but I can still hold water. What am I?', accept: ['spong', 'spung', 'sponj', 'spunj'], answer: 'a sponge',
+            hint: 'You might find me next to the kitchen sink or in the bathtub.', explain: 'A sponge! It is full of little holes, and the holes soak up the water.' },
+  shots: {
+    1: { q: 'Why could Inky squeeze through such a tiny gap?',
+         opts: ['He held his breath until he shrank', 'He has no bones, so his body is soft and squishy', 'He used a magic shrinking spell', 'The gap was really as big as a door'], a: 1,
+         hint: 'Think about what is NOT inside an octopus.', fb: 'An octopus has no bones. Only its beak is hard, so the rest can squish through.' },
+    2: { q: 'How do the hearts of an octopus work?',
+         opts: ['They take turns, one for each day', 'They glow so it can see in the dark', 'They help it sing under water', 'Two push blood through the gills and one sends it around the body'], a: 3,
+         hint: 'Think about where the blood has to go.', fb: 'Two hearts push blood through the gills. The other heart sends the blood around the body.' },
+    order: { q: 'How did Inky escape? Tap the cards in order, from first to last.',
+             cards: ['Everyone goes home for the night.', 'Inky squeezes out through a gap at the top of his tank.', 'He scoots across the floor and leaves a wet trail.', 'He slides down the drainpipe to the ocean.'],
+             hint: 'He has to get out of the tank before he can cross the floor.', fb: 'First everyone went home. Then Inky squeezed out, scooted across the floor and slid down the pipe to the ocean.' },
+    math: { q: 'Inky\'s pipe was 164 feet long. A big soccer goal is 24 feet wide. How many feet longer is the pipe than the goal?',
+            stack: ['164', '− 24'], answer: 140,
+            hint: 'Subtract the ones ([[4 − 4]]), then the tens ([[6 − 2]]). The hundred stays.',
+            fb: '[[164 − 24 = 140]] feet. That pipe was a LONG slide.' },
+    coach: { q: 'You are the coach! Tell your team: How can an octopus squeeze through a tiny hole? And how did Inky get from his tank to the ocean?', starter: 'An octopus has no...',
+             ideas: ['how the body works: an octopus has no bones, only a hard beak, so it can squeeze through small holes', 'how Inky escaped: out through a gap in his tank, across the floor, and down a drainpipe to the ocean'],
+             rubric: ['I said an octopus has no bones, so it is soft and squishy.', 'I said only the beak is hard, so if the beak fits, the octopus fits.', 'I said Inky went out of his tank, across the floor and down a pipe to the ocean.'],
+             model: 'An octopus has no bones, so its body is soft and squishy. Only its beak is hard, so if the beak fits through a hole, the whole octopus fits. Inky squeezed out of his tank, scooted across the floor and slid down a pipe to the ocean.' },
+    golden: { q: 'Inky has 8 arms. Blotchy has 8 arms too. How many arms do the 2 octopuses have altogether?', expr: '2 × 8 =', answer: 16,
+              hint: 'Two groups of 8. You can count by 8s, two times.', fb: '[[2 × 8 = 16]] arms. Imagine that high five!' }
+  },
+  lesson: 'Today\'s story, "Inky\'s Great Escape": Inky was an octopus who lived at the National Aquarium of New Zealand. His body was about as big as a ball. An octopus has 8 arms lined with suckers, blue blood and no bones. Its body is soft and squishy. The only hard part is its beak, a hard mouth like a parrot\'s beak, so an octopus can squeeze through any hole its beak fits through. One night in 2016, after everyone went home, Inky squeezed out through a small gap at the top of his tank. He slid down to the floor and crossed the room, leaving a wet trail. He went into a drain hole 6 inches wide and slid down a pipe 164 feet long (about half a big soccer field) to the ocean. Nobody has seen him since. An octopus has 3 hearts: two push blood through the gills and one sends blood around the body. Another octopus at the aquarium, Blotchy, stayed home. A big soccer goal is 24 feet wide.',
+  chips: ['Why is octopus blood blue?', 'Why does an octopus need more than one heart?', 'Where is New Zealand?', 'Are octopuses smart?', 'Tell me a soccer fact'],
+  helperQA: [
+    { q: 'Why is octopus blood blue?', a: 'Our blood has iron in it, and that makes it red. Octopus blood has copper in it, and that makes it blue.' },
+    { q: 'How did people know where Inky went?', a: 'He left a wet trail on the floor. It went from his tank to the drain hole.' }
+  ],
+  dinner: [
+    'An octopus named Inky escaped from an aquarium in New Zealand by sliding down a 164-foot drainpipe to the ocean.',
+    'An octopus has no bones, so it can squeeze through any hole that its hard beak fits through.',
+    'An octopus has 3 hearts and blue blood.'
+  ],
+  notes: [
+    'Inky lived at the National Aquarium of New Zealand in Napier. The escape was reported in April 2016 and had happened some weeks or months earlier; nobody saw it. Staff worked out the route from the wet trail he left. Reports agree on a small gap at the top of the tank, a drain hole about 15 centimeters (6 inches) wide and a pipe about 50 meters (164 feet) long that leads to the sea in Hawke\'s Bay. The story says he was "back in the ocean" because that is what the aquarium concluded; he has not been seen since.',
+    'Rounded or simplified: reports compare Inky\'s size to a rugby ball, a soccer ball or a basketball, so the story just says "a ball". "About half a big soccer field" compares 164 feet with a full-size field of roughly 110 to 120 yards. A full-size goal is 8 yards (24 feet) wide; children\'s goals are smaller. "If the beak fits, the octopus fits" is the usual rule of thumb. Octopus blood is blue because it carries oxygen with copper instead of iron.',
+    'Left out: Inky came to the aquarium after a fisherman found him hurt in a lobster pot, and an octopus alone in the sea faces animals that hunt it. The escape toy shows the order of his moves, not real distances.'
+  ],
+  sources: [
+    { t: 'NPR on Inky\'s escape', u: 'https://www.npr.org/2016/04/16/474412283/inky-the-octopuss-great-escape' },
+    { t: 'NBC Boston (Associated Press) on Inky\'s escape', u: 'https://www.nbcboston.com/news/weird/inky-octopus-new-zealand-aquarium-escape/57815/' },
+    { t: 'National Wildlife Federation on octopuses', u: 'https://www.nwf.org/Educational-Resources/Wildlife-Guide/Invertebrates/Octopuses' },
+    { t: 'Live Science on octopus hearts', u: 'https://www.livescience.com/how-many-hearts-does-an-octopus-have' },
+    { t: 'Bundesliga on the size of a soccer goal', u: 'https://www.bundesliga.com/en/faq/what-are-the-rules-and-regulations-of-soccer/goal-size-31010' }
+  ]
+};
+
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART;
+  const SEA = '<rect width="640" height="300" fill="#3E9BCF"/><rect y="236" width="640" height="64" fill="#E8D49A"/>';
+  /* an octopus with its head centered at (x, y); o.arms = how many arms to draw (8 unless told) */
+  function octo(x, y, s, o){
+    o=o||{}; const f=o.fill||'#E4572E', d=o.dark||'#B93C1C', n=o.arms==null?8:o.arms;
+    let a='';
+    for(let i=0;i<n;i++){
+      const sx=-26+i*7.4, ex=-78+i*22.3, ey=64+(i%2?10:0), cx=(sx+ex)/2+(i<4?-16:16), cy=30;
+      a+='<path d="M'+sx.toFixed(1)+' 14Q'+cx.toFixed(1)+' '+cy+' '+ex.toFixed(1)+' '+ey+'" fill="none" stroke="'+(i%2?d:f)+'" stroke-width="9" stroke-linecap="round"/>';
+    }
+    return '<g'+(o.cls?' class="'+o.cls+'"':'')+'><g transform="translate('+x+','+y+') scale('+s+')">'+a
+      +'<ellipse cx="0" cy="-10" rx="36" ry="32" fill="'+f+'"/>'
+      +'<circle cx="-13" cy="4" r="8" fill="#fff"/><circle cx="13" cy="4" r="8" fill="#fff"/><circle cx="-12" cy="5" r="3.6" fill="#1E2140"/><circle cx="14" cy="5" r="3.6" fill="#1E2140"/>'
+      +(o.inner||'')+'</g></g>';
+  }
+  function heart(x, y, s){ return '<path transform="translate('+x+','+y+') scale('+s+')" d="M0 6C-10 -6 -22 2 -12 14L0 26L12 14C22 2 10 -6 0 6z" fill="#FF3B5C" stroke="#fff" stroke-width="1.5"/>'; }
+  function bubbles(list){ return list.map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+p[2]+'" fill="none" stroke="#fff" stroke-width="2" opacity=".8"/>').join(''); }
+  /* a glass tank standing on the floor line y = 236; lid = draw a dark lid with a gap at its right end */
+  function tank(x, w, night, lid){
+    const top=96, h=140;
+    return '<rect x="'+x+'" y="'+top+'" width="'+w+'" height="'+h+'" fill="'+(night?'#2C6FA8':'#6CC3EE')+'"/>'
+      +'<rect x="'+x+'" y="'+(top+h-16)+'" width="'+w+'" height="16" fill="#E8D49A"/>'
+      +'<rect x="'+x+'" y="'+top+'" width="'+w+'" height="'+h+'" fill="none" stroke="'+(night?'#C9CEE0':'#1E2140')+'" stroke-width="5"/>'
+      +(lid?'<rect x="'+(x-6)+'" y="'+(top-12)+'" width="'+(w-28)+'" height="12" rx="3" fill="'+(night?'#C9CEE0':'#1E2140')+'"/><rect x="'+(x+w-34)+'" y="'+(top-12)+'" width="38" height="12" fill="#FFD34D"/>':'');
+  }
+  /* a light label for night pictures; w = width in px */
+  function lab(x, y, w, text){ return '<g transform="translate('+x+','+y+')"><rect width="'+w+'" height="28" rx="8" fill="#FFF6E0"/><text x="'+(w/2)+'" y="20" text-anchor="middle" font-size="16" fill="#1E2140" '+A.FONT+'>'+text+'</text></g>'; }
+  function room(night){ return '<rect y="236" width="640" height="64" fill="'+(night?'#4A4660':'#C9B8A0')+'"/>'; }
+
+  window.SCENES = {
+    tank(){
+      return A.frame(room(false)+tank(170,300,false,false)+bubbles([[230,130,6],[244,160,4],[420,140,5]])
+        +octo(320,160,0.85)+A.tag(286,56,68,'Inky')
+        +A.person(70,236,'#167C8A')+A.person(104,236,'#6A4FB3')+A.person(556,236,'#C8452D')
+        +A.text(320,282,17,'An aquarium in New Zealand'));
+    },
+    body(){
+      return A.frame(SEA+bubbles([[60,60,7],[84,100,5],[580,70,6],[556,120,4]])+octo(320,106,1.6)
+        +A.tag(40,150,112,'blue blood')+A.tag(488,150,104,'no bones')+A.tag(270,262,100,'8 arms'));
+    },
+    beak(){
+      return A.frame(SEA+octo(150,130,1.25)
+        +'<circle cx="440" cy="120" r="78" fill="#fff" stroke="#1E2140" stroke-width="4"/>'
+        +'<path d="M392 100Q440 84 470 124Q436 122 410 130z" fill="#2B2B33"/><path d="M398 142Q436 128 466 132Q444 160 404 158z" fill="#4A4F63"/>'
+        +'<path d="M226 150L356 126" stroke="#1E2140" stroke-width="3" stroke-dasharray="7 7"/>'
+        +A.tag(404,206,72,'beak')+A.text(440,262,17,'The only hard part'));
+    },
+    gap(){
+      return A.frame(A.nightSky()+room(true)+tank(170,300,true,true)
+        +octo(360,170,0.8,{arms:7})+'<path d="M392 150Q436 130 452 102" fill="none" stroke="#E4572E" stroke-width="8" stroke-linecap="round"/>'
+        +lab(500,96,56,'gap')+'<path d="M498 106L476 96" stroke="#fff" stroke-width="3" stroke-linecap="round"/>', true);
+    },
+    floor(){
+      return A.frame(A.nightSky()+room(true)+tank(30,190,true,true)
+        +'<path d="M226 100Q250 150 240 226Q300 250 360 240T470 244" fill="none" stroke="#9FD8F5" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 13"/>'
+        +octo(470,196,0.6)
+        +'<ellipse cx="590" cy="250" rx="30" ry="9" fill="#12122A"/>'+lab(556,196,68,'drain')
+        +lab(286,266,88,'wet trail'), true);
+    },
+    pipe(){
+      return A.frame('<rect y="70" width="470" height="230" fill="#9A7B5B"/><rect y="56" width="470" height="16" fill="#C9B8A0"/>'
+        +'<rect x="470" y="150" width="170" height="150" fill="#3E9BCF"/><path d="M486 172q12 -7 24 0t24 0M560 196q12 -7 24 0t24 0" fill="none" stroke="#fff" stroke-width="2" opacity=".6"/>'
+        +'<path d="M70 60V150Q70 200 130 206L474 240" fill="none" stroke="#5F6B7E" stroke-width="34" stroke-linejoin="round"/>'
+        +'<path d="M70 60V150Q70 200 130 206L474 240" fill="none" stroke="#C9D2DE" stroke-width="24" stroke-linejoin="round"/>'
+        +'<ellipse cx="282" cy="221" rx="26" ry="9" fill="#E4572E" transform="rotate(6 282 221)"/><circle cx="296" cy="218" r="4" fill="#fff"/><circle cx="297" cy="218" r="1.8" fill="#1E2140"/><circle cx="296" cy="226" r="4" fill="#fff"/><circle cx="297" cy="226" r="1.8" fill="#1E2140"/><path d="M258 216L222 208M258 219L216 214M258 222L214 219M258 225L220 224" stroke="#B93C1C" stroke-width="3.5" stroke-linecap="round"/>'+A.tag(250,256,60,'Inky')
+        +A.sun(590,44)+A.text(50,44,16,'aquarium floor','#1E2140','start')
+        +A.tag(112,98,124,'6 inches wide')+A.tag(236,154,92,'164 feet')+A.text(556,280,17,'ocean','#fff'));
+    },
+    hearts(){
+      return A.frame(SEA+bubbles([[70,70,7],[96,110,5],[566,80,6]])
+        +octo(320,116,1.9,{inner:heart(-17,-34,0.62)+heart(17,-34,0.62)+heart(0,-22,0.8)})
+        +A.tag(486,96,96,'3 hearts'));
+    },
+    home(){
+      let tiles='';
+      for(let x=0;x<300;x+=60) for(let y=0;y<300;y+=60) tiles+='<rect x="'+(x+3)+'" y="'+(y+3)+'" width="54" height="54" rx="4" fill="#EAF6FF"/>';
+      let cups='';
+      [[400,96],[430,126],[462,150],[496,168],[532,178]].forEach((p,i)=>{ cups+='<circle cx="'+p[0]+'" cy="'+(p[1]+2)+'" r="'+(11-i)+'" fill="#FFD9CC" stroke="#B93C1C" stroke-width="3"/>'; });
+      return A.frame('<rect width="300" height="300" fill="#BFD9EA"/>'+tiles
+        +'<circle cx="150" cy="120" r="40" fill="#F4A100" stroke="#1E2140" stroke-width="4"/><circle cx="150" cy="120" r="14" fill="#1E2140"/><path d="M150 134q0 40 -22 40" fill="none" stroke="#1E2140" stroke-width="8" stroke-linecap="round"/>'
+        +A.tag(88,222,124,'suction cup')
+        +'<path d="M372 70Q440 150 590 176" fill="none" stroke="#E4572E" stroke-width="40" stroke-linecap="round"/>'+cups
+        +A.tag(432,222,88,'suckers'));
+    }
+  };
+
+  /* ===== the two things to play with ===== */
+  window.TOYS = {
+    arms: {
+      title: 'Your turn: count the arms', cap: 'Tap the button to add arms. Count by twos: 2, 4, 6...', hint: 'Count all the arms first.',
+      init(box, api){
+        let arms=0;
+        const MSG={0:'A head and two eyes. Where are the arms?',2:'2 arms. Like you!',4:'4 arms. Keep going!',6:'6 arms. One more tap!',8:'8 arms! That is what "octo" means: eight.'};
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Add 2 arms</button><div class="readout">Arms: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          pic.innerHTML='<svg viewBox="0 0 640 260" role="img" aria-label="An octopus with '+arms+' arms"><rect width="640" height="260" fill="#3E9BCF"/><rect y="226" width="640" height="34" fill="#E8D49A"/>'
+            +bubbles([[80,60,7],[104,100,5],[560,70,6]])+octo(320,96,1.7,{arms:arms})+'</svg>';
+          out.textContent=arms; msg.textContent=MSG[arms]||'';
+        }
+        btn.onclick=()=>{ if(arms>=8) return; arms+=2; draw(); if(arms>=8){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    escape: {
+      title: 'Your turn: the great escape', cap: 'Tap the button for each move, from the tank to the sea.', hint: 'Get Inky all the way to the ocean first.',
+      init(box, api){
+        let at=0;
+        const BTN=['Squeeze out','Slide down','Scoot across','Into the drain','Down the pipe','Free!'];
+        const MSG=['Inky is in his tank. See the gap at the top?','Out through the gap. Squish!','Down the side of the tank to the floor.','Across the floor. A wet trail shows the way.','Into the drain hole. Only 6 inches wide!','Down the long pipe and SPLASH! Inky is in the ocean.'];
+        const POS=[[96,104,0.5],[176,58,0.42],[206,126,0.42],[300,126,0.42],[340,196,0.28],[566,236,0.5]];
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn"></button><div class="readout">Moves: <b class="num out">0</b> of 5</div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          const p=POS[at];
+          let trail='';
+          if(at>=3) trail='<path d="M214 150H'+(at>3?330:292)+'" stroke="#9FD8F5" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12"/>';
+          pic.innerHTML=A.frame(A.nightSky()
+            +'<rect y="156" width="490" height="144" fill="#7A6250"/><rect y="150" width="490" height="10" fill="#4A4660"/>'
+            +'<rect x="490" y="196" width="150" height="104" fill="#2C6FA8"/><path d="M506 214q12 -7 24 0t24 0M570 232q12 -7 24 0t24 0" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>'
+            +'<path d="M340 152V214Q340 244 380 246L494 252" fill="none" stroke="#C9D2DE" stroke-width="24" stroke-linejoin="round"/>'
+            +'<rect x="30" y="62" width="150" height="88" fill="#2C6FA8"/><rect x="30" y="62" width="150" height="88" fill="none" stroke="#C9CEE0" stroke-width="4"/>'
+            +'<rect x="26" y="52" width="126" height="10" rx="3" fill="#C9CEE0"/><rect x="152" y="52" width="32" height="10" fill="#FFD34D"/>'
+            +trail+octo(p[0],p[1],p[2],{cls:at?'pop':''})
+            +A.text(105,180,15,'tank','#F4EEDD')+A.text(340,290,15,'pipe','#F4EEDD')+A.text(566,290,15,'ocean','#F4EEDD')+A.text(410,140,15,'drain','#F4EEDD','start')
+            +'<path d="M402 136L356 146" stroke="#F4EEDD" stroke-width="2.5" stroke-linecap="round"/>', true);
+          out.textContent=at; msg.textContent=MSG[at]; btn.textContent=BTN[at];
+        }
+        btn.onclick=()=>{ if(at>=5) return; at+=1; draw(); if(at>=5){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    }
+  };
+})();
+</script>
+<script src="../../assets/engine.js"></script>
+</body>
+</html>

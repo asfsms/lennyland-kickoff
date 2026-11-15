@@ -13,7 +13,22 @@
       "riddle": "shadow",
       "golden": "6 x 6",
       "pw": "c3RuYWhwZWxFIGduaWVvdHBpVCBlbk8teXRuZXdU"
+    },
+    {
+      "n": 2,
+      "code": "LDK-002",
+      "date": "2026-11-16",
+      "week": "2026-W47",
+      "title": "Inky's Great Escape",
+      "path": "e/002/",
+      "theme": "Animals",
+      "topic": "Inky the octopus's 2016 escape from the National Aquarium of New Zealand, and how an octopus body works",
+      "riddle": "sponge",
+      "golden": "2 x 8",
+      "pw": "c21yQSB5a2FlblMgeWhzaXVxUyB0aGdpRQ=="
     }
   ],
-  "weeks": {}
+  "weeks": {
+    "2026-W47": "ZWRhcmFQIGVsa2NpUCB5bGJib1c="
+  }
 }
