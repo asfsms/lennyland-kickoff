@@ -227,6 +227,19 @@ def main():
             pg.click("#rate .pick >> nth=0")
             saved = pg.evaluate("code => { const d=JSON.parse(localStorage.getItem('ldk-v1')); const p=d.players[d.last]; return (p.history[code]||{}).rating || null; }", G["code"])
             if not saved or saved.get("stars") != 5 or saved.get("why") != "story": bad(f"[{tag}] the rating was not saved with the result")
+            # send the result to the grown-ups: asks for an address once, then builds the email
+            pg.evaluate("K.noNav = true")
+            pg.click("#sendBtn")
+            if not pg.is_visible("#grownBox"): bad(f"[{tag}] Send did not ask for a grown-up's email the first time")
+            pg.fill("#grownIn", "not-an-email"); pg.click("#grownSave")
+            if "does not look like" not in pg.inner_text("#grownMsg"): bad(f"[{tag}] a bad email address was accepted")
+            pg.fill("#grownIn", "grownup@example.com, other@example.org"); pg.click("#grownSave")
+            pg.click("#sendBtn")
+            mail = pg.evaluate("K.lastMailto || ''")
+            from urllib.parse import unquote
+            if not mail.startswith("mailto:grownup@example.com,other@example.org?subject="): bad(f"[{tag}] the result email is not addressed to the saved grown-ups")
+            line = next((l for l in unquote(mail).splitlines() if l.startswith("KICKOFF|")), "")
+            if not re.match(r"^KICKOFF\|LDK-\d{3}\|\d{4}-\d\d-\d\d\|Tester\|goals=\d+\|shots=\d\|firsts=[01]{4}\|coach=[0-3]\|golden=[01s]\|riddle=[01]\|late=[01]\|rating=5\|why=story\|streak=\d+\|total=\d+$", line): bad(f"[{tag}] the builder line in the result email is malformed: {line!r}")
             if shots: snap(pg, tag, "14-rated")
         return {"goals": pg.inner_text("#ringTxt"), "pw": pg.inner_text("#vault .pw") if pg.locator("#vault .pw").count() else "", "vault": pg.inner_text("#vaultTitle")}
 

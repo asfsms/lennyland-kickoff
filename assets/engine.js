@@ -104,7 +104,11 @@ function build(){
     +'<div class="panel"><h3>Badges I won today</h3><div class="badges" id="badges"></div><p class="small" id="badgeNone" style="margin:8px 0 0"></p></div>'
     +'<div class="panel"><h3>My guess and the real number</h3><p id="resGuess" style="margin:0;font-weight:700"></p></div>'
     +'<div class="panel"><h3>3 things to tell at dinner</h3><p style="margin:0;font-weight:700">'+G.dinner.map((d,i)=>(i+1)+'. '+esc(d)).join('<br>')+'</p></div>'
-    +'<div class="controls"><button class="btn" onclick="K.copyResults()">Copy my result for a grown-up</button><button class="btn ghost small" onclick="K.goTo(13)">Back to the shootout</button><a class="btn ghost small" href="'+HOME+'">All games</a></div>'
+    +'<div class="panel" id="sendPanel"><h3>Tell your grown-ups</h3><p class="cap" id="sendCap">Send them your result by email. Rate the game first!</p>'
+      +'<div class="controls"><button class="btn" id="sendBtn" onclick="K.sendResult()">Send my result to my grown-ups</button><button class="btn ghost small" onclick="K.copyResults()">Copy it instead</button></div>'
+      +'<div id="grownBox" hidden><p style="margin:14px 0 6px;font-weight:800">Ask a grown-up to type their email. For two grown-ups, put a comma between them.</p><div class="controls" style="margin-top:0"><input type="text" id="grownIn" inputmode="email" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="grownup@example.com" data-enter="grownSave"><button class="btn small" id="grownSave" onclick="K.saveGrownups()">Save</button></div><p class="small" id="grownMsg" style="margin:8px 0 0">It is saved only on this device.</p></div>'
+      +'<p class="small" id="grownLine" style="margin:10px 0 0" hidden></p></div>'
+    +'<div class="controls"><button class="btn ghost small" onclick="K.goTo(13)">Back to the shootout</button><a class="btn ghost small" href="'+HOME+'">All games</a></div>'
     +'<details class="src"><summary>For grown-ups: sources and accuracy</summary>'+(G.notes||[]).map(n=>'<p style="margin-top:10px">'+esc(n)+'</p>').join('')
     +'<p>Sources: '+(G.sources||[]).map(s=>'<a href="'+esc(s.u)+'" target="_blank" rel="noopener">'+esc(s.t)+'</a>').join('; ')+'.</p><p>Progress (players, goals, streaks) is saved in this browser on this device.</p></details></section>';
 
@@ -388,7 +392,8 @@ function finish(){
     p.goals+=today;
     if(!LATE){ p.streak=streakAfter; p.best=Math.max(p.best||0,streakAfter); p.lastN=G.n; if(sub) p.subWeek=G.week; }
     badges.forEach(b=>{ if(!p.badges.includes(b[1])) p.badges.push(b[1]); });
-    game={ complete:true, late:LATE, today, shotGoals, golden, bonus, streakAfter, sub, stars:S.coach.stars, badges, guess:S.guess, at:new Date().toISOString() };
+    game={ complete:true, late:LATE, today, shotGoals, golden, bonus, streakAfter, sub, stars:S.coach.stars, badges, guess:S.guess, at:new Date().toISOString(),
+      detail:{ firsts:[1,2,3,4].map(first).join(''), riddle:S.riddle.ok?1:0, golden:S.golden.done?(S.golden.ok?'1':'0'):'s' } };
     p.history[G.code]=game; L.save(); paintWho();
   } else {
     game={ complete:false, late:LATE, today:shotGoals+(S.golden.ok?2:0), shotGoals, golden:S.golden.ok?2:0, bonus:0, streakAfter:p.streak, stars:S.coach.stars, badges:[] };
@@ -429,7 +434,7 @@ function finish(){
   $('badges').innerHTML = game.badges.map(b=>'<span class="badge new"><span class="dot">'+b[0]+'</span>'+b[1]+'</span>').join('');
   $('badgeNone').textContent = game.badges.length ? '' : (game.complete ? 'None this time. Badges go to players with no misses, a three-star coach talk, a Golden Goal, or a streak.' : 'Finish the shootout to win badges.');
   $('resGuess').innerHTML = guessLine() || 'No guess this time.';
-  renderRate();
+  renderRate(); paintGrownups();
 }
 /* ---------- rate the game: 5 stars, then one follow-up question. Saved with the player's result. ---------- */
 const RATE = {
@@ -458,6 +463,37 @@ function rateWhy(id){ const rec=P().history[G.code]; if(!rec||!rec.rating) retur
 function summaryText(){
   const p=P(), g=S.game||{};
   return 'Lenny\'s Daily Kickoff #'+G.n+' · '+G.title+'\n'+p.name+': '+(g.today||0)+' goals (shots '+(g.shotGoals||0)+' of 5'+(g.golden?', Golden Goal scored':'')+')'+(g.complete?(g.late?' · replay finished':' · finished'):' · not finished yet')+'\nTotal: '+p.goals+' goals · '+leagueFor(p.goals).name+' · streak '+p.streak+(g.badges&&g.badges.length?'\nBadges: '+g.badges.map(b=>b[1]).join(', '):'')+(S.coach.text?'\nMy coach talk: '+S.coach.text:'')+(function(){ const r=(p.history[G.code]||{}).rating; if(!r||!r.stars) return ''; const o=RATE[r.stars>=4?'liked':'better'].find(x=>x[0]===r.why); return '\nMy rating: '+r.stars+' of 5'+(o?' ('+o[1]+')':''); })();
+}
+/* ---------- send the result to the player's grown-ups by email (the kit's "send to Dad", with addresses kept on the device) ---------- */
+function machineLine(){
+  const p=P(), g=p.history[G.code]||{}, d=g.detail||{}, r=g.rating||{};
+  return ['KICKOFF', G.code, G.date, p.name.replace(/[|\n]/g,' '), 'goals='+(g.today||0), 'shots='+(g.shotGoals||0), 'firsts='+(d.firsts||''), 'coach='+(g.stars||0), 'golden='+(d.golden||''), 'riddle='+(d.riddle==null?'':d.riddle), 'late='+(g.late?1:0), 'rating='+(r.stars||''), 'why='+(r.why||''), 'streak='+p.streak, 'total='+p.goals].join('|');
+}
+function mailtoUrl(){
+  const p=P();
+  const subject='Daily Kickoff result: '+p.name+', Game '+G.n;
+  const body='Hi! I finished a game of Lenny\'s Daily Kickoff.\n\n'+summaryText()+'\n\n(The next line is for the game builder. Please leave it in.)\n'+machineLine()+'\n';
+  return 'mailto:'+(p.grownups||[]).join(',')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+}
+function paintGrownups(){
+  const p=P(), has=!!(p&&p.grownups&&p.grownups.length), line=$('grownLine');
+  line.hidden=!has;
+  if(has) line.innerHTML='Goes to: '+esc(p.grownups.join(', '))+' · <button class="word" style="border-bottom-style:solid" onclick="K.editGrownups()">change</button>';
+}
+function editGrownups(){ const p=P(); $('grownBox').hidden=false; $('grownIn').value=(p.grownups||[]).join(', '); $('grownIn').focus(); }
+function saveGrownups(){
+  const list=$('grownIn').value.split(/[\s,;]+/).map(x=>x.trim()).filter(Boolean), msg=$('grownMsg');
+  if(!list.length){ msg.textContent='Type an email address first.'; return false; }
+  if(list.length>3 || !list.every(x=>/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(x))){ msg.textContent='That does not look like an email address. Try again, up to three.'; return false; }
+  const p=P(); p.grownups=list; L.save(); $('grownBox').hidden=true; msg.textContent='It is saved only on this device.'; paintGrownups(); toast('Saved!'); return true;
+}
+function sendResult(){
+  const p=P(), g=p.history[G.code];
+  if(!g||!g.complete){ toast('Finish the shootout first!'); return; }
+  if(!p.grownups||!p.grownups.length){ editGrownups(); return; }
+  const url=mailtoUrl(); K.lastMailto=url;
+  $('sendCap').textContent='Your email is ready. Tap Send in the email!';
+  if(!K.noNav){ try{ window.location.href=url; }catch(e){} }
 }
 async function copyResults(){
   try{ await navigator.clipboard.writeText(summaryText()); toast('Copied! Paste it in a message.'); }
@@ -516,7 +552,7 @@ async function sendChat(){
 }
 
 /* ---------- start ---------- */
-window.K = { rate, rateWhy, next, back, goTo, sayPage, lockGuess, checkRiddle, checkQuick, checkOrder, resetOrder, checkMath, checkGolden, gradeCoach, rubricChange, finish, copyResults,
+window.K = { sendResult, saveGrownups, editGrownups, mailtoUrl, rate, rateWhy, next, back, goTo, sayPage, lockGuess, checkRiddle, checkQuick, checkOrder, resetOrder, checkMath, checkGolden, gradeCoach, rubricChange, finish, copyResults,
   showNewPlayer, createPlayer, pickPlayer, setKitColor, startGame, openChat, closeChat, sendChat, askChip, state:S };
 if(build()){
   const prog=$('progress'); for(let i=0;i<PAGES;i++){ prog.appendChild(document.createElement('span')); }
