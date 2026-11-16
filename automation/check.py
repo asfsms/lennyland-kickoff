@@ -216,6 +216,18 @@ def main():
         pg.click("#finishBtn"); pg.wait_for_timeout(900)
         if shots: snap(pg, tag, "14")
         overflow(pg, tag, 14)
+        # rate the game: stars, then one follow-up question that depends on the stars
+        if not pg.is_visible("#rate"): bad(f"[{tag}] the rating panel is missing after a finished game")
+        else:
+            pg.click("#rate .rate-stars button >> nth=1")
+            if "could be better" not in pg.inner_text("#rate").lower(): bad(f"[{tag}] 2 stars did not ask what could be better")
+            pg.click("#rate .rate-stars button >> nth=4")
+            if "like best" not in pg.inner_text("#rate").lower(): bad(f"[{tag}] 5 stars did not ask what the player liked")
+            if pg.locator("#rate .rate-stars button.on").count() != 5: bad(f"[{tag}] 5 stars are not all lit")
+            pg.click("#rate .pick >> nth=0")
+            saved = pg.evaluate("code => { const d=JSON.parse(localStorage.getItem('ldk-v1')); const p=d.players[d.last]; return (p.history[code]||{}).rating || null; }", G["code"])
+            if not saved or saved.get("stars") != 5 or saved.get("why") != "story": bad(f"[{tag}] the rating was not saved with the result")
+            if shots: snap(pg, tag, "14-rated")
         return {"goals": pg.inner_text("#ringTxt"), "pw": pg.inner_text("#vault .pw") if pg.locator("#vault .pw").count() else "", "vault": pg.inner_text("#vaultTitle")}
 
     with sync_playwright() as p:

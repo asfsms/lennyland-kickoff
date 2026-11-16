@@ -98,7 +98,7 @@ function build(){
   /* 14 · final whistle */
   h+='<section class="step" data-step="14"><div class="ch"><span>Page 14 of 14</span><span class="half">Final whistle</span></div><h2 id="resTitle">Full time!</h2>'
     +'<div class="panel"><div class="score"><div class="ring" id="ring" style="--p:0"><b><span class="num" id="ringTxt">0</span><small>goals today</small></b></div><div style="flex:1;min-width:220px"><p id="resLine" style="font-size:1.2rem;font-weight:800;margin-bottom:.4em"></p><p class="small" id="resDetail" style="margin:0"></p></div></div></div>'
-    +'<div class="vault" id="vault"><div class="lock" id="vaultLock" aria-hidden="true">'+ICON.lockShut+'</div><h3 id="vaultTitle">Today\'s secret passcode</h3><div id="vaultBody"></div></div>'
+    +'<div class="vault" id="vault"><div class="lock" id="vaultLock" aria-hidden="true">'+ICON.lockShut+'</div><h3 id="vaultTitle">Today\'s secret passcode</h3><div id="vaultBody"></div></div><div class="panel" id="rate" hidden></div>'
     +'<div class="twocol"><div class="panel"><h3>My league</h3><p style="margin:0;font-weight:800" id="leagueLine"></p><div class="xpbar"><i id="leagueBar"></i></div><p class="small" id="leagueNext" style="margin:6px 0 0"></p></div>'
     +'<div class="panel"><h3>My streak</h3><p style="margin:0;font-weight:800" id="streakLine"></p><p class="small" id="streakNext" style="margin:6px 0 0"></p></div></div>'
     +'<div class="panel"><h3>Badges I won today</h3><div class="badges" id="badges"></div><p class="small" id="badgeNone" style="margin:8px 0 0"></p></div>'
@@ -429,10 +429,35 @@ function finish(){
   $('badges').innerHTML = game.badges.map(b=>'<span class="badge new"><span class="dot">'+b[0]+'</span>'+b[1]+'</span>').join('');
   $('badgeNone').textContent = game.badges.length ? '' : (game.complete ? 'None this time. Badges go to players with no misses, a three-star coach talk, a Golden Goal, or a streak.' : 'Finish the shootout to win badges.');
   $('resGuess').innerHTML = guessLine() || 'No guess this time.';
+  renderRate();
 }
+/* ---------- rate the game: 5 stars, then one follow-up question. Saved with the player's result. ---------- */
+const RATE = {
+  liked:  [['story','The story'],['toys','The things I got to play with'],['riddle','The riddle'],['math','The math'],['right','It was just right for me'],['wild','I learned something wild']],
+  better: [['easy','It was too easy. Make it harder!'],['hardmath','The math was too hard'],['reading','There was too much reading'],['boring','The story was boring'],['long','It was too long'],['broken','Something did not work']]
+};
+function renderRate(){
+  const box=$('rate'), p=P(), rec=p&&p.history[G.code];
+  if(!rec||!rec.complete){ box.hidden=true; return; }
+  const r=rec.rating||{}; box.hidden=false;
+  let h='<h3>How was this game?</h3><p class="cap">Tap the stars.</p><div class="rate-stars" role="group" aria-label="Rate this game">'+[1,2,3,4,5].map(n=>'<button class="'+(r.stars>=n?'on':'')+'" aria-label="'+n+(n>1?' stars':' star')+'" aria-pressed="'+(r.stars===n)+'" onclick="K.rate('+n+')">&#9733;</button>').join('')+'</div>';
+  if(r.stars){
+    const kind = r.stars>=4 ? 'liked' : 'better';
+    h+='<p class="rate-q">'+(kind==='liked'?'What did you like best?':'What could be better?')+'</p><div class="picks">'+RATE[kind].map(o=>'<button class="pick'+(r.why===o[0]?' on':'')+'" onclick="K.rateWhy(\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>';
+    if(r.why) h+='<p class="small" id="rateThanks" style="margin:12px 0 0">Thanks, coach! That helps make the next games better.</p>';
+  }
+  box.innerHTML=h;
+}
+function rate(n){
+  const rec=P().history[G.code]; if(!rec) return;
+  const old=rec.rating||{}, sameKind = old.stars && ((old.stars>=4)===(n>=4));
+  rec.rating={ stars:n, why: sameKind ? (old.why||'') : '', at:new Date().toISOString() }; L.save(); renderRate();
+}
+function rateWhy(id){ const rec=P().history[G.code]; if(!rec||!rec.rating) return; rec.rating.why=id; rec.rating.at=new Date().toISOString(); L.save(); renderRate(); }
+
 function summaryText(){
   const p=P(), g=S.game||{};
-  return 'Lenny\'s Daily Kickoff #'+G.n+' · '+G.title+'\n'+p.name+': '+(g.today||0)+' goals (shots '+(g.shotGoals||0)+' of 5'+(g.golden?', Golden Goal scored':'')+')'+(g.complete?(g.late?' · replay finished':' · finished'):' · not finished yet')+'\nTotal: '+p.goals+' goals · '+leagueFor(p.goals).name+' · streak '+p.streak+(g.badges&&g.badges.length?'\nBadges: '+g.badges.map(b=>b[1]).join(', '):'')+(S.coach.text?'\nMy coach talk: '+S.coach.text:'');
+  return 'Lenny\'s Daily Kickoff #'+G.n+' · '+G.title+'\n'+p.name+': '+(g.today||0)+' goals (shots '+(g.shotGoals||0)+' of 5'+(g.golden?', Golden Goal scored':'')+')'+(g.complete?(g.late?' · replay finished':' · finished'):' · not finished yet')+'\nTotal: '+p.goals+' goals · '+leagueFor(p.goals).name+' · streak '+p.streak+(g.badges&&g.badges.length?'\nBadges: '+g.badges.map(b=>b[1]).join(', '):'')+(S.coach.text?'\nMy coach talk: '+S.coach.text:'')+(function(){ const r=(p.history[G.code]||{}).rating; if(!r||!r.stars) return ''; const o=RATE[r.stars>=4?'liked':'better'].find(x=>x[0]===r.why); return '\nMy rating: '+r.stars+' of 5'+(o?' ('+o[1]+')':''); })();
 }
 async function copyResults(){
   try{ await navigator.clipboard.writeText(summaryText()); toast('Copied! Paste it in a message.'); }
@@ -491,7 +516,7 @@ async function sendChat(){
 }
 
 /* ---------- start ---------- */
-window.K = { next, back, goTo, sayPage, lockGuess, checkRiddle, checkQuick, checkOrder, resetOrder, checkMath, checkGolden, gradeCoach, rubricChange, finish, copyResults,
+window.K = { rate, rateWhy, next, back, goTo, sayPage, lockGuess, checkRiddle, checkQuick, checkOrder, resetOrder, checkMath, checkGolden, gradeCoach, rubricChange, finish, copyResults,
   showNewPlayer, createPlayer, pickPlayer, setKitColor, startGame, openChat, closeChat, sendChat, askChip, state:S };
 if(build()){
   const prog=$('progress'); for(let i=0;i<PAGES;i++){ prog.appendChild(document.createElement('span')); }
