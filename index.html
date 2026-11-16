@@ -63,7 +63,7 @@
       h+='<div class="hubcard"><h2>This week</h2><div class="weeklist">'+weekEds.map(e=>{ const d=done(p,e), replay=e.date<TODAY;
         return '<a class="weekrow'+(d?' done':'')+'" href="'+esc(e.path)+QS+'"><span class="st">'+(d?'&#10003;':e.n)+'</span><span>'+esc(e.title)+'<small>'+esc(L.dayName(e.date))+'</small></span><span class="go">'+(d?'Done':replay?'Replay':'Play')+'</span></a>'; }).join('')+'</div></div>';
     }
-    h+='<div class="next"><a class="btn ghost small" href="e/'+QS+'">All games</a></div></section>';
+    h+='<div class="next"><a class="btn ghost small" href="https://lennyland.games/">&larr; Back to Lennyland</a><a class="btn ghost small" href="e/'+QS+'">All Kickoff games</a></div></section>';
     document.getElementById('hub').innerHTML=h;
     document.getElementById('who').innerHTML = p ? '<span class="statpill" title="Total goals">'+L.ICON.ball+'<span class="num">'+p.goals+'</span></span>' : '';
     document.querySelectorAll('[data-switch]').forEach(b=>b.onclick=()=>{ DB.last=b.dataset.switch; L.save(); render(data); });

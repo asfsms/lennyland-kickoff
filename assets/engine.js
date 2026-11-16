@@ -68,7 +68,7 @@ function build(){
     +'<div class="panel instrument" id="newPlayer" hidden><h3>New player</h3><div class="controls" style="margin-top:0"><label>Type your name<input type="text" id="pName" maxlength="14" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Your name" data-enter="joinBtn"></label></div>'
     +'<h3 style="margin-top:20px">Design your shirt</h3><div class="kitlab"><div class="kitprev" id="kitPrev"></div><div><div class="swlabel">Shirt color</div><div class="swatches" id="swA"></div><div class="swlabel">Stripe color <span class="swhint" id="swBHint"></span></div><div class="swatches" id="swB"></div></div></div>'
     +'<div class="next" style="margin-bottom:0"><button class="btn" id="joinBtn" onclick="K.createPlayer()">Join the Futbol Rebels</button><span class="hintline" id="joinMsg"></span></div></div>'
-    +'<div class="next"><button class="btn" id="startBtn" disabled onclick="K.startGame()">Kick off</button></div></section>';
+    +'<div class="next"><button class="btn" id="startBtn" disabled onclick="K.startGame()">Kick off</button><a class="btn ghost small" href="https://lennyland.games/">&larr; Back to Lennyland</a></div></section>';
 
   /* 1 · kickoff */
   h+='<section class="step" data-step="1">'+head(1,'Kickoff',true)+'<h1>'+esc(G.title)+'</h1><p class="lede story">'+storyHtml(G.lede)+'</p>'
