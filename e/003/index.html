@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenny's Daily Kickoff #3 · The Secret of the Soccer Ball Spots</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/engine.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="../../assets/common.js"></script>
+<script>
+/* ===== Game 3: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 3, code: 'LDK-003', date: '2026-11-17', week: '2026-W47',
+  title: 'The Secret of the Soccer Ball Spots',
+  theme: 'Soccer science',
+  pw: 'c25vZ2F0bmVQIG90YXRvUCB5dG5pb1AgZXZsZXdU',
+  lede: 'Picture a classic soccer ball. Black spots, white spots. They are not just for looks! They are a clever trick, and it all started with a TV.',
+  guess: { q: 'How many patches do you think are sewn together to make one classic soccer ball?', answer: 32, close: 5 },
+  pages: [
+    { scene: 'old',     text: 'Long ago, soccer balls had no spots at all. They were made of strips of {leather|A tough material. Many shoes and belts are made of it.}, all in one plain color. Often brown, like a potato.' },
+    { scene: 'tvold',   text: 'Then came a problem. In 1970, people all around the world watched the World Cup on TV. But most TVs showed only black, white and gray. A plain ball was hard to see!' },
+    { scene: 'tvnew',   text: 'So the World Cup ball got a new look: black patches and white patches. On TV it popped! Now everybody could see it spin and fly.' },
+    { scene: 'shapes',  text: 'Look closely at the patches. The black ones are {pentagons|A flat shape with 5 straight sides.}. The white ones are {hexagons|A flat shape with 6 straight sides.}. And every single patch is FLAT.' },
+    { toy: 'sew',       text: 'Your turn! Make a ball. Add the black patches by twos. Then add the white patches by fives.' },
+    { scene: 'count',   text: 'Did you count them? 12 black patches and 20 white patches. That makes **32 patches** in one ball! The first ones were sewn together by hand.', guessBack: true },
+    { scene: 'flat',    text: 'Here is the secret. Hexagons alone fit together like floor tiles. They stay flat. But put in a pentagon, and the patches have to bend. Twelve pentagons bend the ball all the way around!',
+      quick: { q: 'One ball has 32 patches. How many patches do you need to make 2 balls?', expr: '32 + 32 =', answer: 64,
+               hint: 'Add the ones first ([[2 + 2]]). Then add the tens ([[3 + 3]]).', fb: '[[32 + 32 = 64]] patches. Enough for two balls!' } },
+    { toy: 'pump',      text: 'The ball is still a little bumpy. So what makes it nice and round? AIR! Pump it up. The air pushes on every patch from the inside.' },
+    { scene: 'around',  text: 'One more thing to check on a real ball. Every black patch has 5 white neighbors. And two black patches NEVER touch each other.' },
+    { scene: 'brooklyn', text: '**Spot it in Brooklyn!** Look down at the sidewalk next to a park. In New York, many of them are made of six-sided blocks. All hexagons, no pentagons. So the sidewalk stays flat!',
+      bonus: 'Bonus fact: A ball for a real match must be 27 to 28 inches around. The referee can check!' }
+  ],
+  riddle: { q: 'I am a flat shape with six sides and six corners. Bees build their honeycomb with me. A classic soccer ball has 20 of me. What shape am I?', accept: ['hexag', 'heksag', 'hecsag', 'hecksag', 'hexig', 'hexog', 'hexeg', 'hexgon'], answer: 'a hexagon',
+            hint: 'Think of the white patches on the ball. What is that shape called?', explain: 'A hexagon! It has six sides. The white patches on a classic soccer ball are hexagons, and so are the little rooms in a honeycomb.' },
+  shots: {
+    1: { q: 'Why did the World Cup ball get black and white patches in 1970?',
+         opts: ['Because zebras were the team mascots', 'Because the brown paint ran out', 'So people could see the ball on black-and-white TVs', 'So the ball could hide in the snow'], a: 2,
+         hint: 'Think about how people far away watched the games.', fb: 'Most TVs showed only black, white and gray. A black-and-white ball was easy to see on the screen.' },
+    2: { q: 'How do flat patches turn into a round ball?',
+         opts: ['The pentagons make the patches bend, and air pushes them out', 'Somebody rolls the ball down a very big hill', 'The patches are cooked in an oven until they puff up', 'Every patch is really a tiny circle'], a: 0,
+         hint: 'Think about the two shapes, and what you pump inside.', fb: 'Hexagons alone would stay flat. The pentagons make the patches bend around, and the air inside pushes them out.' },
+    order: { q: 'How did the soccer ball get its spots? Tap the cards in order, from first to last.',
+             cards: ['Soccer balls are made of plain leather strips.', 'The World Cup is on TV, but a plain ball is hard to see.', 'The World Cup ball gets black and white patches.', 'Everybody can see the ball on TV.'],
+             hint: 'The problem comes before the new ball.', fb: 'First the balls were plain. On TV they were hard to see. So the ball got black and white patches, and then everybody could see it.' },
+    math: { q: 'The 20 white patches have 120 sides altogether. The 12 black patches have 60 sides altogether. How many sides do all the patches have?',
+            stack: ['120', '+ 60'], answer: 180,
+            hint: 'Add the ones ([[0 + 0]]), then the tens ([[2 + 6]]). The hundred stays.',
+            fb: '[[120 + 60 = 180]] sides. That is a LOT of sides!' },
+    coach: { q: 'You are the coach! Tell your team: Why is a classic soccer ball black and white? And how can flat patches make a round ball?', starter: 'The ball is black and white because...',
+             ideas: ['why black and white: so people could see the ball on black-and-white TVs', 'how it gets round: hexagons alone stay flat, the pentagons make the patches bend around, and air pushes them out'],
+             rubric: ['I said the black and white patches made the ball easy to see on TV.', 'I said the patches are pentagons and hexagons, and the pentagons make them bend around.', 'I said the air inside pushes the patches out and makes the ball round.'],
+             model: 'The ball is black and white because long ago most TVs showed only black, white and gray, and people could see that ball better. The patches are flat pentagons and hexagons. The pentagons make them bend around, and the air inside pushes them out into a round ball.' },
+    golden: { q: 'One black patch has 5 white neighbors. Each white neighbor is a hexagon with 6 sides. How many sides do the 5 white neighbors have altogether?', expr: '5 × 6 =', answer: 30,
+              hint: 'Five groups of 6. You can count by 5s, six times.', fb: '[[5 × 6 = 30]] sides. All around one little pentagon!' }
+  },
+  lesson: 'Today\'s story, "The Secret of the Soccer Ball Spots": Long ago, soccer balls were made of strips of leather in one plain color, often brown. In 1970, people all around the world watched the World Cup in Mexico on TV, but most TVs showed only black, white and gray, so a plain ball was hard to see. The 1970 World Cup ball had black and white patches, which were easy to see on TV. A classic soccer ball has 32 patches: 12 black pentagons (5 sides each) and 20 white hexagons (6 sides each). The first ones were leather and sewn by hand. Every patch is flat. Hexagons alone fit together like floor tiles and stay flat. Pentagons make the patches bend around into a ball shape. Air pumped inside pushes on every patch and makes the ball round. Every black patch has 5 white neighbors, and black patches never touch each other. Next to many New York parks, the sidewalk is made of six-sided blocks, which stay flat. Bees build honeycomb from hexagons. A match ball must be 27 to 28 inches around.',
+  chips: ['Why do hexagons stay flat?', 'Why do bees use hexagons?', 'Are soccer balls still black and white?', 'What is inside a soccer ball?', 'Tell me a soccer fact'],
+  helperQA: [
+    { q: 'Are soccer balls still black and white?', a: 'Many are colorful now, because TVs show colors. But lots of people still love the classic black and white ball.' },
+    { q: 'Why do hexagons stay flat?', a: 'Three hexagons fit around one corner with no gap at all. So they can go on and on like floor tiles, without bending.' }
+  ],
+  dinner: [
+    'The soccer ball got its black and white patches so people could see it on black-and-white TVs at the 1970 World Cup.',
+    'A classic soccer ball is made of 32 flat patches: 12 black pentagons and 20 white hexagons.',
+    'Hexagons alone stay flat like floor tiles, so a ball needs pentagons to bend it round.'
+  ],
+  notes: [
+    'Exact: the official ball of the 1970 World Cup in Mexico had 32 leather panels (widely reported as stitched by hand), 12 black pentagons and 20 white hexagons, and FIFA says it was the first World Cup ball with black panels, made to show up on black-and-white television. The shape is called a truncated icosahedron: every pentagon is surrounded by 5 hexagons and pentagons never touch. The side counts in the math come from 20 × 6 = 120 and 12 × 5 = 60. The Laws of the Game say a ball is 27 to 28 inches (68 to 70 centimeters) around.',
+    'Simplified: the story says the World Cup ball "got a new look" in 1970. A 32-panel black and white ball had already been made in Denmark in 1962 and the same design was the ball of the 1968 European Championship; 1970 is when the whole world saw it. Older balls came in several designs (12 or 18 panels, strips, sometimes white or orange); the story just says "strips of leather, often brown". "Pentagons make the patches bend": three hexagons fill the space around a corner exactly, so hexagons alone tile a flat floor; with a pentagon there is a gap, and closing it makes the surface curve. The patches of a real ball are flat only until the ball is pumped up; air pressure rounds them. The pump toy shows the idea, not real pressure. Today many balls have fewer, curved panels and many colors. The size rule is in Law 2 of the Laws of the Game; checking the ball is one of the referee\'s jobs under Law 5. In the front-view drawings of the ball, the white hexagons near the rim are partly hidden, so they can look five-sided; the numbered picture on page 11 shows them whole.',
+    'Left out: the company that made the ball and the ball\'s product name (no brands in the game). Leather is described only as "a tough material". The sidewalk blocks are the city\'s standard hexagonal asphalt pavers, used mainly on sidewalks next to parks; not every park sidewalk has them.'
+  ],
+  sources: [
+    { t: 'FIFA on the 1970 World Cup ball', u: 'https://inside.fifa.com/en/news/telstar-story-fifa-world-cup-ball-3073424' },
+    { t: '99% Invisible on the black-and-white ball design', u: 'https://99percentinvisible.org/article/turning-point-the-original-goal-of-soccers-iconic-black-and-white-ball-design/' },
+    { t: 'Science News on the geometry of soccer balls', u: 'https://www.sciencenews.org/article/bending-soccer-ball' },
+    { t: 'IFAB Laws of the Game, Law 2: The Ball', u: 'https://www.theifab.com/laws/chapter/22/section/32' },
+    { t: 'NYC Street Design Manual on hexagonal pavers', u: 'https://nycstreetdesign.info/node/121' }
+  ]
+};
+
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART;
+  const INK = '#1E2140';
+  let uid = 0;
+  const GRASS = '<rect y="222" width="640" height="78" fill="#57B36A"/>';
+  /* the corner points of a shape with n sides, centered at (cx, cy); rot = angle of the first corner in degrees */
+  function pts(cx, cy, r, n, rot){
+    const out=[]; for(let k=0;k<n;k++){ const t=(rot+k*360/n)*Math.PI/180; out.push([cx+r*Math.cos(t), cy+r*Math.sin(t)]); } return out;
+  }
+  function poly(p, fill, stroke, sw, extra){ return '<polygon points="'+p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')+'" fill="'+fill+'" stroke="'+(stroke||INK)+'" stroke-width="'+(sw||3)+'" stroke-linejoin="round"'+(extra||'')+'/>'; }
+  function pent(cx, cy, r, fill, extra){ return poly(pts(cx,cy,r,5,-90), fill||INK, INK, 3, extra); }
+  function hex(cx, cy, r, fill, extra){ return poly(pts(cx,cy,r,6,0), fill||'#fff', INK, 3, extra); }
+  /* a classic ball seen from the front, centered at (x, y) with radius r */
+  function ball(x, y, r){
+    const id='bl'+(++uid), c=pts(0,0,0.36*r,5,-90), outer=[];
+    let s='', lines='';
+    for(let i=0;i<5;i++){
+      const deg=-90+i*72, t=deg*Math.PI/180, p=pts(0.98*r*Math.cos(t), 0.98*r*Math.sin(t), 0.36*r, 5, deg+180);
+      outer.push(p); s+=poly(p, INK, INK, 1);
+      lines+='M'+c[i][0].toFixed(1)+' '+c[i][1].toFixed(1)+'L'+p[0][0].toFixed(1)+' '+p[0][1].toFixed(1);
+    }
+    for(let i=0;i<5;i++){
+      const a=outer[i], b=outer[(i+1)%5]; let best=null;
+      [a[1],a[4]].forEach(u=>[b[1],b[4]].forEach(v=>{ const d=Math.hypot(u[0]-v[0],u[1]-v[1]); if(!best||d<best[0]) best=[d,u,v]; }));
+      lines+='M'+best[1][0].toFixed(1)+' '+best[1][1].toFixed(1)+'L'+best[2][0].toFixed(1)+' '+best[2][1].toFixed(1);
+    }
+    return '<g transform="translate('+x+','+y+')"><defs><clipPath id="'+id+'"><circle r="'+r+'"/></clipPath></defs>'
+      +'<circle r="'+r+'" fill="#fff"/><g clip-path="url(#'+id+')">'+s+'<path d="'+lines+'" stroke="'+INK+'" stroke-width="'+Math.max(2,r/22).toFixed(1)+'" fill="none"/>'+poly(c, INK, INK, 1)+'</g>'
+      +'<circle r="'+r+'" fill="none" stroke="'+INK+'" stroke-width="'+Math.max(3,r/16).toFixed(1)+'"/></g>';
+  }
+  /* an old one-color ball made of strips */
+  function oldBall(x, y, r, fill, line){
+    const id='ob'+(++uid), k=r/70;
+    return '<g transform="translate('+x+','+y+')"><defs><clipPath id="'+id+'"><circle r="'+r+'"/></clipPath></defs><circle r="'+r+'" fill="'+fill+'"/>'
+      +'<g clip-path="url(#'+id+')" fill="none" stroke="'+line+'" stroke-width="'+(3*k+1).toFixed(1)+'"><path d="M'+(-r)+' '+(-24*k)+'Q0 '+(-44*k)+' '+r+' '+(-24*k)+'M'+(-r)+' '+(24*k)+'Q0 '+(44*k)+' '+r+' '+(24*k)+'M'+(-26*k)+' '+(-r)+'Q'+(-40*k)+' '+(-60*k)+' '+(-24*k)+' '+(-32*k)+'M'+(26*k)+' '+(-r)+'Q'+(40*k)+' '+(-60*k)+' '+(24*k)+' '+(-32*k)+'M'+(-26*k)+' '+r+'Q'+(-40*k)+' '+(60*k)+' '+(-24*k)+' '+(32*k)+'M'+(26*k)+' '+r+'Q'+(40*k)+' '+(60*k)+' '+(24*k)+' '+(32*k)+'"/></g>'
+      +'<circle r="'+r+'" fill="none" stroke="'+line+'" stroke-width="'+(3*k+1).toFixed(1)+'"/></g>';
+  }
+  /* an old TV set; inner = what the gray screen shows (screen is 300 x 170 with its top left corner at 150, 50) */
+  function tv(inner){
+    return '<rect y="246" width="640" height="54" fill="#C9B8A0"/>'
+      +'<path d="M250 20L320 44L400 14" fill="none" stroke="#5B4636" stroke-width="5" stroke-linecap="round"/>'
+      +'<rect x="120" y="36" width="400" height="200" rx="18" fill="#8A5A3C" stroke="'+INK+'" stroke-width="4"/>'
+      +'<rect x="150" y="50" width="300" height="170" rx="14" fill="#A9A9A9" stroke="'+INK+'" stroke-width="4"/>'
+      +'<rect x="152" y="160" width="296" height="58" fill="#8C8C8C"/>'
+      +'<path d="M170 160V96H260V160" fill="none" stroke="#E6E6E6" stroke-width="5"/>'
+      +inner
+      +'<circle cx="486" cy="92" r="13" fill="#E8D49A" stroke="'+INK+'" stroke-width="3"/><circle cx="486" cy="140" r="13" fill="#E8D49A" stroke="'+INK+'" stroke-width="3"/>'
+      +'<rect x="170" y="236" width="20" height="14" fill="#5B4636"/><rect x="450" y="236" width="20" height="14" fill="#5B4636"/>';
+  }
+  /* a floor of hexagons that fit together; the first one is centered at (x0, y0) */
+  function tiles(x0, y0, r, cols, rows, fill, stroke){
+    let s=''; const h=Math.sqrt(3)*r;
+    for(let c=0;c<cols;c++) for(let q=0;q<rows;q++) s+=poly(pts(x0+c*1.5*r, y0+q*h+(c%2?h/2:0), r, 6, 0), fill, stroke, 3);
+    return s;
+  }
+  function tree(x, y){ return '<rect x="'+(x-6)+'" y="'+(y-40)+'" width="12" height="40" fill="#7A5A3C"/><circle cx="'+x+'" cy="'+(y-58)+'" r="30" fill="#2F9E5B"/><circle cx="'+(x-20)+'" cy="'+(y-44)+'" r="20" fill="#3BB06A"/><circle cx="'+(x+20)+'" cy="'+(y-44)+'" r="20" fill="#3BB06A"/>'; }
+
+  window.SCENES = {
+    old(){
+      return A.frame(A.sun(560,56)+GRASS+'<ellipse cx="320" cy="250" rx="70" ry="10" fill="#3F9455"/>'
+        +oldBall(320,172,76,'#A8632F','#5B3516')+A.tag(40,60,172,'an old soccer ball')+A.text(126,112,17,'no spots!'));
+    },
+    tvold(){
+      return A.frame(tv(oldBall(352,150,24,'#9C9C9C','#7E7E7E')+A.text(352,96,30,'?','#fff'))
+        +A.tag(24,96,70,'1970')+A.text(320,282,17,'Where is the ball?'));
+    },
+    tvnew(){
+      return A.frame(tv(ball(352,146,30)+'<path d="M300 132h-22M304 150h-28M300 168h-22" stroke="#fff" stroke-width="4" stroke-linecap="round"/>')
+        +A.tag(24,96,70,'1970')+A.text(320,282,17,'There it is!'));
+    },
+    shapes(){
+      return A.frame('<rect width="640" height="300" fill="#FFF3D6"/>'+pent(170,124,78,INK)+hex(470,120,76,'#fff')
+        +A.text(170,136,34,'5','#fff')+A.text(470,132,34,'6',INK)
+        +A.tag(85,226,170,'pentagon: 5 sides')+A.tag(388,226,164,'hexagon: 6 sides'));
+    },
+    count(){
+      return A.frame('<rect width="640" height="300" fill="#DDF3E4"/>'+ball(180,150,112)
+        +pent(376,84,28,INK)+A.text(416,96,30,'12 black',INK,'start')
+        +hex(376,160,27,'#fff')+A.text(416,172,30,'20 white',INK,'start')
+        +A.tag(376,214,130,'32 patches'));
+    },
+    flat(){
+      return A.frame('<rect width="640" height="300" fill="#FFF3D6"/>'
+        +tiles(86,82,30,5,3,'#fff',INK)+A.tag(50,252,212,'only hexagons: FLAT')
+        +ball(480,138,92)+A.tag(368,252,224,'with pentagons: ROUND'));
+    },
+    around(){
+      let s=pent(320,150,40,INK);
+      for(let k=0;k<5;k++){
+        const deg=-54+k*72, t=deg*Math.PI/180, cx=320+73.1*Math.cos(t), cy=150+73.1*Math.sin(t);
+        s+=poly(pts(cx,cy,47,6,deg+30),'#fff',INK,3)+A.text(cx,cy+10,28,String(k+1));
+      }
+      return A.frame('<rect width="640" height="300" fill="#DDF3E4"/>'+s
+        +A.tag(18,40,150,'1 black patch')+A.tag(456,232,170,'5 white neighbors'));
+    },
+    brooklyn(){
+      return A.frame(A.sun(590,40)+'<rect y="112" width="640" height="34" fill="#57B36A"/>'+tree(80,120)+tree(230,120)+tree(380,120)
+        +'<rect y="146" width="640" height="154" fill="#8E97A3"/>'+tiles(-10,178,26,18,3,'#B9C0C9','#5F6B7E')
+        +'<rect y="140" width="640" height="10" fill="#6E7682"/>'
+        +A.person(150,236,'#C8452D')+A.person(186,240,'#167C8A')
+        +A.tag(452,62,150,'hexagon blocks')+'<path d="M520 92L500 170" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        +A.tag(20,18,76,'a park'));
+    }
+  };
+
+  /* ===== the two things to play with ===== */
+  window.TOYS = {
+    sew: {
+      title: 'Your turn: make a ball', cap: 'Tap to add patches. Count the black ones by twos, then the white ones by fives.', hint: 'Add all the patches first.',
+      init(box, api){
+        let b=0, w=0;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn"></button><div class="readout">Black: <b class="num outb">0</b> &nbsp; White: <b class="num outw">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), ob=box.querySelector('.outb'), ow=box.querySelector('.outw'), msg=box.querySelector('.msg');
+        function draw(){
+          let s='';
+          for(let i=0;i<12;i++){ const x=52+(i%6)*44, y=104+Math.floor(i/6)*56;
+            s+= i<b ? pent(x,y,19,INK) : pent(x,y,19,'none',' stroke-dasharray="5 5" opacity=".45"'); }
+          for(let i=0;i<20;i++){ const x=368+(i%5)*52, y=52+Math.floor(i/5)*50;
+            s+= i<w ? hex(x,y,21,'#fff') : hex(x,y,21,'none',' stroke-dasharray="5 5" opacity=".45"'); }
+          pic.innerHTML='<svg viewBox="0 0 640 260" role="img" aria-label="'+b+' black patches and '+w+' white patches"><rect width="640" height="260" fill="#DDF3E4"/>'
+            +A.text(162,56,18,'black pentagons')+A.text(472,246,18,'white hexagons')+s+'</svg>';
+          ob.textContent=b; ow.textContent=w;
+          btn.textContent = b<12 ? 'Add 2 black patches' : 'Add 5 white patches';
+          msg.textContent = b===0 ? 'An empty ball. Start with the black patches.'
+            : b<12 ? b+' black patches. Keep counting by twos!'
+            : w===0 ? '12 black patches. All done! Now the white ones, by fives.'
+            : w<20 ? w+' white patches. Keep counting by fives!'
+            : '12 black and 20 white. Every patch is ready!';
+        }
+        btn.onclick=()=>{ if(w>=20) return; if(b<12) b+=2; else w+=5; draw(); if(w>=20){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    pump: {
+      title: 'Your turn: pump it up', cap: 'Tap the button to pump air into the ball.', hint: 'Pump the ball all the way up first.',
+      init(box, api){
+        let at=0;
+        const K=[0.42,0.56,0.7,0.84,0.94,1];
+        const MSG=['A floppy ball. No air inside yet!','Pssht! A little air. Still floppy.','Pssht! The air pushes the patches out.','Pssht! Getting rounder.','Pssht! Almost there. One more!','Round and bouncy! The air pushes on every patch.'];
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Pump!</button><div class="readout">Pumps: <b class="num out">0</b> of 5</div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          const k=K[at], w=1+(1-k)*0.3, down=at%2?18:0;
+          pic.innerHTML=A.frame(A.sun(70,50)+GRASS
+            +'<path d="M470 236Q400 262 '+(250+84*w).toFixed(0)+' 232" fill="none" stroke="#5F6B7E" stroke-width="6" stroke-linecap="round"/>'
+            +'<g transform="translate(250,236) scale('+w.toFixed(2)+','+k+')">'+ball(0,-84,84)+'</g>'
+            +'<rect x="456" y="120" width="30" height="116" rx="6" fill="#E4572E" stroke="'+INK+'" stroke-width="3"/><rect x="440" y="232" width="62" height="10" rx="4" fill="'+INK+'"/>'
+            +'<rect x="467" y="'+(64+down)+'" width="8" height="'+(58-down)+'" fill="#5F6B7E"/><rect x="440" y="'+(54+down)+'" width="62" height="12" rx="6" fill="'+INK+'"/>'
+            +A.text(471,270,16,'pump','#fff')+A.text(250,270,16,at>=5?'round!':'ball','#fff'));
+          out.textContent=at; msg.textContent=MSG[at];
+        }
+        btn.onclick=()=>{ if(at>=5) return; at+=1; draw(); if(at>=5){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    }
+  };
+})();
+</script>
+<script src="../../assets/engine.js"></script>
+</body>
+</html>

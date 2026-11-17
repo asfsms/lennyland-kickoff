@@ -26,6 +26,19 @@
       "riddle": "sponge",
       "golden": "2 x 8",
       "pw": "c21yQSB5a2FlblMgeWhzaXVxUyB0aGdpRQ=="
+    },
+    {
+      "n": 3,
+      "code": "LDK-003",
+      "date": "2026-11-17",
+      "week": "2026-W47",
+      "title": "The Secret of the Soccer Ball Spots",
+      "path": "e/003/",
+      "theme": "Soccer science",
+      "topic": "Why the classic soccer ball is black and white (the 1970 World Cup on TV) and how flat pentagons and hexagons make a round ball",
+      "riddle": "hexagon",
+      "golden": "5 x 6",
+      "pw": "c25vZ2F0bmVQIG90YXRvUCB5dG5pb1AgZXZsZXdU"
     }
   ],
   "weeks": {
