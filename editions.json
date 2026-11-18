@@ -39,6 +39,19 @@
       "riddle": "hexagon",
       "golden": "5 x 6",
       "pw": "c25vZ2F0bmVQIG90YXRvUCB5dG5pb1AgZXZsZXdU"
+    },
+    {
+      "n": 4,
+      "code": "LDK-004",
+      "date": "2026-11-18",
+      "week": "2026-W47",
+      "title": "The Secret Tunnel to Your Sink",
+      "path": "e/004/",
+      "theme": "Bed-Stuy, Brooklyn and New York",
+      "topic": "How New York City's water runs downhill by gravity from mountain reservoirs through the 85-mile Delaware Aqueduct, and why tall buildings have wooden tanks on the roof",
+      "riddle": "gravity",
+      "golden": "6 x 10",
+      "pw": "ZWRpbFMgcmV0YVcgZWxpTSBldmlGLXl0aGdpRQ=="
     }
   ],
   "weeks": {

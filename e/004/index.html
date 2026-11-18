@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenny's Daily Kickoff #4 · The Secret Tunnel to Your Sink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/engine.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="../../assets/common.js"></script>
+<script>
+/* ===== Game 4: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 4, code: 'LDK-004', date: '2026-11-18', week: '2026-W47',
+  title: 'The Secret Tunnel to Your Sink',
+  theme: 'Bed-Stuy, Brooklyn and New York',
+  pw: 'ZWRpbFMgcmV0YVcgZWxpTSBldmlGLXl0aGdpRQ==',
+  lede: 'Turn on the faucet. Whoosh! But where was that water before? Not in Brooklyn. It took a long, secret trip to get to your sink.',
+  guess: { q: 'The water gets to Brooklyn with a big push. With no pump at all, how many floors do you think it can climb up inside a building?', answer: 6, close: 1 },
+  pages: [
+    { scene: 'mountain', text: 'Your water starts as rain and snow. It falls on mountains far, far away. Some of it lands 125 miles from New York City!' },
+    { scene: 'lakes',    text: 'The water runs into giant lakes called {reservoirs|Big lakes that people make to save water for later.}. New York City has 19 of them. They are like giant water bottles for the whole city.' },
+    { scene: 'hill',     text: 'Now the clever part. The lakes are up HIGH. The city is down low. So {gravity|The pull that makes things fall and roll down.} does the work. The water just runs downhill!' },
+    { toy: 'flow',       text: 'Your turn! Send the water from the mountain lake down to the city. Watch how many pumps you need.' },
+    { scene: 'tunnel',   text: 'New York built its first {aqueduct|A long pipe or tunnel that carries water to a city.} long ago. It was 41 miles long. Today, water flows through a tunnel that is 85 miles long. It is the longest tunnel in the whole world!' },
+    { scene: 'climb',    text: 'When the water gets to Brooklyn, it still has a big push. It can climb up the pipes inside a building all by itself. It climbs about **6 floors** high!', guessBack: true },
+    { scene: 'pump',     text: 'But some buildings are much taller. So a pump pushes the water all the way up to the roof. It fills a giant wooden tank that looks like a barrel.',
+      quick: { q: 'The water climbs 6 floors by itself. A pump lifts it 12 more floors to the roof. How many floors is that altogether?', expr: '6 + 12 =', answer: 18,
+               hint: 'Start at 12. Then count up 6 more.', fb: '[[6 + 12 = 18]] floors. That is a tall building!' } },
+    { toy: 'tank',       text: 'Your turn! Pump water up into the tank on the roof. Count the gallons by thousands.' },
+    { scene: 'wood',     text: 'The tank is made of wood. No glue! When the wood gets wet, it {swells|Gets a little bit bigger and fatter.}. The planks squeeze together so tight that the water stays in. Then gravity pulls the water down to every sink.' },
+    { scene: 'roofs',    text: '**Spot it in Brooklyn!** Look up at the roofs of tall buildings. Can you find a wooden tank standing on legs? How many can you count?',
+      bonus: 'Bonus fact: New York City uses about one billion gallons of water every single day.' }
+  ],
+  riddle: { q: 'You cannot see me, but I never let go. I pull the rain down from the clouds. I pull the water down the tunnel. I even pull YOU back down when you jump. What am I?', accept: ['gravit', 'gravet', 'gravat', 'grafit', 'gravty', 'gravid', 'gravvit', 'gravutty'], answer: 'gravity',
+            hint: 'It is one of the tricky words in the story. It makes things fall and roll downhill.', explain: 'Gravity! It pulls everything down. It pulls rain from the clouds, water down the tunnel, and you back to the ground after a jump.' },
+  shots: {
+    1: { q: 'Why can the water get from the mountain lakes to the city without pumps?',
+         opts: ['Because fish push it with their tails', 'Because the lakes are higher than the city, so the water runs downhill', 'Because the wind blows it through the tunnel', 'Because the water is in a big hurry'], a: 1,
+         hint: 'Think about which one is higher up: the lakes or the city.', fb: 'The lakes are up high and the city is down low. Gravity pulls the water downhill.' },
+    2: { q: 'How does a wooden tank hold water with no glue?',
+         opts: ['It wears a giant raincoat', 'Pigeons sit on all the cracks', 'The water inside turns into ice', 'The wet wood swells, and the planks squeeze tight together'], a: 3,
+         hint: 'Think about what happens to the wood when it gets wet.', fb: 'Wet wood swells. The planks press against each other so tightly that the water stays in.' },
+    order: { q: 'How does water get to a sink at the top of a tall building? Tap the cards in order, from first to last.',
+             cards: ['Rain and snow fall on the mountains.', 'The water waits in giant lakes called reservoirs.', 'It runs downhill through a very long tunnel.', 'A pump lifts it to a wooden tank on the roof.'],
+             hint: 'Start in the sky. End on the roof.', fb: 'First rain and snow fall. The water waits in the reservoirs, runs downhill through the tunnel, and then a pump lifts it to the tank on the roof.' },
+    math: { q: 'New York\'s first aqueduct was 41 miles long. The longest tunnel today is 85 miles long. How many miles longer is the tunnel?',
+            stack: ['85', '− 41'], answer: 44,
+            hint: 'Take away the ones first ([[5 − 1]]). Then take away the tens ([[8 − 4]]).',
+            fb: '[[85 − 41 = 44]] miles longer. That is one long tunnel!' },
+    coach: { q: 'You are the coach! Tell your team: How does water get from the mountains to the city without pumps? And why do tall buildings have a tank on the roof?', starter: 'The water gets to the city because...',
+             ideas: ['how the water travels: the lakes are higher than the city, so gravity pulls the water downhill through tunnels', 'why tall buildings have tanks: the water climbs only about 6 floors by itself, so a pump lifts it to a tank on the roof and gravity brings it down to the sinks'],
+             rubric: ['I said the lakes are higher than the city, so the water runs downhill.', 'I said the water can climb only about 6 floors by itself.', 'I said a pump lifts water to the tank on the roof, and gravity brings it down to the sinks.'],
+             model: 'The water gets to the city because the lakes are up high and the city is down low, so gravity pulls it downhill. By itself it can climb only about 6 floors. In a tall building, a pump lifts the water to a tank on the roof, and then gravity brings it down to the sinks.' },
+    golden: { q: 'The water can reach 6 floors with no pump. Imagine each floor has 10 faucets. How many faucets get water with no pump?', expr: '6 × 10 =', answer: 60,
+              hint: 'Six groups of 10. Count by 10s, six times.', fb: '[[6 × 10 = 60]] faucets. And not one pump!' }
+  },
+  lesson: 'Today\'s story, "The Secret Tunnel to Your Sink": New York City\'s tap water starts as rain and snow on mountains north of the city, as far as 125 miles away. It collects in 19 giant lakes called reservoirs. The reservoirs are higher than the city, so gravity pulls the water downhill and almost all of it arrives without pumps. New York\'s first aqueduct, finished in 1842, was 41 miles long. Today about half of the water flows through the Delaware Aqueduct, a tunnel 85 miles long and the longest tunnel in the world. In the city, the water still has enough push to climb about 6 floors up inside a building by itself. Taller buildings use a pump to lift water to a tank on the roof. A big tank holds about 10,000 gallons. Most tanks are made of wooden planks held by steel hoops, with no glue. Wet wood swells, so the planks squeeze tight and the water stays in. Gravity then pulls the water down from the tank to every sink. New York City uses about one billion gallons of water a day.',
+  chips: ['Why does water run downhill?', 'How deep is the tunnel?', 'Why are the tanks made of wood?', 'Is the water clean?', 'Tell me a water fact'],
+  helperQA: [
+    { q: 'Why are the tanks made of wood?', a: 'Wood helps keep the water from freezing in winter and helps keep it cool in summer. A wooden tank is also quick to build.' },
+    { q: 'Is the water clean?', a: 'Yes. The city tests the water many, many times every day to make sure it is safe to drink.' }
+  ],
+  dinner: [
+    'New York City\'s water comes from mountain lakes as far as 125 miles away, and it runs downhill to the city with almost no pumps.',
+    'The longest tunnel in the world is a water tunnel for New York City. It is 85 miles long.',
+    'The wooden tanks on New York roofs have no glue: wet wood swells and squeezes the planks tight.'
+  ],
+  notes: [
+    'Exact: the city\'s Department of Environmental Protection (DEP) says the system has 19 reservoirs (plus three controlled lakes, not mentioned in the story), reaches as far as 125 miles north of the city, and supplies about one billion gallons a day. About 95 percent of the water is delivered by gravity alone; the story says "without pumps" and the lesson says "almost all". The Delaware Aqueduct is 85 miles long, went into service in 1944, carries about half the city\'s water, and DEP calls it the longest tunnel in the world. The Old Croton Aqueduct brought water 41 miles and opened in 1842; it was the city\'s first aqueduct, a brick-lined channel rather than a deep tunnel.',
+    'Rounded or simplified: "about 6 floors" is the usual figure for how high city water pressure reaches (roughly 60 to 75 feet); it varies by neighborhood, and buildings taller than about six stories need a tank or pumps. The 18-floor building in the quick check and the "10 faucets on each floor" in the Golden Goal are made-up examples. Rooftop tanks hold about 5,000 to 10,000 gallons; the toy fills a big one to 10,000. A new wooden tank leaks a little at first and seals as the wood swells. Steel hoops hold the planks together. Some newer buildings use steel tanks or pumps alone. Not all of the city\'s water goes through the 85-mile tunnel: the Catskill and Croton aqueducts carry the rest. The pictures are not to scale, and the tunnel is hundreds of feet under the ground. In the first toy the water arrives in five taps; a real drop can take weeks or months to reach the city.',
+    'Left out: the names of the companies that build the tanks (no brands in the game), the towns that were moved to make room for the reservoirs, and the leak repairs on the Delaware Aqueduct. Bed-Stuy itself has mostly low buildings, so the tanks are easiest to spot on taller apartment and old factory buildings around Brooklyn. In the helper answer, "tests the water many times every day" is from DEP, which reports hundreds of thousands of tests a year.'
+  ],
+  sources: [
+    { t: 'NYC Department of Environmental Protection: Water Supply', u: 'https://www.nyc.gov/site/dep/water/water-supply.page' },
+    { t: 'NYC DEP: History of New York City\'s Drinking Water', u: 'https://www.nyc.gov/site/dep/water/history-of-new-york-citys-drinking-water.page' },
+    { t: 'NYC DEP on the 85-mile Delaware Aqueduct', u: 'https://www.nyc.gov/site/dep/news/19-062/dep-major-milestone-delaware-aqueduct-repair-tunneling-machine-completes' },
+    { t: 'National Academies: Review of the New York City Watershed Protection Program', u: 'https://www.nationalacademies.org/read/25851/chapter/5' },
+    { t: 'The Christian Science Monitor on New York\'s wooden water tanks', u: 'https://www.csmonitor.com/The-Culture/2009/0106/new-york-s-other-skyline-water-towers' }
+  ]
+};
+
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART;
+  const INK = '#1E2140', WATER = '#2E86DE', LIGHT = '#8FD0F5', WOOD = '#B9814A', GREEN = '#57B36A';
+  /* a mountain with a snow cap; peak at (x, y), base on the line y = base */
+  function mount(x, y, w, base, fill){
+    const h=base-y, k=0.3;
+    return '<polygon points="'+(x-w/2)+','+base+' '+x+','+y+' '+(x+w/2)+','+base+'" fill="'+(fill||'#7C8AA5')+'"/>'
+      +'<polygon points="'+(x-w/2*k)+','+(y+h*k)+' '+x+','+y+' '+(x+w/2*k)+','+(y+h*k)+' '+(x+w*0.07)+','+(y+h*k-10)+' '+x+','+(y+h*k+4)+' '+(x-w*0.07)+','+(y+h*k-10)+'" fill="#fff"/>';
+  }
+  function cloud(x, y){ return '<g fill="#8E97A3"><ellipse cx="'+x+'" cy="'+y+'" rx="52" ry="20"/><circle cx="'+(x-22)+'" cy="'+(y-12)+'" r="20"/><circle cx="'+(x+14)+'" cy="'+(y-18)+'" r="24"/></g>'; }
+  function rain(x, y, n){ let s=''; for(let i=0;i<n;i++) s+='<path d="M'+(x+i*22)+' '+(y+(i%2)*12)+'l-5 16" stroke="'+WATER+'" stroke-width="4" stroke-linecap="round"/>'; return s; }
+  /* a plain building with windows; its bottom is on the line y = base */
+  function bld(x, top, w, base, fill, cols, rows){
+    let s='<rect x="'+x+'" y="'+top+'" width="'+w+'" height="'+(base-top)+'" fill="'+fill+'" stroke="'+INK+'" stroke-width="3"/>';
+    const cw=w/cols, rh=(base-top)/rows;
+    for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) s+='<rect x="'+(x+c*cw+cw*0.25).toFixed(1)+'" y="'+(top+r*rh+rh*0.25).toFixed(1)+'" width="'+(cw*0.5).toFixed(1)+'" height="'+(rh*0.5).toFixed(1)+'" fill="#FFF3B8" stroke="'+INK+'" stroke-width="1.5"/>';
+    return s;
+  }
+  /* a wooden roof tank; (cx, base) is the middle of the bottom of its legs; s = size */
+  function tank(cx, base, s){
+    const w=46*s, h=40*s, leg=14*s, top=base-leg-h; let p='';
+    for(let i=1;i<5;i++) p+='<path d="M'+(cx-w/2+i*w/5).toFixed(1)+' '+top+'v'+h+'" stroke="#8A5A2C" stroke-width="'+Math.max(1,1.2*s).toFixed(1)+'"/>';
+    return '<path d="M'+(cx-w*0.36)+' '+base+'V'+(base-leg)+'M'+(cx+w*0.36)+' '+base+'V'+(base-leg)+'M'+cx+' '+base+'V'+(base-leg)+'" stroke="'+INK+'" stroke-width="'+(2.2*s).toFixed(1)+'"/>'
+      +'<rect x="'+(cx-w/2)+'" y="'+top+'" width="'+w+'" height="'+h+'" fill="'+WOOD+'" stroke="'+INK+'" stroke-width="'+Math.max(2,1.6*s).toFixed(1)+'"/>'+p
+      +'<path d="M'+(cx-w/2)+' '+(top+h*0.25)+'h'+w+'M'+(cx-w/2)+' '+(top+h*0.72)+'h'+w+'" stroke="#4A5160" stroke-width="'+(2*s).toFixed(1)+'"/>'
+      +'<polygon points="'+(cx-w/2-3*s)+','+top+' '+cx+','+(top-16*s)+' '+(cx+w/2+3*s)+','+top+'" fill="#6B7280" stroke="'+INK+'" stroke-width="'+Math.max(2,1.6*s).toFixed(1)+'" stroke-linejoin="round"/>';
+  }
+  /* the hill between the lake and the city; k = how far the water has come (0 to 5), -1 = all the way with no counter */
+  function hill(k){
+    const full = k<0 ? 5 : k;
+    return A.sun(590,44)+mount(70,36,170,122,'#7C8AA5')+mount(180,58,120,122,'#93A0B8')
+      +'<path d="M0 120L170 120L470 232L640 232L640 300L0 300Z" fill="'+GREEN+'"/>'
+      +'<path d="M24 120Q90 168 156 120Z" fill="'+WATER+'"/>'
+      +A.skyline(500,[50,84,62,96,56],'#5F6B7E',232)
+      +'<path d="M140 136L176 140L462 247L512 247" fill="none" stroke="#DCE6EE" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>'
+      +(full>0?'<path d="M140 136L176 140L462 247L512 247" pathLength="100" stroke-dasharray="'+(full*20)+' 100" fill="none" stroke="'+WATER+'" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>':'');
+  }
+
+  window.SCENES = {
+    mountain(){
+      return A.frame(cloud(150,58)+cloud(330,44)+cloud(500,62)+rain(110,84,5)+rain(290,74,5)+rain(462,92,5)
+        +mount(140,112,260,250)+mount(330,96,300,250,'#93A0B8')+mount(520,120,250,250)
+        +'<rect y="248" width="640" height="52" fill="'+GREEN+'"/>'
+        +A.tag(180,260,280,'125 miles from New York City'));
+    },
+    lakes(){
+      return A.frame(A.sun(580,46)+mount(120,50,260,170)+mount(330,34,300,170,'#93A0B8')+mount(540,60,240,170)
+        +'<rect y="166" width="640" height="134" fill="'+GREEN+'"/>'
+        +'<path d="M60 236Q80 180 300 180Q500 180 520 210L520 262Q300 286 60 262Z" fill="'+WATER+'"/>'
+        +'<path d="M120 214q20 -10 40 0q20 10 40 0M260 236q20 -10 40 0q20 10 40 0" fill="none" stroke="'+LIGHT+'" stroke-width="4" stroke-linecap="round"/>'
+        +'<polygon points="512,196 548,196 566,270 512,270" fill="#B9C0C9" stroke="'+INK+'" stroke-width="3"/>'
+        +A.tag(210,196,130,'a reservoir')+A.text(596,188,16,'wall')+A.tag(20,20,170,'19 giant lakes'));
+    },
+    hill(){
+      return A.frame(hill(-1)
+        +A.tag(26,150,130,'lake: up HIGH')+A.tag(486,260,136,'city: down low')
+        +A.text(440,142,20,'downhill!')+'<path d="M318 120l52 20m-14 -14l14 14l-19 4" fill="none" stroke="'+INK+'" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>');
+    },
+    tunnel(){
+      return A.frame(A.sun(200,40)
+        +'<rect y="84" width="640" height="216" fill="#A9794F"/><rect y="78" width="640" height="14" fill="'+GREEN+'"/>'
+        +'<rect x="250" y="76" width="130" height="18" fill="'+WATER+'"/>'+A.text(315,68,16,'a river')
+        +A.skyline(470,[30,46,36,52,32],'#5F6B7E',80)
+        +'<rect x="100" y="34" width="12" height="46" fill="#7A5A3C"/><circle cx="106" cy="30" r="24" fill="#2F9E5B"/>'
+        +'<rect x="-10" y="190" width="660" height="52" fill="#DCE6EE" stroke="'+INK+'" stroke-width="4"/><rect x="-10" y="208" width="660" height="32" fill="'+WATER+'"/>'
+        +'<path d="M150 224h60m-14 -9l14 9l-14 9M400 224h60m-14 -9l14 9l-14 9" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'
+        +A.tag(238,128,164,'deep underground')+A.tag(244,256,152,'85 miles long'));
+    },
+    climb(){
+      let nums='';
+      for(let f=1;f<=6;f++) nums+=A.text(226,256-(f-1)*34-8,20,String(f));
+      return A.frame(A.sun(570,50)
+        +'<rect y="256" width="640" height="44" fill="#8E97A3"/>'
+        +bld(250,52,150,256,'#C96F4A',3,6)
+        +'<path d="M-10 286H420V66" fill="none" stroke="'+INK+'" stroke-width="14" stroke-linejoin="round"/><path d="M-10 286H420V66" fill="none" stroke="'+WATER+'" stroke-width="8" stroke-linejoin="round"/>'+nums
+        +'<path d="M420 52l-14 20h28z" fill="'+WATER+'" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
+        +A.tag(450,120,110,'no pump!')+A.tag(450,160,136,'about 6 floors')+A.text(110,274,16,'water pipe','#fff'));
+    },
+    pump(){
+      return A.frame(A.sun(70,50)
+        +'<rect y="262" width="640" height="38" fill="#8E97A3"/>'
+        +bld(270,96,130,262,'#C96F4A',3,18)+tank(335,96,1.1)
+        +'<path d="M236 240H420V58H362" fill="none" stroke="'+INK+'" stroke-width="12" stroke-linejoin="round"/><path d="M236 240H420V58H362" fill="none" stroke="'+WATER+'" stroke-width="6" stroke-linejoin="round"/>'
+        +'<rect x="186" y="218" width="56" height="44" rx="8" fill="#E4572E" stroke="'+INK+'" stroke-width="3"/><circle cx="214" cy="240" r="11" fill="#FFD34D" stroke="'+INK+'" stroke-width="3"/>'
+        +A.tag(96,226,76,'pump')+A.tag(450,44,130,'wooden tank')
+        +A.text(486,168,20,'up!')+'<path d="M446 180v-40m-10 12l10 -12l10 12" fill="none" stroke="'+INK+'" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>');
+    },
+    wood(){
+      return A.frame('<rect y="262" width="640" height="38" fill="#8E97A3"/>'+tank(320,262,3.6)
+        +'<path d="M176 150h44m-13 -11l13 11l-13 11M464 150h-44m13 -11l-13 11l13 11" fill="none" stroke="#C8452D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
+        +A.tag(20,110,150,'wet wood swells')+A.tag(488,110,100,'no glue!')
+        +A.text(96,188,16,'planks squeeze')+A.text(96,208,16,'together')+A.tag(474,206,120,'steel hoops')+'<path d="M474 216l-66 -22" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>');
+    },
+    roofs(){
+      return A.frame(A.sun(586,44)
+        +bld(30,104,110,262,'#C96F4A',3,8)+bld(150,84,120,262,'#A9794F',3,9)+bld(280,172,100,262,'#D9A066',3,3)+bld(390,76,120,262,'#B5533C',3,9)+bld(520,150,100,262,'#C9884A',3,4)
+        +tank(210,84,0.9)+tank(450,76,0.9)+tank(85,104,0.8)
+        +'<rect y="262" width="640" height="38" fill="#8E97A3"/>'
+        +A.person(300,290,'#167C8A',true)+A.person(336,292,'#C8452D')
+        +A.tag(272,118,116,'water tanks')+'<path d="M290 118l-52 -50M370 118l56 -56" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>');
+    }
+  };
+
+  /* ===== the two things to play with ===== */
+  window.TOYS = {
+    flow: {
+      title: 'Your turn: let it flow', cap: 'Tap the button to let the water run from the lake down to the city.', hint: 'Send the water all the way to the city first.',
+      init(box, api){
+        let at=0;
+        const MSG=['The water is waiting in the mountain lake.','Whoosh! It runs out of the lake.','Down the hill it goes. Nobody is pushing!','Still running downhill. Gravity pulls it.','Almost there! Still no pump.','Splash! The water is in the city. Pumps used: zero!'];
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Let it flow!</button><div class="readout">Pumps used: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), msg=box.querySelector('.msg');
+        function draw(){
+          pic.innerHTML=A.frame(hill(at)+A.tag(26,150,60,'lake')+A.tag(530,260,56,'city')
+            +(at>=5?A.text(360,120,22,'No pumps!'):''));
+          msg.textContent=MSG[at];
+        }
+        btn.onclick=()=>{ if(at>=5) return; at+=1; draw(); if(at>=5){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    tank: {
+      title: 'Your turn: fill the tank', cap: 'Tap the button to pump water up to the roof. Count by thousands.', hint: 'Fill the tank all the way up first.',
+      init(box, api){
+        let n=0;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Pump 1,000 gallons</button><div class="readout">Gallons: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          const h=n*15;
+          let marks='';
+          for(let i=2;i<=10;i+=2) marks+='<path d="M398 '+(222-i*15)+'h12" stroke="'+INK+'" stroke-width="3"/>'+A.text(418,228-i*15,15,(i*1000).toLocaleString('en-US'),INK,'start');
+          pic.innerHTML=A.frame(
+            '<rect y="244" width="640" height="56" fill="#C96F4A"/><rect y="244" width="640" height="8" fill="'+INK+'"/>'+A.text(540,280,16,'the roof','#fff')
+            +'<path d="M250 244V222M390 244V222M320 244V222" stroke="'+INK+'" stroke-width="8"/>'
+            +'<rect x="240" y="66" width="160" height="156" fill="#F3E3C8" stroke="'+INK+'" stroke-width="4"/>'
+            +(h?'<rect x="242" y="'+(220-h)+'" width="156" height="'+h+'" fill="'+WATER+'"/>':'')
+            +'<path d="M240 104h160M240 184h160" stroke="#4A5160" stroke-width="5" opacity=".55"/>'
+            +'<polygon points="228,66 320,22 412,66" fill="#6B7280" stroke="'+INK+'" stroke-width="4" stroke-linejoin="round"/>'
+            +marks
+            +'<path d="M120 300V86H240" fill="none" stroke="'+INK+'" stroke-width="14" stroke-linejoin="round"/><path d="M120 300V86H240" fill="none" stroke="'+(n?WATER:'#DCE6EE')+'" stroke-width="8" stroke-linejoin="round"/>'
+            +A.text(120,70,16,'from the pump')+A.tag(40,150,60,'pipe'));
+          out.textContent=(n*1000).toLocaleString('en-US');
+          msg.textContent = n===0 ? 'The tank is empty. Start the pump!' : n<10 ? (n*1000).toLocaleString('en-US')+' gallons. Keep counting by thousands!' : '10,000 gallons. The tank is full!';
+        }
+        btn.onclick=()=>{ if(n>=10) return; n+=1; draw(); if(n>=10){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    }
+  };
+})();
+</script>
+<script src="../../assets/engine.js"></script>
+</body>
+</html>
