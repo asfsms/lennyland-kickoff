@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenny's Daily Kickoff #5 · The Tiny Bug That Cannot Jump</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/engine.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="../../assets/common.js"></script>
+<script>
+/* ===== Game 5: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 5, code: 'LDK-005', date: '2026-11-19', week: '2026-W47',
+  title: 'The Tiny Bug That Cannot Jump',
+  theme: 'Animals',
+  pw: 'aHRlZVQga3N1VCBoc2lsa2NpVCBuZWV0cnVvRg==',
+  lede: 'Ever had an itchy head? Meet a tiny bug with a very, very old secret.',
+  guess: { q: 'Long ago, somebody used a tiny comb to get bugs out of their hair. Diggers found that comb in the ground. How many years old do you think it is?', answer: 3700, close: 555 },
+  pages: [
+    { scene: 'head',    text: 'Say hello to the head louse. It is a tiny bug, as small as a sesame seed. It lives in the hair on a person\'s head.' },
+    { scene: 'louse',   text: 'A louse has 6 legs. Each leg ends in a claw shaped like a hook. The claws grab a hair and hold on tight, like you on the monkey bars.' },
+    { scene: 'nojump',  text: 'Now the surprise: a louse cannot jump, and it cannot fly. It has NO wings! All it can do is crawl.' },
+    { toy: 'bridge',    text: 'So how does it get to a new head? Two heads touch, and the hair makes a bridge. Your turn: help the louse get across!' },
+    { scene: 'anyone',  text: 'Anyone can get lice. Clean hair or messy hair, lice do not care! They can make your head itchy, but they do not make you sick, and a grown-up can comb them out.' },
+    { scene: 'nit',     text: 'A mother louse lays about 6 eggs a day. The eggs are called {nits|The tiny eggs of a louse.}, and she glues each one to a hair! About 14 days later, the egg has become a grown-up louse.',
+      quick: { q: 'A louse takes about 14 days to grow up. Then it can live on a head for about 30 more days. How many days is that altogether?', expr: '14 + 30 =', answer: 44,
+               hint: 'Add the tens first: 1 ten and 3 tens. Then add the 4 ones.', fb: '[[14 + 30 = 44]] days. That is about six weeks.' } },
+    { scene: 'dig',     text: 'People have had lice for a very long time. In Israel, diggers found a tiny comb carved from an elephant\'s {tusk|A very long tooth that sticks out of an elephant\'s mouth.}. It is about **3,700 years** old!', guessBack: true },
+    { toy: 'comb',      text: 'The comb is only about 35 {millimeters|Tiny steps on a ruler. Ten millimeters make one centimeter.} long. One side has 6 thick teeth for tangles, and the other has 14 thin teeth to catch lice. Your turn: carve the thin teeth and count by 2s!' },
+    { scene: 'letters', text: 'Then a scientist spotted 17 teeny letters on the comb. They say: "May this tusk {root out|Find something and get rid of it.} the lice of the hair and the beard." So lice were bugging people way back then too!' },
+    { scene: 'tryit',   text: '**Try it at home!** Find a comb and count its teeth: does it have more than 14? And if your head ever feels itchy, just tell a grown-up, because it is no big deal.',
+      bonus: 'Bonus fact: Dogs and cats cannot get head lice. Head lice live only on people.' }
+  ],
+  riddle: { q: 'I have lots of teeth, but I never bite. I never chew. I slide through your hair and leave it neat. What am I?', accept: ['comb', 'komb', 'coam', 'kome', 'koam', 'cohm'], answer: 'a comb',
+            hint: 'You may have one in your bathroom. It makes your hair neat.', explain: 'A comb! Its teeth do not bite. They slide through your hair. Very thin teeth can even catch lice.' },
+  shots: {
+    1: { q: 'Why does a louse need two heads to touch before it can move to a new head?',
+         opts: ['Because it is afraid of the dark', 'Because it is waiting for a bus', 'Because it can only crawl', 'Because it likes to say hello first'], a: 2,
+         hint: 'Think about what a louse can NOT do.', fb: 'A louse has no wings and cannot jump. It can only crawl, so it needs hair that touches, like a bridge.' },
+    2: { q: 'How does a louse hold on to a hair?',
+         opts: ['Each leg has a claw like a hook', 'It sticks on with chewing gum', 'It ties a knot with its tail', 'It holds a tiny rope in its mouth'], a: 0,
+         hint: 'Look at the ends of its 6 legs.', fb: 'Each of its 6 legs ends in a claw shaped like a hook. The claws grab the hair and hold on tight.' },
+    order: { q: 'How does a louse grow up? Tap the cards in order, from first to last.',
+             cards: ['A mother louse glues an egg to a hair.', 'About a week later, a baby louse comes out of the egg.', 'The baby grows for about one more week.', 'Now it is a grown-up louse.'],
+             hint: 'Every louse starts as an egg.', fb: 'First the mother glues an egg to a hair. A baby comes out about a week later. It grows for about one more week, and then it is a grown-up.' },
+    math: { q: 'The old comb is about 35 millimeters long. A dollar bill is about 156 millimeters long. How many millimeters longer is the dollar bill?',
+            stack: ['156', '− 35'], answer: 121,
+            hint: 'Take away the ones first ([[6 − 5]]). Then take away the tens ([[5 − 3]]). The hundred stays.',
+            fb: '[[156 − 35 = 121]] millimeters longer. That comb is really tiny!' },
+    coach: { q: 'You are the coach! Tell your team: How does a louse get from one head to another head? And who can get lice?', starter: 'A louse gets to a new head when...',
+             ideas: ['how a louse moves: it cannot jump or fly, it can only crawl, so it crosses when two heads touch and the hair makes a bridge', 'who can get lice: anyone can, with clean hair or messy hair; it is nobody\'s fault, lice do not make you sick, and a grown-up can comb them out'],
+             rubric: ['I said a louse cannot jump or fly. It can only crawl.', 'I said it crosses when two heads touch.', 'I said anyone can get lice, with clean hair or messy hair.'],
+             model: 'A louse gets to a new head when two heads touch, because the hair makes a bridge. It cannot jump or fly. It can only crawl. Anyone can get lice, with clean hair or messy hair, and a grown-up can comb them out.' },
+    golden: { q: 'Each louse has 6 legs. How many legs do 4 lice have altogether?', expr: '6 × 4 =', answer: 24,
+              hint: 'Four groups of 6. Count by 6s, four times.', fb: '[[6 × 4 = 24]] legs. And every single leg has a claw!' }
+  },
+  lesson: 'Today\'s story, "The Tiny Bug That Cannot Jump": A head louse is a tiny insect, about as small as a sesame seed. More than one louse are called lice. Head lice live only in the hair on people\'s heads. A louse has 6 legs, and each leg ends in a claw like a hook that grabs a hair. A louse has no wings. It cannot jump or fly. It can only crawl, so it moves to a new head when two heads touch and the hair makes a bridge. Anyone can get lice, with clean hair or messy hair. Lice can make a head itchy, but they do not make people sick, and a grown-up can comb them out. A mother louse lays about 6 eggs a day, called nits, and glues each one to a hair. About 14 days later the egg has become a grown-up louse, which can live about 30 days on a head. People have had lice for a very long time. In Israel, diggers found a comb about 3,700 years old, carved from an elephant\'s tusk. It is only about 35 millimeters long. It has 6 thick teeth for tangles and 14 thin teeth for lice. It has 17 tiny letters that say: "May this tusk root out the lice of the hair and the beard." Dogs and cats cannot get head lice.',
+  chips: ['Why can\'t lice jump?', 'What do lice eat?', 'How do you get rid of lice?', 'How do they find a 3,700-year-old comb?', 'Tell me a louse fact'],
+  helperQA: [
+    { q: 'What do lice eat?', a: 'They take teeny sips of blood from the skin on your head, a bit like a mosquito does. That is why they can itch.' },
+    { q: 'How do you get rid of lice?', a: 'A grown-up combs them out with a special comb that has very thin teeth. Sometimes a special shampoo helps too.' }
+  ],
+  dinner: [
+    'A head louse cannot jump or fly. It can only crawl, so it needs two heads to touch.',
+    'Anyone can get lice, with clean hair or messy hair, and lice do not make you sick.',
+    'A lice comb about 3,700 years old was found in Israel. Tiny letters on it say: "May this tusk root out the lice of the hair and the beard."'
+  ],
+  notes: [
+    'Exact: the U.S. Centers for Disease Control and Prevention (CDC) says adult head lice are 2 to 3 millimeters long, about the size of a sesame seed; that they crawl and cannot hop or fly; that a female lays about six eggs a day; that adults can live about 30 days on a head; that getting head lice has nothing to do with cleanliness; that head lice do not spread any disease; and that animals do not get or spread head lice. The comb was dug up at Tel Lachish in Israel in 2017 by a team led by the Hebrew University of Jerusalem, and the letters were noticed in 2022. It is elephant ivory, about 3.5 by 2.5 centimeters, dated to about 1700 BCE, with six thick teeth on one side and 14 fine teeth on the other, and 17 Canaanite letters forming seven words. The English sentence is the researchers\' translation.',
+    'Rounded or simplified: "about 14 days" from egg to grown-up adds the CDC\'s figures (eggs hatch in about a week, range 6 to 9 days; the young louse matures about 7 days later). The 44 days in the quick check is a longest-case total. The comb\'s teeth broke off in ancient times and only their bases remain; the pictures and the toy show the comb as it was when new, and the letters in the picture are plain marks, not real Canaanite letters. Sesame-seed size is the CDC\'s comparison for an adult louse. In the first toy the louse crosses in three taps; real lice move when hair touches hair for a moment. Lice also spread, less often, through shared hats, combs and brushes; the story keeps to head-to-head contact, the main way. A dollar bill is 6.14 inches long, which is 156 millimeters. The four lice in the Golden Goal are a made-up example.',
+    'Left out: that lice feed on blood is only in the helper\'s answers, in gentle words, not in the story. Medicated treatments and their names are left out; the helper says only that a grown-up combs lice out and that a special shampoo can help. Body lice, a different kind that can carry diseases, are not mentioned. Where the ivory came from (probably Egypt) and the remains of a tiny louse found on one tooth of the comb are left out. The scientists call the writing the oldest full sentence found so far in the Canaanite alphabet; the story does not make any "oldest" claim.'
+  ],
+  sources: [
+    { t: 'CDC: About Head Lice', u: 'https://www.cdc.gov/lice/about/head-lice.html' },
+    { t: 'National Geographic Kids: Head louse', u: 'https://kids.nationalgeographic.com/animals/invertebrates/facts/head-louse' },
+    { t: 'The Hebrew University of Jerusalem news release on the Lachish comb', u: 'https://www.eurekalert.org/news-releases/970428' },
+    { t: 'Sci.News: 3,700-year-old ivory comb with a wish to get rid of lice', u: 'https://www.sci.news/archaeology/lachish-comb-11374.html' },
+    { t: 'Texas A&M AgriLife Extension: Human Lice', u: 'https://extensionentomology.tamu.edu/wp-content/uploads/2025/03/human-lice.pdf' }
+  ]
+};
+
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART;
+  const INK = '#1E2140', BUG = '#E2B98C', BUG2 = '#C99A66', IVORY = '#F6EBCB', DIRT = '#A9794F', GREEN = '#57B36A';
+  const f = n => (+n).toFixed(1);
+  /* a friendly louse seen from above, head to the right; (cx, cy) is its middle, s = size */
+  function louse(cx, cy, s){
+    let g='';
+    [-1,0,1].forEach(i=>{ [-1,1].forEach(d=>{
+      const x=cx+(i*13+12)*s, y=cy+d*10*s, ex=x+i*12*s, ey=cy+d*36*s;
+      g+='<path d="M'+f(x)+' '+f(y)+'L'+f(ex)+' '+f(ey)+'" stroke="'+INK+'" stroke-width="'+f(4*s)+'" stroke-linecap="round"/>'
+        +'<path d="M'+f(ex)+' '+f(ey)+'q'+f(9*s)+' '+f(d*9*s)+' '+f(13*s)+' '+f(-d*3*s)+'" fill="none" stroke="'+INK+'" stroke-width="'+f(3.4*s)+'" stroke-linecap="round"/>';
+    }); });
+    const sw=f(Math.max(1.5,3*s));
+    return g
+      +'<ellipse cx="'+f(cx-18*s)+'" cy="'+cy+'" rx="'+f(34*s)+'" ry="'+f(21*s)+'" fill="'+BUG+'" stroke="'+INK+'" stroke-width="'+sw+'"/>'
+      +'<path d="M'+f(cx-30*s)+' '+f(cy-17*s)+'v'+f(34*s)+'M'+f(cx-14*s)+' '+f(cy-19*s)+'v'+f(38*s)+'" stroke="'+BUG2+'" stroke-width="'+f(3*s)+'"/>'
+      +'<ellipse cx="'+f(cx+16*s)+'" cy="'+cy+'" rx="'+f(17*s)+'" ry="'+f(15*s)+'" fill="'+BUG2+'" stroke="'+INK+'" stroke-width="'+sw+'"/>'
+      +'<path d="M'+f(cx+44*s)+' '+f(cy-6*s)+'l'+f(12*s)+' '+f(-8*s)+'M'+f(cx+44*s)+' '+f(cy+6*s)+'l'+f(12*s)+' '+f(8*s)+'" stroke="'+INK+'" stroke-width="'+f(2.6*s)+'" stroke-linecap="round"/>'
+      +'<circle cx="'+f(cx+38*s)+'" cy="'+cy+'" r="'+f(11*s)+'" fill="'+BUG+'" stroke="'+INK+'" stroke-width="'+sw+'"/>'
+      +'<circle cx="'+f(cx+41*s)+'" cy="'+f(cy-4.5*s)+'" r="'+f(2.3*s)+'" fill="'+INK+'"/><circle cx="'+f(cx+41*s)+'" cy="'+f(cy+4.5*s)+'" r="'+f(2.3*s)+'" fill="'+INK+'"/>';
+  }
+  /* a child's face with hair; style 0 = short, 1 = long, 2 = curly, 3 = two buns */
+  function kid(cx, cy, r, skin, hair, style){
+    let h='';
+    if(style===1) h+='<rect x="'+f(cx-r*1.12)+'" y="'+f(cy-r*0.3)+'" width="'+f(r*2.24)+'" height="'+f(r*1.5)+'" rx="'+f(r*0.3)+'" fill="'+hair+'"/>';
+    if(style===3) h+='<circle cx="'+f(cx-r*0.85)+'" cy="'+f(cy-r*0.95)+'" r="'+f(r*0.38)+'" fill="'+hair+'"/><circle cx="'+f(cx+r*0.85)+'" cy="'+f(cy-r*0.95)+'" r="'+f(r*0.38)+'" fill="'+hair+'"/>';
+    if(style===2){ for(let i=0;i<7;i++){ const a=Math.PI*(1+i/6); h+='<circle cx="'+f(cx+Math.cos(a)*r*0.95)+'" cy="'+f(cy+Math.sin(a)*r*0.95-r*0.1)+'" r="'+f(r*0.42)+'" fill="'+hair+'"/>'; } }
+    return h+'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+skin+'" stroke="'+INK+'" stroke-width="3"/>'
+      +'<path d="M'+f(cx-r*1.04)+' '+f(cy-r*0.08)+'A'+f(r*1.04)+' '+f(r*1.04)+' 0 0 1 '+f(cx+r*1.04)+' '+f(cy-r*0.08)+'Q'+f(cx+r*0.5)+' '+f(cy-r*0.62)+' '+cx+' '+f(cy-r*0.5)+'Q'+f(cx-r*0.5)+' '+f(cy-r*0.62)+' '+f(cx-r*1.04)+' '+f(cy-r*0.08)+'Z" fill="'+hair+'"/>'
+      +'<circle cx="'+f(cx-r*0.36)+'" cy="'+f(cy+r*0.12)+'" r="'+f(r*0.08)+'" fill="'+INK+'"/><circle cx="'+f(cx+r*0.36)+'" cy="'+f(cy+r*0.12)+'" r="'+f(r*0.08)+'" fill="'+INK+'"/>'
+      +'<path d="M'+f(cx-r*0.3)+' '+f(cy+r*0.45)+'q'+f(r*0.3)+' '+f(r*0.28)+' '+f(r*0.6)+' 0" fill="none" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>';
+  }
+  /* the old comb as it looked when new: thick teeth on top, thin teeth below; n = how many thin teeth are carved (0 to 14) */
+  function comb(x, y, w, n, marks){
+    const bh=w*0.2, th=w*0.24; let s='';
+    for(let i=0;i<6;i++) s+='<rect x="'+f(x+w*0.03+i*w*0.162)+'" y="'+f(y-th)+'" width="'+f(w*0.115)+'" height="'+f(th+6)+'" rx="5" fill="'+IVORY+'" stroke="'+INK+'" stroke-width="3"/>';
+    if(n<14) s+='<rect x="'+f(x+w*0.02+n*w*0.0686)+'" y="'+f(y+bh-6)+'" width="'+f(w*0.96-n*w*0.0686)+'" height="'+f(th+6)+'" fill="'+IVORY+'" stroke="'+INK+'" stroke-width="3" stroke-dasharray="7 6"/>';
+    for(let i=0;i<n;i++) s+='<rect x="'+f(x+w*0.03+i*w*0.0686)+'" y="'+f(y+bh-6)+'" width="'+f(w*0.036)+'" height="'+f(th+6)+'" rx="3" fill="'+IVORY+'" stroke="'+INK+'" stroke-width="2.5"/>';
+    s+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+f(bh)+'" rx="8" fill="'+IVORY+'" stroke="'+INK+'" stroke-width="3"/>';
+    if(marks){ const M=['l5 -9l5 9','v-10h7','l8 -9','h8l-8 -9','q5 -12 9 0','l4 -9l4 9l4 -9'];
+      for(let i=0;i<17;i++) s+='<path d="M'+f(x+w*0.06+i*w*0.053)+' '+f(y+bh*0.68)+M[i%6]+'" fill="none" stroke="#7A4B2A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'; }
+    return s;
+  }
+  function hairs(y0, n, col){ let s=''; for(let i=0;i<n;i++) s+='<path d="M-10 '+(y0+i*34)+'q330 '+(i%2?-16:16)+' 660 0" fill="none" stroke="'+col+'" stroke-width="7" stroke-linecap="round"/>'; return s; }
+  function cross(x, y, r){ return '<path d="M'+(x-r)+' '+(y-r)+'L'+(x+r)+' '+(y+r)+'M'+(x+r)+' '+(y-r)+'L'+(x-r)+' '+(y+r)+'" stroke="#C8452D" stroke-width="9" stroke-linecap="round"/>'; }
+  /* two friends for the first toy; step 0 to 5 */
+  function friends(step){
+    const near = step>=2, xa = near?236:180, xb = near?404:460, y=176, r=74;
+    const top = y-r*1.0;
+    const P = near ? [[xa,top-6],[xa,top-6],[xa+10,top-6],[xa+62,top+10],[xb-62,top+10],[xb,top-6]] : [[xa,top-6],[xa+40,top+2]];
+    const p = P[Math.min(step, P.length-1)];
+    return kid(xa,y,r,'#F1C9A5','#5A3B22',2)+kid(xb,y,r,'#C68E5E','#23232B',2)
+      +louse(p[0],p[1]-6,0.42)
+      +(step===1 ? A.text(320,60,22,'Too far! It cannot jump.') : '')
+      +(near && step<5 ? '<path d="M'+(xa+52)+' '+(top+16)+'q32 -14 64 0" fill="none" stroke="#FFD34D" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 10"/>'+A.text(320,top-20,18,'hair bridge') : '')
+      +(step>=5 ? A.text(320,40,22,'It crawled across!') : '');
+  }
+
+  window.SCENES = {
+    head(){
+      return A.frame(kid(170,170,96,'#F1C9A5','#5A3B22',0)
+        +'<circle cx="150" cy="92" r="5" fill="'+INK+'"/>'
+        +'<path d="M162 86L330 96" stroke="'+INK+'" stroke-width="3" stroke-dasharray="6 6"/>'
+        +'<circle cx="430" cy="130" r="100" fill="#FFF8E7" stroke="'+INK+'" stroke-width="6"/><path d="M500 204l54 56" stroke="'+INK+'" stroke-width="14" stroke-linecap="round"/>'
+        +'<path d="M340 150q90 -14 180 0" fill="none" stroke="#5A3B22" stroke-width="7" stroke-linecap="round"/>'
+        +louse(426,128,1.15)
+        +A.tag(330,246,160,'a head louse')+A.tag(26,16,224,'as small as a sesame seed'));
+    },
+    louse(){
+      return A.frame('<rect width="640" height="300" fill="#FFF8E7"/>'+hairs(54,2,'#8A6A4A')+hairs(232,2,'#8A6A4A')
+        +'<path d="M-10 222q330 -14 660 0" fill="none" stroke="#5A3B22" stroke-width="10" stroke-linecap="round"/>'
+        +louse(300,150,2)
+        +A.tag(30,20,90,'6 legs')+A.tag(486,246,90,'a claw')+'<path d="M486 258L412 232" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        +A.tag(30,250,84,'a hair')+'<path d="M114 258l40 -30" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>');
+    },
+    nojump(){
+      return A.frame(
+        '<g><path d="M70 150q50 -90 110 0" fill="none" stroke="'+INK+'" stroke-width="5" stroke-dasharray="4 10" stroke-linecap="round"/><path d="M40 156h170" stroke="#5A3B22" stroke-width="7" stroke-linecap="round"/>'+louse(66,136,0.4)+cross(125,112,30)+'</g>'+A.tag(64,186,120,'no jumping')
+        +'<g><ellipse cx="290" cy="104" rx="34" ry="16" fill="#fff" stroke="'+INK+'" stroke-width="3" transform="rotate(-24 290 104)"/><ellipse cx="350" cy="104" rx="34" ry="16" fill="#fff" stroke="'+INK+'" stroke-width="3" transform="rotate(24 350 104)"/>'+cross(320,108,30)+'</g>'+A.tag(268,186,104,'no wings')
+        +'<path d="M440 156h170" stroke="#5A3B22" stroke-width="7" stroke-linecap="round"/>'+louse(500,134,0.6)
+        +'<path d="M548 112h44m-13 -10l13 10l-13 10" fill="none" stroke="#1F9D6B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'+A.tag(462,186,126,'only crawling'));
+    },
+    anyone(){
+      return A.frame(kid(92,170,62,'#F1C9A5','#D9A441',1)+kid(244,170,62,'#8D5B3A','#23232B',2)+kid(396,170,62,'#E9B48A','#C8452D',0)+kid(548,170,62,'#C68E5E','#5A3B22',3)
+        +A.tag(200,20,240,'Anyone can get lice.')+A.text(320,278,18,'Clean hair or messy hair. Lice do not care!'));
+    },
+    nit(){
+      return A.frame('<rect width="640" height="300" fill="#FFF8E7"/>'
+        +'<path d="M-10 214L650 150" stroke="#5A3B22" stroke-width="22" stroke-linecap="round"/>'
+        +[[150,180],[250,170],[350,160]].map(p=>'<ellipse cx="'+p[0]+'" cy="'+(p[1]-2)+'" rx="22" ry="13" fill="#FFFDF2" stroke="'+INK+'" stroke-width="3" transform="rotate(-6 '+p[0]+' '+p[1]+')"/><ellipse cx="'+p[0]+'" cy="'+(p[1]+11)+'" rx="15" ry="5" fill="#F9C80E" transform="rotate(-6 '+p[0]+' '+p[1]+')"/>').join('')
+        +louse(500,94,1)
+        +A.tag(96,96,140,'nits (the eggs)')+'<path d="M166 124l-12 38" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        +A.tag(300,226,66,'glue')+'<path d="M334 226l12 -48" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        +A.tag(60,246,84,'a hair')+A.tag(420,20,170,'about 6 eggs a day'));
+    },
+    dig(){
+      return A.frame(A.sun(80,50)
+        +'<path d="M0 150Q160 110 320 150T640 140V300H0Z" fill="#E7C98F"/><path d="M0 206H640V300H0Z" fill="'+DIRT+'"/>'
+        +'<path d="M210 206Q320 290 430 206Z" fill="#7A5A3C"/>'
+        +comb(305,236,30,14,false)
+        +'<path d="M340 232L492 122" stroke="'+INK+'" stroke-width="3" stroke-dasharray="6 6"/>'
+        +'<circle cx="548" cy="88" r="68" fill="#FFF8E7" stroke="'+INK+'" stroke-width="5"/>'+comb(496,80,104,14,false)
+        +A.person(160,204,'#167C8A')+A.person(90,204,'#C8452D',true)
+        +'<path d="M168 190l34 22" stroke="'+INK+'" stroke-width="5" stroke-linecap="round"/><path d="M196 204l14 14l-10 6z" fill="#8E97A3" stroke="'+INK+'" stroke-width="2"/>'
+        +A.tag(190,40,212,'about 3,700 years old')+A.tag(490,166,116,'a tiny comb'));
+    },
+    letters(){
+      return A.frame('<rect width="640" height="300" fill="#EADBC3"/>'+comb(140,118,360,14,true)
+        +A.tag(520,130,108,'17 letters')
+        +A.tag(16,40,116,'6 thick teeth')+A.tag(16,222,120,'14 thin teeth'));
+    },
+    tryit(){
+      const w=300, x=170, y=96; let teeth='';
+      for(let i=0;i<20;i++) teeth+='<rect x="'+f(x+8+i*14.4)+'" y="'+(y+30)+'" width="8" height="64" rx="3" fill="#3FA7D6" stroke="'+INK+'" stroke-width="2"/>';
+      return A.frame('<rect width="640" height="300" fill="#FFF8E7"/>'+teeth+'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="40" rx="12" fill="#3FA7D6" stroke="'+INK+'" stroke-width="3"/>'
+        +'<rect y="226" width="640" height="74" fill="#D9A066"/>'+A.text(320,270,18,'1, 2, 3, 4, 5...','#fff')
+        +A.tag(210,30,220,'How many teeth? Count!'));
+    }
+  };
+
+  /* ===== the two things to play with ===== */
+  window.TOYS = {
+    bridge: {
+      title: 'Your turn: the hair bridge', cap: 'Tap the button to help the louse get to the other head.', hint: 'Help the louse get all the way across first.',
+      init(box, api){
+        let at=0;
+        const MSG=['The louse is on the first head. The other head is far away.','It tries to jump... Nope! A louse cannot jump or fly.','The two friends lean together. Their hair touches!','Now the louse can crawl. Step, step, step.','It is crawling over the hair bridge.','It made it! A louse only crawls. It needs heads to touch.'];
+        const LAB=['Try to jump','Heads together','Crawl!','Crawl!','Crawl!','Crawl!'];
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn"></button><div class="readout">Crawl steps: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), msg=box.querySelector('.msg'), out=box.querySelector('.out');
+        function draw(){ pic.innerHTML=A.frame(friends(at)); msg.textContent=MSG[at]; btn.textContent=LAB[at]; out.textContent=String(Math.max(0,at-2)); }
+        btn.onclick=()=>{ if(at>=5) return; at+=1; draw(); if(at>=5){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    comb: {
+      title: 'Your turn: carve the comb', cap: 'Tap the button to carve the thin teeth, 2 at a time. Count by 2s.', hint: 'Carve all 14 thin teeth first.',
+      init(box, api){
+        let n=0;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Carve 2 teeth</button><div class="readout">Thin teeth: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          pic.innerHTML=A.frame('<rect width="640" height="300" fill="#EADBC3"/>'+comb(150,118,340,n*2,false)
+            +A.tag(16,40,116,'6 thick teeth')+A.tag(16,222,104,'thin teeth'));
+          out.textContent=String(n*2);
+          msg.textContent = n===0 ? 'The thick teeth are done. Now carve the thin teeth!' : n<7 ? (n*2)+' thin teeth. Keep counting by 2s!' : '14 thin teeth. The comb is ready to catch lice!';
+        }
+        btn.onclick=()=>{ if(n>=7) return; n+=1; draw(); if(n>=7){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    }
+  };
+})();
+</script>
+<script src="../../assets/engine.js"></script>
+</body>
+</html>
