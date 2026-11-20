@@ -65,6 +65,19 @@
       "riddle": "comb",
       "golden": "6 x 4",
       "pw": "aHRlZVQga3N1VCBoc2lsa2NpVCBuZWV0cnVvRg=="
+    },
+    {
+      "n": 6,
+      "code": "LDK-006",
+      "date": "2026-11-20",
+      "week": "2026-W47",
+      "title": "The Footprints That Never Blow Away",
+      "path": "e/006/",
+      "theme": "Earth and space",
+      "topic": "Why the Apollo astronauts' footprints are still on the Moon (no air, no wind, no rain), the 12 people who walked there, and the 2026 flight around the Moon",
+      "riddle": "footsteps",
+      "golden": "6 x 3",
+      "pw": "c3Rvb0Igbm9vTSBnbmljbnVvQiBldmxld1Q="
     }
   ],
   "weeks": {

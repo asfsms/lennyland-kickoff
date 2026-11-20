@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenny's Daily Kickoff #6 · The Footprints That Never Blow Away</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/engine.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="../../assets/common.js"></script>
+<script>
+/* ===== Game 6: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 6, code: 'LDK-006', date: '2026-11-20', week: '2026-W47',
+  title: 'The Footprints That Never Blow Away',
+  theme: 'Earth and space',
+  pw: 'c3Rvb0Igbm9vTSBnbmljbnVvQiBldmxld1Q=',
+  lede: 'Stamp your foot in the sand at the beach. Tomorrow, your footprint is gone. But far, far away, there are footprints that are more than 50 years old!',
+  guess: { q: 'Astronauts have flown all the way to the Moon and walked on it. How many people do you think have EVER walked on the Moon?', answer: 12, close: 2 },
+  pages: [
+    { scene: 'beach',   text: 'At the beach, the wind blows the sand. Rain falls. Waves splash in. Whoosh! Your footprint is wiped away in no time.' },
+    { scene: 'rocket',  text: 'In July 1969, a giant rocket blasted off from Florida. It was **363 feet** tall! Three {astronauts|People who fly into space.} sat at the very top. They were going to the Moon.' },
+    { scene: 'landing', text: 'A few days later, Neil Armstrong and Buzz Aldrin climbed down a ladder and stepped onto the gray Moon dust. Nobody had EVER walked on the Moon before!' },
+    { toy: 'wait',      text: 'Their boots left {prints|Marks that something leaves when it presses down.} in the dust. Here is the wild part: those footprints are STILL there today! Your turn: see what happens to a footprint on Earth and on the Moon.' },
+    { scene: 'nowind',  text: 'Why? The Moon has almost no air. No air means no wind, and no rain either. So nothing blows the dust around, and nothing washes the footprints away.' },
+    { scene: 'photo',   text: 'How do we know? A robot spaceship that {orbits|Goes around and around something in space.} the Moon took photos. They show thin paths in the dust, right where the astronauts walked!' },
+    { scene: 'twelve',  text: 'More astronauts flew up after that, until 1972. But only **12 people** have ever walked on the Moon. Just 12, in all of history!', guessBack: true },
+    { toy: 'landers',   text: 'They went on 6 trips. Each time, 2 astronauts walked on the Moon, and 1 stayed up in the spaceship. Your turn: land all 6 and count the moonwalkers by 2s!' },
+    { scene: 'around',  text: 'Some other trips flew around the Moon without landing. So back then, 24 people flew to the Moon in all. Then, in April 2026, 4 more astronauts flew around it and came home! They did not land, so they left no footprints.',
+      quick: { q: 'Long ago, 24 people flew to the Moon. In 2026, 4 more people flew around it. How many people is that altogether?', expr: '24 + 4 =', answer: 28,
+               hint: 'Keep the tens. Just add the ones.', fb: '[[24 + 4 = 28]] people. That is about one school class, out of everybody on Earth!' } },
+    { scene: 'tryit',   text: '**Spot it in Brooklyn!** On a clear night, look up and find the Moon. Those footprints are up there right now! They are much too small to see, but you can wave anyway.',
+      bonus: 'Bonus fact: The astronauts carried home 842 pounds of Moon rocks. You can see real Moon rocks at the American Museum of Natural History in Manhattan.' }
+  ],
+  riddle: { q: 'The more of me you take, the more you leave behind. What am I?', accept: ['step', 'stap', 'foot', 'fut', 'print'], answer: 'footsteps',
+            hint: 'You take them when you walk. On the Moon, they leave marks in the dust.', explain: 'Footsteps! Every step you take leaves a footprint behind you. On the Moon, those footprints stay and stay.' },
+  shots: {
+    1: { q: 'Why are the astronauts\' footprints still on the Moon?',
+         opts: ['Because the astronauts used glue', 'Because the Moon has no wind and no rain', 'Because the Moon is made of cheese', 'Because somebody draws them again every night'], a: 1,
+         hint: 'Think about what wipes a footprint away at the beach.', fb: 'The Moon has almost no air, so it has no wind and no rain. Nothing blows the dust or washes the footprints away.' },
+    2: { q: 'How do we know the astronauts\' paths are still there?',
+         opts: ['A bird flew up to check', 'You can see them from a rooftop in Brooklyn', 'The Moon sent a postcard', 'A robot spaceship near the Moon took photos'], a: 3,
+         hint: 'The paths are much too small to see from Earth. Something had to get close.', fb: 'A robot spaceship that orbits the Moon took photos. They show thin paths where the astronauts walked.' },
+    order: { q: 'How did the first Moon trip go? Tap the cards in order, from first to last.',
+             cards: ['A giant rocket blasts off from Florida.', 'A few days later, the spaceship reaches the Moon.', 'Two astronauts climb down a ladder and step onto the dust.', 'The astronauts fly back home to Earth.'],
+             hint: 'Every space trip starts on the ground, with a rocket.', fb: 'First the rocket blasts off. A few days later the spaceship reaches the Moon. Two astronauts step onto the dust, and then everybody flies home.' },
+    math: { q: 'The old Moon rocket was 363 feet tall. The new Moon rocket from 2026 is 322 feet tall. How many feet taller was the old rocket?',
+            stack: ['363', '− 322'], answer: 41,
+            hint: 'Take away the ones first ([[3 − 2]]). Then take away the tens ([[6 − 2]]). Then the hundreds.',
+            fb: '[[363 − 322 = 41]] feet taller. Both rockets are taller than a building with 30 floors!' },
+    coach: { q: 'You are the coach! Tell your team: Why does a footprint at the beach disappear, but a footprint on the Moon stays?', starter: 'A footprint at the beach disappears because...',
+             ideas: ['on Earth, wind, rain and waves move the sand and wipe a footprint away', 'the Moon has almost no air, so it has no wind and no rain, and nothing moves the dust, so the footprints stay'],
+             rubric: ['I said wind, rain or waves wipe away a footprint on Earth.', 'I said the Moon has no wind and no rain.', 'I said that is why the footprints on the Moon are still there.'],
+             model: 'A footprint at the beach disappears because wind, rain and waves move the sand. The Moon has almost no air, so it has no wind and no rain. Nothing moves the dust, so the footprints are still there.' },
+    golden: { q: 'There were 6 trips that landed on the Moon. Each trip had 3 astronauts. How many astronauts is that altogether?', expr: '6 × 3 =', answer: 18,
+              hint: 'Six groups of 3. Count by 3s, six times.', fb: '[[6 × 3 = 18]] astronauts. On each trip 2 walked on the Moon and 1 stayed in the spaceship.' }
+  },
+  lesson: 'Today\'s story, "The Footprints That Never Blow Away": On Earth, wind, rain and waves wipe a footprint away fast. In July 1969 a rocket 363 feet tall blasted off from Florida with three astronauts on top. A few days later, Neil Armstrong and then Buzz Aldrin climbed down a ladder and became the first people to walk on the Moon. Their boots left footprints in the gray dust, and the footprints are still there. The Moon has almost no air, so it has no wind and no rain. Nothing moves the dust, so the prints could stay for millions of years. A robot spaceship that orbits the Moon took photos that show thin paths where astronauts walked. Astronauts landed on the Moon 6 times, from 1969 to 1972. Each time, 2 walked on the Moon and 1 stayed in the spaceship, so only 12 people have ever walked there. Other trips flew around the Moon without landing, so 24 people went in all. In April 2026, 4 more astronauts flew around the Moon without landing. The astronauts brought back 842 pounds of Moon rocks. Real Moon rocks are on show at the American Museum of Natural History in Manhattan.',
+  chips: ['Why does the Moon have no wind?', 'Can I see the footprints from Earth?', 'How long will the footprints stay?', 'Who was the first person on the Moon?', 'Tell me a Moon fact'],
+  helperQA: [
+    { q: 'Why does the Moon have no wind?', a: 'Wind is moving air, and the Moon has almost no air. So there is nothing to blow!' },
+    { q: 'Can I see the footprints from Earth?', a: 'No. They are much too small and too far away, even for a giant telescope. A robot spaceship close to the Moon took the photos.' }
+  ],
+  dinner: [
+    'The footprints astronauts left on the Moon in 1969 are still there, because the Moon has no wind and no rain.',
+    'Only 12 people have ever walked on the Moon, on 6 trips from 1969 to 1972.',
+    'In April 2026, 4 astronauts flew around the Moon and came home, the first people to travel there in more than 50 years.'
+  ],
+  notes: [
+    'Exact: the Saturn V rocket stood 363 feet tall and launched from the Kennedy Space Center in Florida. Apollo 11 launched on July 16, 1969 and landed on July 20; Neil Armstrong and Buzz Aldrin walked on the Moon while Michael Collins stayed in orbit. Six Apollo missions landed, from 1969 to 1972, each with three astronauts, two of whom went down to the surface: 12 moonwalkers in all. 24 people flew to the Moon during Apollo, and the missions brought back 842 pounds (382 kilograms) of rock and soil. NASA\'s Lunar Reconnaissance Orbiter photographed the landing sites; images released in 2011 show the trails the astronauts made on foot and the tracks of their rovers. Artemis II flew four astronauts around the Moon and back from April 1 to April 10, 2026, without landing. The Space Launch System rocket that carried them is 322 feet tall. The American Museum of Natural History says it has four Moon rocks on display.',
+    'Rounded or simplified: "almost no air" stands for the Moon\'s extremely thin outer layer of gas, far too thin to make wind or weather. "Still there today" is true for most of the footprints: scientists expect them to last many millions of years, but a few near the landers were probably disturbed when the astronauts blasted off again, and tiny space rocks and particles from the Sun wear the surface down extremely slowly. The orbiter photos show trails, not single boot prints; in the picture the trails are drawn darker than the ground, as they look in the photos. The total of 28 Moon travelers simply adds the 24 Apollo astronauts and the 4 Artemis II astronauts, who are all different people. The 18 astronauts in the Golden Goal are the crews of the six landing missions, also all different people. In the first toy the footprint on Earth fades over three "days"; a real one may vanish faster or slower. In the second toy the six landers stand side by side, but the real landing sites are far apart. "Taller than a building with 30 floors" counts about 10 feet for each floor.',
+    'Left out: the Space Race between countries, the Apollo 1 accident and the Apollo 13 emergency are not mentioned. Three more Apollo crews flew to the Moon without landing (Apollo 8, 10 and 13). Nine crews of three make 27 seats, and three astronauts flew to the Moon twice, which is why 24 people went but only 12 walked. The flags the astronauts planted are left out, because nobody is sure what they look like now. No words are put in any astronaut\'s mouth.'
+  ],
+  sources: [
+    { t: 'Encyclopaedia Britannica: Apollo space program', u: 'https://www.britannica.com/science/Apollo-space-program' },
+    { t: 'Space.com: Saturn V, the mighty U.S. moon rocket', u: 'https://www.space.com/saturn-v-rocket-guide-apollo' },
+    { t: 'Arizona State University News: new orbiter images offer sharper views of Apollo sites', u: 'https://news.asu.edu/content/new-lroc-images-offer-sharper-views-apollo-12-14-17-sites' },
+    { t: 'Space.com: Apollo footprints still on the Moon', u: 'https://www.space.com/35352-eugene-cernan-moon-legacy-footprints.html' },
+    { t: 'American Museum of Natural History: Moon rock', u: 'https://www.amnh.org/exhibitions/permanent/the-universe/the-moon/moon-rock' }
+  ]
+};
+
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART;
+  const INK = '#1E2140', GRAY = '#A9ADB8', GRAY2 = '#8A8E9B', DARK = '#0E1838', SAND = '#F2D9A0', GOLD = '#E0A93B', SUIT = '#FFFFFF';
+  const f = n => (+n).toFixed(1);
+  function stars(pts){ return pts.map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2" fill="#FFF6C9"/>').join(''); }
+  const STARS = [[40,30],[110,70],[170,24],[250,52],[330,22],[392,64],[470,30],[604,84],[560,26],[30,110],[300,100]];
+  /* gray Moon ground from y down, with a few craters */
+  function moonGround(y, x0, x1){
+    const a = x0||0, b = x1||640, w=b-a;
+    return '<rect x="'+a+'" y="'+y+'" width="'+w+'" height="'+(300-y)+'" fill="'+GRAY+'"/>'
+      +[[0.14,26,30],[0.5,60,22],[0.85,34,26]].map(c=>'<ellipse cx="'+f(a+w*c[0])+'" cy="'+(y+c[1])+'" rx="'+c[2]+'" ry="7" fill="'+GRAY2+'"/>').join('');
+  }
+  /* a boot print; (cx, cy) is its middle, s = size, op = how clear it is (0 to 1) */
+  function boot(cx, cy, s, col, op){
+    let t='';
+    for(let i=0;i<4;i++) t+='<path d="M'+f(cx-9*s)+' '+f(cy-26*s+i*10*s)+'h'+f(18*s)+'" stroke="#fff" stroke-opacity="0.45" stroke-width="'+f(3*s)+'" stroke-linecap="round"/>';
+    return '<g opacity="'+op+'"><rect x="'+f(cx-14*s)+'" y="'+f(cy-34*s)+'" width="'+f(28*s)+'" height="'+f(46*s)+'" rx="'+f(13*s)+'" fill="'+col+'"/>'
+      +'<rect x="'+f(cx-12*s)+'" y="'+f(cy+16*s)+'" width="'+f(24*s)+'" height="'+f(18*s)+'" rx="'+f(8*s)+'" fill="'+col+'"/>'+t+'</g>';
+  }
+  /* an astronaut in a plain white suit, feet at (x, y); the gold visor hides the face */
+  function astro(x, y, s, wave){
+    const sw=f(Math.max(1.5,2.6*s));
+    return '<g stroke="'+INK+'" stroke-width="'+sw+'" stroke-linejoin="round">'
+      +'<rect x="'+f(x-15*s)+'" y="'+f(y-60*s)+'" width="'+f(30*s)+'" height="'+f(32*s)+'" rx="'+f(5*s)+'" fill="#C9CED6"/>'
+      +'<rect x="'+f(x-11*s)+'" y="'+f(y-26*s)+'" width="'+f(9*s)+'" height="'+f(26*s)+'" rx="'+f(3*s)+'" fill="'+SUIT+'"/><rect x="'+f(x+2*s)+'" y="'+f(y-26*s)+'" width="'+f(9*s)+'" height="'+f(26*s)+'" rx="'+f(3*s)+'" fill="'+SUIT+'"/>'
+      +'<path d="M'+f(x-12*s)+' '+f(y-46*s)+'l'+f(-10*s)+' '+f(18*s)+'" stroke-width="'+f(9*s)+'" stroke-linecap="round"/><path d="M'+f(x-12*s)+' '+f(y-46*s)+'l'+f(-10*s)+' '+f(18*s)+'" stroke="'+SUIT+'" stroke-width="'+f(5.5*s)+'" stroke-linecap="round"/>'
+      +'<path d="M'+f(x+12*s)+' '+f(y-46*s)+'l'+f(10*s)+' '+f((wave?-20:18)*s)+'" stroke-width="'+f(9*s)+'" stroke-linecap="round"/><path d="M'+f(x+12*s)+' '+f(y-46*s)+'l'+f(10*s)+' '+f((wave?-20:18)*s)+'" stroke="'+SUIT+'" stroke-width="'+f(5.5*s)+'" stroke-linecap="round"/>'
+      +'<rect x="'+f(x-12*s)+'" y="'+f(y-54*s)+'" width="'+f(24*s)+'" height="'+f(32*s)+'" rx="'+f(6*s)+'" fill="'+SUIT+'"/>'
+      +'<circle cx="'+f(x)+'" cy="'+f(y-65*s)+'" r="'+f(14*s)+'" fill="'+SUIT+'"/>'
+      +'<ellipse cx="'+f(x)+'" cy="'+f(y-65*s)+'" rx="'+f(9.5*s)+'" ry="'+f(7.5*s)+'" fill="'+GOLD+'" stroke-width="'+f(Math.max(1,1.6*s))+'"/></g>';
+  }
+  /* the little landing ship, feet on the line y */
+  function lander(x, y, s){
+    const sw=f(Math.max(1.5,2.6*s));
+    return '<g stroke="'+INK+'" stroke-width="'+sw+'" stroke-linecap="round" stroke-linejoin="round">'
+      +'<path d="M'+f(x-16*s)+' '+f(y-22*s)+'L'+f(x-32*s)+' '+f(y-2*s)+'M'+f(x+16*s)+' '+f(y-22*s)+'L'+f(x+32*s)+' '+f(y-2*s)+'M'+f(x-40*s)+' '+f(y-1*s)+'h'+f(16*s)+'M'+f(x+24*s)+' '+f(y-1*s)+'h'+f(16*s)+'" fill="none"/>'
+      +'<rect x="'+f(x-22*s)+'" y="'+f(y-36*s)+'" width="'+f(44*s)+'" height="'+f(18*s)+'" rx="'+f(3*s)+'" fill="'+GOLD+'"/>'
+      +'<rect x="'+f(x-15*s)+'" y="'+f(y-60*s)+'" width="'+f(30*s)+'" height="'+f(24*s)+'" rx="'+f(7*s)+'" fill="#DDE1E8"/>'
+      +'<circle cx="'+f(x)+'" cy="'+f(y-48*s)+'" r="'+f(5*s)+'" fill="'+INK+'"/></g>';
+  }
+  function earth(cx, cy, r){
+    return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#3FA7D6" stroke="'+INK+'" stroke-width="3"/>'
+      +'<ellipse cx="'+f(cx-r*0.3)+'" cy="'+f(cy-r*0.25)+'" rx="'+f(r*0.34)+'" ry="'+f(r*0.26)+'" fill="#57B36A"/><ellipse cx="'+f(cx+r*0.3)+'" cy="'+f(cy+r*0.3)+'" rx="'+f(r*0.28)+'" ry="'+f(r*0.2)+'" fill="#57B36A"/>'
+      +'<ellipse cx="'+f(cx+r*0.2)+'" cy="'+f(cy-r*0.55)+'" rx="'+f(r*0.3)+'" ry="'+f(r*0.1)+'" fill="#fff"/>';
+  }
+  function moonBall(cx, cy, r){
+    return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#DADDE4" stroke="'+INK+'" stroke-width="3"/>'
+      +'<circle cx="'+f(cx-r*0.3)+'" cy="'+f(cy-r*0.2)+'" r="'+f(r*0.2)+'" fill="'+GRAY+'"/><circle cx="'+f(cx+r*0.35)+'" cy="'+f(cy+r*0.25)+'" r="'+f(r*0.16)+'" fill="'+GRAY+'"/><circle cx="'+f(cx+r*0.1)+'" cy="'+f(cy-r*0.55)+'" r="'+f(r*0.1)+'" fill="'+GRAY+'"/>';
+  }
+  /* the tall Moon rocket standing on the line y; h = its height */
+  function rocket(x, y, h){
+    const w=h*0.085;
+    return '<g stroke="'+INK+'" stroke-width="3" stroke-linejoin="round">'
+      +'<path d="M'+f(x-w)+' '+y+'l'+f(-w*0.9)+' 0l'+f(w*0.9)+' '+f(-h*0.14)+'zM'+f(x+w)+' '+y+'l'+f(w*0.9)+' 0l'+f(-w*0.9)+' '+f(-h*0.14)+'z" fill="'+INK+'"/>'
+      +'<rect x="'+f(x-w)+'" y="'+f(y-h*0.62)+'" width="'+f(w*2)+'" height="'+f(h*0.62)+'" fill="#fff"/>'
+      +'<rect x="'+f(x-w)+'" y="'+f(y-h*0.3)+'" width="'+f(w*2)+'" height="'+f(h*0.05)+'" fill="'+INK+'"/><rect x="'+f(x-w)+'" y="'+f(y-h*0.62)+'" width="'+f(w*2)+'" height="'+f(h*0.05)+'" fill="'+INK+'"/>'
+      +'<path d="M'+f(x-w)+' '+f(y-h*0.62)+'L'+f(x-w*0.55)+' '+f(y-h*0.72)+'V'+f(y-h*0.86)+'L'+f(x)+' '+f(y-h*0.93)+'L'+f(x+w*0.55)+' '+f(y-h*0.86)+'V'+f(y-h*0.72)+'L'+f(x+w)+' '+f(y-h*0.62)+'Z" fill="#fff"/>'
+      +'<path d="M'+f(x)+' '+f(y-h*0.93)+'V'+f(y-h)+'" stroke-width="3" stroke-linecap="round"/></g>';
+  }
+  /* one footprint on Earth sand (left) and one on the Moon (right); step 0 to 4 */
+  function twoPrints(step){
+    const op=[1,0.62,0.3,0.08,0][step];
+    let fx='';
+    if(step===1) fx='<path d="M40 150q30 -16 60 0t60 0M60 186q30 -16 60 0t60 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>'+A.text(160,128,18,'wind');
+    if(step===2){ for(let i=0;i<7;i++) fx+='<path d="M'+(52+i*36)+' 112l-8 26" stroke="#3FA7D6" stroke-width="5" stroke-linecap="round"/>'; fx+=A.text(160,100,18,'rain'); }
+    if(step===3) fx='<path d="M0 232q40 -22 80 0t80 0t80 0t80 0V300H0Z" fill="#3FA7D6" opacity="0.75"/>'+A.text(160,128,18,'a wave');
+    return '<rect x="0" y="150" width="320" height="150" fill="'+SAND+'"/>'
+      +'<rect x="320" y="0" width="320" height="300" fill="'+DARK+'"/>'+stars([[360,40],[430,76],[500,30],[584,64],[620,110],[350,118]])+moonGround(150,320,640)
+      +boot(160,222,1.3,'#B98B52',op)+fx
+      +boot(480,222,1.3,'#5F6370',1)
+      +'<path d="M320 0V300" stroke="'+INK+'" stroke-width="4"/>'
+      +A.tag(100,16,120,'on Earth')+A.tag(410,16,140,'on the Moon')
+      +(step>=4 ? A.text(160,232,22,'Gone!')+A.text(480,110,22,'Still there!','#fff') : '');
+  }
+  /* six landing ships in a row; n = how many have landed */
+  function sixLanders(n){
+    const YEARS=['1969','1969','1971','1971','1972','1972']; let s='';
+    for(let i=0;i<6;i++){
+      const x=70+i*100;
+      if(i<n) s+=lander(x,214,0.62)+astro(x-28,250,0.5)+astro(x+28,250,0.5,true)+A.text(x,284,16,YEARS[i],'#fff');
+      else s+='<ellipse cx="'+x+'" cy="232" rx="30" ry="9" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="6 6"/>';
+    }
+    return stars(STARS)+earth(566,56,30)+'<rect y="190" width="640" height="110" fill="'+GRAY2+'"/>'+s;
+  }
+
+  window.SCENES = {
+    beach(){
+      return A.frame(A.sun(560,48)
+        +'<rect y="118" width="640" height="70" fill="#3FA7D6"/><path d="M0 188q40 -18 80 0t80 0t80 0t80 0t80 0t80 0t80 0t80 0V200H0Z" fill="#fff"/>'
+        +'<rect y="192" width="640" height="108" fill="'+SAND+'"/>'
+        +boot(150,244,0.95,'#B98B52',1)+boot(320,244,0.95,'#B98B52',0.45)+boot(490,244,0.95,'#B98B52',0.12)
+        +'<path d="M70 70q30 -16 60 0t60 0M110 100q30 -16 60 0t60 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>'
+        +A.tag(40,22,170,'wind, rain, waves')+A.tag(108,146,84,'going...')+A.tag(278,146,84,'going...')+A.tag(454,146,72,'gone!'));
+    },
+    rocket(){
+      return A.frame(A.sun(80,52)
+        +'<rect y="262" width="640" height="38" fill="#57B36A"/>'
+        +'<rect x="226" y="60" width="22" height="202" fill="#C8452D" stroke="'+INK+'" stroke-width="3"/><path d="M248 96h40M248 150h40M248 204h40" stroke="'+INK+'" stroke-width="5"/>'
+        +rocket(320,262,236)
+        +'<path d="M420 28V262M408 28h24M408 262h24" stroke="'+INK+'" stroke-width="4" stroke-linecap="round"/>'
+        +A.tag(440,130,130,'363 feet tall')
+        +A.tag(30,110,180,'3 astronauts up here')+'<path d="M210 118L306 58" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>');
+    },
+    landing(){
+      return A.frame(stars(STARS)+earth(540,62,34)+moonGround(206)
+        +lander(150,218,1.5)
+        +'<path d="M196 164L226 218M208 164L238 218M201 173h12M207 184h12M213 195h12M219 206h12" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        +boot(286,246,0.3,'#5F6370',1)+boot(322,262,0.3,'#5F6370',1)+boot(360,246,0.3,'#5F6370',1)+boot(398,262,0.3,'#5F6370',1)
+        +astro(458,252,1.25,true)
+        +A.tag(24,20,104,'July 1969')+A.tag(250,104,110,'footprints')+'<path d="M300 132l14 96" stroke="#fff" stroke-width="3" stroke-linecap="round"/>'
+        +A.tag(488,104,70,'Earth'), true);
+    },
+    nowind(){
+      return A.frame('<rect x="0" y="170" width="320" height="130" fill="'+SAND+'"/>'
+        +'<ellipse cx="110" cy="92" rx="56" ry="24" fill="#fff"/><ellipse cx="150" cy="78" rx="40" ry="22" fill="#fff"/>'
+        +[0,1,2,3].map(i=>'<path d="M'+(80+i*26)+' 122l-8 26" stroke="#3FA7D6" stroke-width="5" stroke-linecap="round"/>').join('')
+        +'<path d="M200 120q26 -14 52 0t52 0M214 150q22 -12 44 0t44 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>'
+        +boot(160,236,0.9,'#B98B52',0.22)
+        +'<rect x="320" y="0" width="320" height="300" fill="'+DARK+'"/>'+stars([[360,60],[430,96],[500,56],[584,84],[620,130],[350,138]])+moonGround(170,320,640)
+        +boot(480,236,0.9,'#5F6370',1)
+        +'<path d="M320 0V300" stroke="'+INK+'" stroke-width="4"/>'
+        +A.tag(50,16,220,'Earth: air, wind and rain')+A.tag(366,16,228,'Moon: no wind, no rain'));
+    },
+    photo(){
+      return A.frame('<rect width="640" height="300" fill="'+GRAY+'"/>'
+        +[[90,230,34],[560,210,40],[470,60,22],[250,262,18]].map(c=>'<circle cx="'+c[0]+'" cy="'+c[1]+'" r="'+c[2]+'" fill="'+GRAY2+'"/><circle cx="'+(c[0]+4)+'" cy="'+(c[1]+4)+'" r="'+(c[2]-6)+'" fill="#B9BDC7"/>').join('')
+        +'<path d="M330 160q40 -50 110 -40q50 10 70 60M330 160q-50 30 -120 20q-40 -6 -70 20M330 160q10 50 70 80" fill="none" stroke="#4A4C58" stroke-width="5" stroke-linecap="round" stroke-dasharray="3 9"/>'
+        +'<rect x="318" y="150" width="28" height="28" fill="#4A4C58"/><rect x="312" y="144" width="26" height="26" fill="#FFF8E7" stroke="'+INK+'" stroke-width="3"/>'
+        +'<rect x="16" y="16" width="190" height="104" rx="12" fill="'+DARK+'" stroke="'+INK+'" stroke-width="3"/>'
+        +'<rect x="40" y="38" width="38" height="22" fill="#3FA7D6" stroke="#fff" stroke-width="2"/><rect x="142" y="38" width="38" height="22" fill="#3FA7D6" stroke="#fff" stroke-width="2"/><rect x="82" y="32" width="56" height="34" rx="6" fill="'+GOLD+'" stroke="#fff" stroke-width="2"/><circle cx="110" cy="72" r="7" fill="#fff"/>'
+        +A.text(111,106,16,'robot spaceship','#fff')
+        +A.tag(226,104,116,'the lander')+'<path d="M300 132l22 14" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        +A.tag(352,246,264,'paths where astronauts walked'));
+    },
+    twelve(){
+      let row=''; for(let i=0;i<12;i++) row+=astro(52+i*48.7,262,0.62,i%2===1);
+      return A.frame(stars(STARS)+earth(566,56,30)+'<rect y="214" width="640" height="86" fill="'+GRAY2+'"/>'+row
+        +A.text(320,112,84,'12','#FFD34D')+A.tag(180,132,280,'people have walked on the Moon'), true);
+    },
+    around(){
+      return A.frame(stars([[250,30],[330,270],[420,40],[40,40],[600,270],[200,270],[620,30]])
+        +'<path d="M150 150C260 60 440 40 540 80A52 52 0 0 1 540 220C440 250 260 240 150 170" fill="none" stroke="#FFD34D" stroke-width="4" stroke-dasharray="4 10" stroke-linecap="round"/>'
+        +earth(100,160,70)+moonBall(520,150,40)
+        +'<path d="M318 60l34 13l-34 13z" fill="#fff" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
+        +A.tag(238,100,180,'4 astronauts, 2026')
+        +A.tag(60,246,80,'Earth')+A.tag(474,246,92,'the Moon'), true);
+    },
+    tryit(){
+      return A.frame(stars([[40,30],[110,70],[170,24],[250,52],[330,22],[30,110],[300,100],[600,150]])
+        +moonBall(500,84,50)
+        +A.skyline(20,[70,110,84,130,96,60,120,90,74,104,66,88,112,70,96,120,80,100,64,90,110,76,98,84,70,106,92],'#070B1F',262)
+        +[[50,200],[96,170],[142,190],[188,220],[234,176],[280,214],[372,196],[418,222],[556,190],[602,214]].map(w=>'<rect x="'+w[0]+'" y="'+w[1]+'" width="8" height="10" fill="#FFD34D"/>').join('')
+        +'<rect y="262" width="640" height="38" fill="#070B1F"/>'
+        +'<rect x="296" y="236" width="92" height="26" fill="#3A2A22"/>'+A.person(342,236,'#F9C80E',true)
+        +A.tag(40,40,250,'Wave at the footprints!'), true);
+    }
+  };
+
+  /* ===== the two things to play with ===== */
+  window.TOYS = {
+    wait: {
+      title: 'Your turn: the waiting game', cap: 'Tap the button to wait. Watch both footprints.', hint: 'Keep waiting until one footprint is gone.',
+      init(box, api){
+        let at=0;
+        const MSG=['Two fresh footprints: one in beach sand on Earth, one in dust on the Moon.','Day 1. On Earth, the wind blows the sand. On the Moon: no wind!','Day 2. On Earth, rain falls. On the Moon: no rain!','Day 3. On Earth, a wave rolls in. On the Moon: no waves!','On Earth the footprint is gone. On the Moon it looks brand new, even after 50 years!'];
+        const LAB=['Wait a day','Wait a day','Wait a day','Wait 50 years!','Done!'];
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn"></button><div class="readout">Waits: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), msg=box.querySelector('.msg'), out=box.querySelector('.out');
+        function draw(){ pic.innerHTML=A.frame(twoPrints(at)); msg.textContent=MSG[at]; btn.textContent=LAB[at]; out.textContent=String(at); }
+        btn.onclick=()=>{ if(at>=4) return; at+=1; draw(); if(at>=4){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    landers: {
+      title: 'Your turn: land all 6', cap: 'Tap the button to land a ship. Each ship brings 2 moonwalkers. Count by 2s!', hint: 'Land all 6 ships first.',
+      init(box, api){
+        let n=0;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Land a ship</button><div class="readout">Moonwalkers: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          pic.innerHTML=A.frame(sixLanders(n), true);
+          out.textContent=String(n*2);
+          msg.textContent = n===0 ? 'The Moon is empty. Land the first ship!' : n<6 ? n+(n===1?' ship':' ships')+', '+(n*2)+' moonwalkers. Keep counting by 2s!' : '6 ships, 12 moonwalkers. That is everybody who has ever walked on the Moon!';
+        }
+        btn.onclick=()=>{ if(n>=6) return; n+=1; draw(); if(n>=6){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    }
+  };
+})();
+</script>
+<script src="../../assets/engine.js"></script>
+</body>
+</html>
