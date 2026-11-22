@@ -1,6 +1,6 @@
 # Builder instructions: one new game per school day
 
-You are building the next game of **Lenny's Daily Kickoff**, a 10-minute learning game for a second grader
+You are building the next game of **Lenny's Daily Kickoff**, a 12-minute learning game for a second grader
 (about 7 years old) in Bed-Stuy, Brooklyn. Friends of the same age play too. Nobody reviews your work before
 children see it, so follow every rule here and publish only a game that passes the checker.
 
@@ -40,7 +40,8 @@ feedback you get. If this session has no tool to search Gmail, skip this step an
 
    `KICKOFF|LDK-NNN|YYYY-MM-DD|name|goals=N|shots=N|firsts=XXXX|coach=N|golden=X|riddle=X|late=X|rating=N|why=word|streak=N|total=N`
 
-   - `firsts`: four digits for shots 1, 2, the order task and the math, `1` = right on the first try.
+   - `firsts`: four to six digits for shots 1, 2, the order task and the math, then, from game 7 on, the hard
+     numbers and the brain teaser. `1` = right on the first try. Write the pattern's `XXXX` as four to six digits.
    - `coach`: stars, 0 to 3. `golden`: `1` right, `0` wrong, `s` skipped. `riddle`: `1` right.
    - `rating`: 1 to 5, or empty. `why`, after 4 or 5 stars: `story`, `toys`, `riddle`, `math`, `right`, `wild`.
      After 1 to 3 stars: `easy`, `hardmath`, `reading`, `boring`, `long`, `broken`. It can be empty.
@@ -57,8 +58,8 @@ feedback you get. If this session has no tool to search Gmail, skip this step an
 |---|---|
 | A theme keeps getting 4 or 5 stars | Lean toward it when the theme rules leave you a choice |
 | A theme keeps getting 1 to 3 stars, or `boring` | Rest it for a week unless the weekly rules need it, and pick a topic with a stronger hook |
-| `easy`, or the math and the Golden Goal are right first try in most results | Use the hard end of what is allowed: three-digit numbers in the math, a Golden Goal from 6 × 3 to 6 × 6 or 5 × 6 to 5 × 9, 5 cards in the order task, a trickier riddle |
-| `hardmath`, or the math is missed and the Golden Goal is wrong or skipped in most results | Use the easy end: two-digit numbers, a Golden Goal from the ×2 or ×10 table, a hint that shows the first step |
+| `easy`, or the math, the hard numbers and the Golden Goal are right first try in most results | Use the hard end of what is allowed: three-digit numbers in the math, hard numbers that carry in two columns, 5 cards in the order task, a trickier riddle and brain teaser |
+| `hardmath`, or the hard numbers are missed and the Golden Goal is wrong or skipped in most results | Use the easy end: two-digit hard numbers with one carry, a Golden Goal from the ×2 or ×10 table, a hint that shows the first step |
 | `reading` or `long` | Write 230 to 280 words, with shorter sentences and more tappable words |
 | `story`, `toys`, `riddle`, `wild`, `right` | Look at the best-rated games and keep doing what they did |
 | `broken` | You cannot change the engine. Say so at the top of your report |
@@ -71,27 +72,63 @@ feedback you get. If this session has no tool to search Gmail, skip this step an
 ## Step 2: pick the topic
 
 Every day is a surprise. Choose one topic with a hook that makes a 7-year-old say "wait, WHAT?".
+Several children play, with different hobbies. Ask of every topic: would a child who does not care about this
+sport, this band or this animal still want to know how it ends?
 
 Themes (use these exact names in `theme`):
 
-- How things work
-- Animals
-- Bed-Stuy, Brooklyn and New York
-- America
-- Jewish traditions next to other traditions
-- Earth and space
-- Soccer science
+| Theme | What belongs here |
+|---|---|
+| How things work | Machines, buildings, everyday objects, how a video game is made, things that were improved step by step |
+| Physics you can feel | Forces, motion, sound, light, heat, electricity, magnets, shown through something a child can try |
+| Bed-Stuy, Brooklyn and New York | The whole city: bridges, subways, skyscrapers, water, parks, neighborhoods, city history |
+| Amazing people | A real person, or a team of people, who did something amazing: inventors, explorers, builders, musicians, cooks, athletes, children |
+| Music | How an instrument makes its sound (the electric guitar is a good one), how a famous riff or record was made, true stories of bands |
+| Food around the world | Which dish comes from which cuisine, where an ingredient grows, how a spice travelled, why bread rises, how a restaurant kitchen works |
+| Sports science | Soccer, baseball and other sports: why a ball curves, how gear was improved, records |
+| Animals | Only with a real story (see "Story shape" below) |
+| Earth and space | Weather, oceans, rocks, the Moon, planets, stars |
+| America | Places, inventions and true stories from the United States |
+| Jewish traditions next to other traditions | A Jewish tradition, then what other traditions do that is similar. Use it near the holiday it belongs to |
+| Traditions around the world | How different cultures mark the same thing: weddings, birthdays, new year, a first day of school, a shared meal |
 
-Rules:
+Rules for the mix:
 
-- Never the same theme as the previous game. Never repeat a past `topic` or `title`.
-- Within each school week, include at least one "Bed-Stuy, Brooklyn and New York" day and one "Animals" day.
-  Check which the week already has, and use the last days of the week to fill what is missing.
+- Never the same theme as the previous game, and no theme twice in one school week.
+- Each school week has one "Bed-Stuy, Brooklyn and New York" day.
+- At most one "Sports science" day and one "Animals" day in a school week. Sport is a treat, not the main course.
+- Each school week has at least one "How things work" or "Physics you can feel" day.
+- Across any two weeks, use at least six different themes. A theme that has never been used goes first.
+- Never repeat a past `topic` or `title`.
 - The best topics mix two themes in one true story (the first game mixed Brooklyn, animals and how a bridge works).
-- "Jewish traditions next to other traditions" is told so any child can play: describe the tradition, then show
-  what other traditions do that is similar. Descriptive and warm, never "which one is right". Use it near the
-  holidays it belongs to.
-- Prefer a real story, a real number and something the child can spot in Brooklyn or try at home.
+- Both tradition themes are told so any child can play: descriptive and warm, never "which one is right".
+- Prefer a real story, a real number, and something the child can spot in New York or try at home.
+
+### Story shape
+
+What has worked so far, and what has not:
+
+- **Worked:** how a thing everybody knows got better, one fix at a time (the soccer ball). The child sees a
+  problem, a try, a better try.
+- **Worked:** a big thing nearby with a test or a toy (the bridge). The child pointed it out in real life later.
+  A topic is strongest when the child will meet it again outside.
+- **Fell flat:** an animal story that was mostly facts with one event in it. The story itself was called boring.
+
+So every story needs a problem, at least two tries or surprises, and a payoff. A list of facts about a subject is
+not a story. Open with the problem, not with a description. If a topic cannot be told that way, pick another.
+
+### Ideas shelf
+
+Starting points only. Check every fact, and use each one once.
+
+- How a video game is made: who draws it, how a character is told to jump, why games are tested for months
+- Why a curveball curves; why a soccer ball swerves; how a baseball is stitched
+- How an electric guitar makes sound with magnets and wire; how four notes became a riff every learner plays
+- How a famous band recorded a song with tricks nobody had tried; how a record or a speaker turns wiggles into sound
+- Wedding traditions around the world: clothes, music, food, dances and customs
+- Where pizza, bagels, dumplings, hummus, tacos or noodles come from; how one ingredient crossed the world
+- The subway, elevators in skyscrapers, the wooden water towers on New York roofs, where the city's water comes from
+- People: the engineer who finished a famous bridge, a child inventor, a cook who changed how a city eats
 
 ## Step 3: check the facts
 
@@ -143,12 +180,17 @@ the same `<head>`, the same three script tags in the same order. Replace only th
 - 2 to 4 tricky words across the story get a `{word|meaning}`. Meanings are one short, plain sentence.
 - No emoji. American English.
 - Pages 1 to 5 are the first half, pages 6 to 10 the second half.
-- Each page has `scene: '<name>'` (a picture) or `toy: '<name>'` (something to play with). One toy in each half.
+- Each page has `scene: '<name>'` (a picture) or `toy: '<name>'` (something to play with). The story has
+  **three toys**: at least one in each half, each on its own page, never on two pages in a row.
+- There is no read-aloud button. The child reads every word alone, so use words a second grader can sound out,
+  and give the hard ones a tappable meaning. The game got longer through more play, not more reading: keep to
+  the word limits above.
 - Exactly one page, in the second half, has `guessBack: true`. It is the first page that states the guess answer.
   The answer must not appear in the title, the opening or any earlier page.
 - One page in the second half has a `quick` check: a typed sum from the story's own numbers, within 100, with no
   carrying or borrowing. Fields: `q`, `expr` (like `'21 + 17 ='`), `answer`, `hint`, `fb`.
-- The last page starts with `**Spot it in Brooklyn!**` or `**Try it at home!**` and may add a `bonus` fact.
+- The last page starts with `**Spot it in Brooklyn!**`, `**Spot it in New York!**` or `**Try it at home!**` and
+  may add a `bonus` fact.
 
 ### The shootout
 
@@ -158,7 +200,27 @@ the same `<head>`, the same three script tags in the same order. Replace only th
 | `order` | 3 to 5 `cards` written in the correct order (the engine shuffles them), `q`, `hint`, `fb` |
 | `math` | Real numbers from the story. Adding or subtracting two- or three-digit numbers with no carrying or borrowing in any column, result under 1,000. `q`, `stack` (like `['276', '− 135']`) or `expr`, `answer`, `hint`, `fb` |
 | `coach` | "You are the coach!" question that asks the child to explain the day's big idea in a sentence or two. `ideas`: the 2 key ideas; `rubric`: 3 "I said..." lines; `model`: a 2 to 3 sentence answer in a child's words; `starter` |
-| `golden` | One multiplication fact wrapped in the story: from the ×2, ×5 or ×10 tables (up to ×10), or the ×6 table up to 6 × 6. Do not repeat a `golden` used in the last 5 games. `q`, `expr`, `answer`, `hint`, `fb` |
+| `extra` | Extra time: a list of exactly two more shots, played after shot 5. See below |
+| `golden` | One multiplication fact wrapped in the story: from the ×2, ×5 or ×10 tables (up to ×10), or the ×6 table up to 6 × 6. Prefer the harder facts (6 × 3 to 6 × 6, 5 × 6 to 5 × 9, 2 × 7 to 2 × 9). Do not repeat a `golden` used in the last 5 games. `q`, `expr`, `answer`, `hint`, `fb` |
+
+Extra time (`shots.extra`), in this order:
+
+| Entry | Rules |
+|---|---|
+| `{ kind: 'num', ... }` | **Hard numbers.** An addition with real numbers from the story that needs **carrying** in one or two columns: two two-digit numbers, or a three-digit number plus a two- or three-digit number, sum under 1,000 (like [[58 + 67]] or [[363 + 148]]). `q`, `stack` (like `['363', '+ 148']`) or `expr`, `answer`, `hint`, `fb`. The hint shows the first step: add the ones, write one digit, carry the ten. Subtraction still never needs borrowing anywhere in the game |
+| `{ kind: 'tap', ... }` | **Brain teaser.** A small logic puzzle tied to the story: what comes next in a pattern, which one does not belong, who is standing where. Exactly one option is certainly right. `q`, exactly 4 `opts`, `a`, `hint`, `fb` |
+
+Games 1 to 6 were built before extra time and have two toys and no `extra`, so the file you copy will not show
+them. Write `extra` inside `shots`, just before `golden`, like this:
+
+```js
+extra: [
+  { kind: 'num', q: 'Hard numbers! ...?', stack: ['363', '+ 148'], answer: 511,
+    hint: 'Start with the ones: [[3 + 8 = 11]]. Write the 1 and carry 1 ten.', fb: '[[363 + 148 = 511]] feet.' },
+  { kind: 'tap', q: 'Brain teaser! ...?', opts: ['...', '...', '...', '...'], a: 1,
+    hint: '...', fb: '...' }
+],
+```
 
 Hints help without giving the answer. Feedback explains the answer in one or two short sentences.
 
@@ -171,6 +233,9 @@ Hints help without giving the answer. Feedback explains the answer in one or two
   at the edges, nothing overlapping text.
 - Original drawings only. No likeness of a real person: use `ART.person` or show objects instead. No logos,
   team kits, mascots, cartoon characters or brand marks. Do not redraw or rename the helper, El Niño.
+- Music: draw instruments, sound waves, a stage with `ART.person` figures. No album covers, band logos or faces.
+- Video games: draw plain pixels, a controller, a made-up blocky character of your own. No character, screen,
+  logo or console from a real game.
 
 ### Toys (TOYS)
 
@@ -178,11 +243,20 @@ Hints help without giving the answer. Feedback explains the answer in one or two
 - The child moves it forward only by tapping buttons that have the class `toybtn`: at least 3 taps and at most 12
   to finish. Call `api.done()` once, at the moment it is finished. No dragging, timers or sound.
 - A toy shows how the thing works or makes the child count (by 2s, 3s, 5s, 10s, 100s or 1,000s).
+- At least one of the three toys is an **experiment**: the child changes one thing (two or three buttons, such as
+  a short string and a long string, a soft kick and a hard kick) and sees a different result each time. Finish
+  it only when every choice has been tried.
 - It must not teach something false. If it simplifies, say so in `notes`.
 
 ### What is right for these children
 
-- No violence, death, injury, illness, scary detail, romance, politics, money worries, brands or advertising.
+- No violence, death, injury, illness, scary detail, romance, politics, money worries or advertising.
+- A wedding or another celebration is told through its customs: clothes, music, food, dances. No love stories.
+- Name a real game, company, band or song only when the true story needs it, and never as praise or an ad.
+- Never quote the words of a song, not even one line. Name the song and describe how it sounds or was made.
+- Food: lean toward fresh ingredients, where they grow and how a dish is cooked, more than sweets and fast food.
+  Never call a food good or bad, and never mention weight, diets or bodies. A "try it at home" kitchen idea
+  must be safe with no knife and no stove, or say "with a grown-up".
 - Real people appear only through true, sourced facts. Never invent words, thoughts or quotes for a real person.
 - Never ask a child for personal information.
 - Be kind about every culture, religion, country and kind of family.

@@ -46,6 +46,55 @@ def words(t):
 
 EMOJI = re.compile("[\U0001F000-\U0001FAFF☀-➿]")
 
+# Rules that apply from game 7 on (older games keep the rules they were built with).
+NEW_FROM = 7
+THEMES = ["How things work", "Physics you can feel", "Bed-Stuy, Brooklyn and New York", "Amazing people", "Music",
+          "Food around the world", "Sports science", "Animals", "Earth and space", "America",
+          "Jewish traditions next to other traditions", "Traditions around the world"]
+ONCE_A_WEEK = ("Sports science", "Animals")
+
+
+def addends(shot):
+    """The whole numbers shown in a shot's stack or expr, e.g. ['248', '+ 135'] -> [248, 135]."""
+    src = " ".join(shot.get("stack") or []) if shot.get("stack") else (shot.get("expr") or "")
+    return [int(x.replace(",", "")) for x in re.findall(r"\d[\d,]*", src)]
+
+
+def carries(a, b):
+    """How many columns carry when a + b is added by hand."""
+    n = c = 0
+    while a or b:
+        c = 1 if a % 10 + b % 10 + c >= 10 else 0
+        n += c; a //= 10; b //= 10
+    return n
+
+
+def lint_new(G, entry, data, pages):
+    """Rules added after the first week: more play, harder numbers, a wider mix of themes."""
+    th = entry.get("theme")
+    if th not in THEMES: bad(f"theme '{th}' is not one of the theme names in BUILDER.md")
+    older = sorted((e for e in data.get("editions", []) if e.get("n", 0) < G.get("n", 0)), key=lambda e: e["n"])
+    if older and older[-1].get("theme") == th: bad(f"theme '{th}' is the same as the previous game's")
+    same_week = [e for e in older if e.get("week") == entry.get("week")]
+    if any(e.get("theme") == th for e in same_week): bad(f"theme '{th}' was already used this school week")
+    if sum(1 for p in pages if p.get("toy")) < 3: bad("the story needs 3 pages with a toy (at least one in each half)")
+    toy_pages = [i for i, p in enumerate(pages) if p.get("toy")]
+    if any(b - a == 1 for a, b in zip(toy_pages, toy_pages[1:])): bad("two toys are on pages next to each other; put a picture page between them")
+    if len({p["toy"] for p in pages if p.get("toy")}) != len(toy_pages): bad("each toy page needs its own toy")
+    ex = (G.get("shots") or {}).get("extra") or []
+    if len(ex) != 2 or (ex[0] or {}).get("kind") != "num" or (ex[1] or {}).get("kind") != "tap":
+        bad("shots.extra needs exactly 2 extra-time shots: first kind 'num' (hard numbers), then kind 'tap' (brain teaser)"); return
+    hn, bt = ex
+    if not isinstance(hn.get("answer"), int) or not all(hn.get(x) for x in ("q", "hint", "fb")) or not (hn.get("stack") or hn.get("expr")):
+        bad("extra-time hard numbers shot needs q, stack or expr, a whole-number answer, hint and fb")
+    else:
+        nums = addends(hn)
+        if len(nums) != 2 or sum(nums) != hn["answer"]: bad(f"hard numbers: the stack or expr must show exactly two numbers that add up to the answer (found {nums}, answer {hn['answer']})")
+        elif "−" in " ".join(hn.get("stack") or [hn.get("expr") or ""]) or "-" in " ".join(hn.get("stack") or [hn.get("expr") or ""]): bad("hard numbers must be an addition")
+        elif carries(*nums) < 1: bad(f"hard numbers: {nums[0]} + {nums[1]} needs no carrying; pick numbers that carry in one or two columns")
+        elif not (10 <= min(nums) and max(nums) <= 999 and hn["answer"] < 1000): bad("hard numbers: use two- or three-digit numbers with a sum under 1,000")
+    if len(bt.get("opts") or []) != 4 or bt.get("a") not in (0, 1, 2, 3) or not all(bt.get(x) for x in ("q", "hint", "fb")): bad("extra-time brain teaser needs a question, 4 options, a, hint and fb")
+
 
 def lint(G, scenes, toys, entry, data, nnn, passcode):
     if G.get("n") != int(nnn): bad(f"GAME.n is {G.get('n')}, folder is {nnn}")
@@ -64,8 +113,8 @@ def lint(G, scenes, toys, entry, data, nnn, passcode):
         if not entry.get(k): bad(f"editions.json entry is missing '{k}'")
     pages = G.get("pages") or []
     if len(pages) != 10: bad(f"pages must have exactly 10 story pages, found {len(pages)}")
-    if not any(p.get("toy") for p in pages[:5]): bad("the first half needs one page with a toy")
-    if not any(p.get("toy") for p in pages[5:]): bad("the second half needs one page with a toy")
+    if not any(p.get("toy") for p in pages[:5]): bad("the first half needs a page with a toy")
+    if not any(p.get("toy") for p in pages[5:]): bad("the second half needs a page with a toy")
     if sum(1 for p in pages if p.get("guessBack")) != 1: bad("exactly one page must have guessBack: true")
     total = words(G.get("lede")) + words((G.get("riddle") or {}).get("q"))
     for i, p in enumerate(pages):
@@ -112,6 +161,7 @@ def lint(G, scenes, toys, entry, data, nnn, passcode):
     for e in data.get("editions", []):
         if e.get("n") != G.get("n") and e.get("pw") == G.get("pw"): bad(f"passcode repeats game {e.get('n')}")
         if e.get("n") != G.get("n") and (e.get("title") or "").strip().lower() == (G.get("title") or "").strip().lower(): bad(f"title repeats game {e.get('n')}")
+    if G.get("n", 0) >= NEW_FROM: lint_new(G, entry, data, pages)
     return pw
 
 
@@ -208,6 +258,18 @@ def main():
         boxes = pg.locator("#coachFb input[type=checkbox]")
         if boxes.count() != 3: bad(f"[{tag}] coach: the self-check did not appear")
         for b in boxes.all(): b.check()
+        for j, ex in enumerate(sh.get("extra") or []):
+            k = 6 + j; want = "GOAL" if perfect else "rebound"
+            if ex.get("kind") == "num":
+                if not perfect: pg.fill(f"#xIn-{k}", str(ex["answer"] + 1)); pg.click(f"#xBtn-{k}")
+                pg.fill(f"#xIn-{k}", str(ex["answer"])); pg.click(f"#xBtn-{k}")
+                got = pg.inner_text(f"#xFb-{k}")
+            else:
+                if not perfect: pg.click(f'#shot{k} .opt[data-i="{(ex["a"] + 1) % 4}"]')
+                pg.click(f'#shot{k} .opt[data-i="{ex["a"]}"]')
+                got = pg.inner_text(f"#shot{k} .fb")
+            if want.lower() not in got.lower(): bad(f"[{tag}] extra-time shot {k}: expected '{want}'")
+        if pg.locator("button.say").count(): bad(f"[{tag}] a read-aloud button is back on the page")
         if not perfect: pg.fill("#goldIn", str(sh["golden"]["answer"] + 1)); pg.click("#goldBtn")
         pg.fill("#goldIn", str(sh["golden"]["answer"])); pg.click("#goldBtn")
         if "GOLDEN GOAL" not in pg.inner_text("#goldFb"): bad(f"[{tag}] Golden Goal right answer was not accepted")
@@ -239,7 +301,7 @@ def main():
             from urllib.parse import unquote
             if not mail.startswith("mailto:grownup@example.com,other@example.org?subject="): bad(f"[{tag}] the result email is not addressed to the saved grown-ups")
             line = next((l for l in unquote(mail).splitlines() if l.startswith("KICKOFF|")), "")
-            if not re.match(r"^KICKOFF\|LDK-\d{3}\|\d{4}-\d\d-\d\d\|Tester\|goals=\d+\|shots=\d\|firsts=[01]{4}\|coach=[0-3]\|golden=[01s]\|riddle=[01]\|late=[01]\|rating=5\|why=story\|streak=\d+\|total=\d+$", line): bad(f"[{tag}] the builder line in the result email is malformed: {line!r}")
+            if not re.match(r"^KICKOFF\|LDK-\d{3}\|\d{4}-\d\d-\d\d\|Tester\|goals=\d+\|shots=\d\|firsts=[01]{4,6}\|coach=[0-3]\|golden=[01s]\|riddle=[01]\|late=[01]\|rating=5\|why=story\|streak=\d+\|total=\d+$", line): bad(f"[{tag}] the builder line in the result email is malformed: {line!r}")
             if shots: snap(pg, tag, "14-rated")
         return {"goals": pg.inner_text("#ringTxt"), "pw": pg.inner_text("#vault .pw") if pg.locator("#vault .pw").count() else "", "vault": pg.inner_text("#vaultTitle")}
 
@@ -264,7 +326,8 @@ def main():
         rb = play(pg, "B", G, perfect=True)
         if rb:
             if rb["pw"] != pw: bad("[B] the vault did not show the passcode")
-            if rb["goals"] != "8": bad(f"[B] expected 8 goals for a perfect game, got {rb['goals']}")
+            best = 8 + len((G.get("shots") or {}).get("extra") or [])
+            if rb["goals"] != str(best): bad(f"[B] expected {best} goals for a perfect game, got {rb['goals']}")
         pg.goto(f"{base}/?today={day}"); pg.wait_for_timeout(600)
         if "finished today" not in pg.inner_text("#hub").lower(): bad("[B] the home page does not show today's game as finished")
         if G["title"] not in pg.inner_text("#hub"): bad("[B] the home page does not show today's title")

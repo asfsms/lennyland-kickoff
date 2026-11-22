@@ -27,11 +27,13 @@ function readNum(id){ const v=$(id).value.replace(/[^0-9]/g,''); return v===''?N
 /* ---------- state ---------- */
 const S = { pid:null, step:0, guess:null, riddle:{tries:0,done:false,ok:false}, quick:{}, toyDone:{}, toyInit:{},
   shots:{}, order:[], coach:{graded:false,stars:0,text:'',offTopic:0}, golden:{tries:0,done:false,ok:false}, game:null };
+const EX = (G.shots && G.shots.extra) || [];      // extra-time shots: [{kind:'num'|'tap', ...}], numbered 6, 7
+const NSHOTS = 5 + EX.length, NWORD = ['Five','Six','Seven'][EX.length] || String(NSHOTS);
 const pageNo = i => i<5 ? i+2 : i+3;             // story page index (0..9) -> page number (2..6, 8..12)
 const halfName = n => n<7 ? 'First half' : 'Second half';
 
 /* ---------- build the page ---------- */
-function head(n, half, say){ return '<div class="ch"><span>Page '+n+' of '+PAGES+'</span><span class="half">'+half+'</span>'+(say?'<button class="say" hidden onclick="K.sayPage(this)">'+ICON.speaker+'<span>Read it to me</span></button>':'')+'</div>'; }
+function head(n, half){ return '<div class="ch"><span>Page '+n+' of '+PAGES+'</span><span class="half">'+half+'</span></div>'; }
 function numField(id, label, btnId){ return '<input class="numin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="'+id+'" placeholder="?" aria-label="'+esc(label)+'" data-enter="'+btnId+'">'; }
 function storyPage(pg, i){
   const n=pageNo(i), toy=pg.toy&&TOYS[pg.toy], gated=!!(toy||pg.quick);
@@ -61,7 +63,7 @@ function build(){
   }
 
   /* 0 · locker room */
-  h+='<section class="step hero shown" data-step="0"><div class="eyebrow"><span class="tag">Game '+G.n+'</span><span class="tag">'+esc(pretty)+'</span><span class="tag">About 10 minutes</span>'+(LATE?'<span class="tag replay">Replay</span>':'')+'</div>'
+  h+='<section class="step hero shown" data-step="0"><div class="eyebrow"><span class="tag">Game '+G.n+'</span><span class="tag">'+esc(pretty)+'</span><span class="tag">About '+(EX.length?12:10)+' minutes</span>'+(LATE?'<span class="tag replay">Replay</span>':'')+'</div>'
     +'<h1>Lenny\'s Daily Kickoff</h1><p class="lede">Welcome to the locker room of the <b>Futbol Rebels</b>. Who is playing today?</p>'
     +(LATE?'<p class="notice">This is a replay of an older game. Your goals still count, and it counts for the weekend passcode. The daily passcode is only for the day itself.</p>':'')
     +'<div id="playerBox" hidden><div class="tracks" id="playerList"></div><button class="btn ghost small" id="addBtn" onclick="K.showNewPlayer()">Add a new player</button></div>'
@@ -84,14 +86,15 @@ function build(){
   G.pages.slice(5,10).forEach((pg,i)=>{ h+=storyPage(pg,i+5); });
 
   /* 13 · penalty shootout */
-  h+='<section class="step" data-step="13"><div class="ch"><span>Page 13 of 14</span><span class="half">Penalty shootout</span></div><h2>Five shots. Take your time.</h2><p>Miss one? You get a hint and one rebound. Then there is a Golden Goal for extra brave players.</p><div class="board" id="board" aria-label="Scoreboard"></div>'
+  h+='<section class="step" data-step="13"><div class="ch"><span>Page 13 of 14</span><span class="half">Penalty shootout</span></div><h2>'+NWORD+' shots. Take your time.</h2><p>Miss one? You get a hint and one rebound. '+(EX.length?'After shot 5 comes extra time. ':'')+'Then there is a Golden Goal for extra brave players.</p><div class="board" id="board" aria-label="Scoreboard"></div>'
     +'<div class="q" id="shot1"></div><div class="q" id="shot2"></div>'
-    +'<div class="q" id="shot3"><div class="qc-label">Shot 3 of 5 · tap in order</div><div class="qt">'+rich(sh.order.q)+' (Tap a card again to undo.)</div><div class="order" id="order"></div><div class="controls" style="margin-top:12px"><button class="btn small" id="orderCheck" onclick="K.checkOrder()" disabled>Shoot!</button><button class="btn small ghost" id="orderReset" onclick="K.resetOrder()">Start over</button></div><div class="fb" id="orderFb"></div></div>'
-    +'<div class="q" id="shot4"><div class="qc-label">Shot 4 of 5 · type it</div><div class="qt">'+rich(sh.math.q)+'</div><div class="controls" style="margin-top:0">'
+    +'<div class="q" id="shot3"><div class="qc-label">Shot 3 of '+NSHOTS+' · tap in order</div><div class="qt">'+rich(sh.order.q)+' (Tap a card again to undo.)</div><div class="order" id="order"></div><div class="controls" style="margin-top:12px"><button class="btn small" id="orderCheck" onclick="K.checkOrder()" disabled>Shoot!</button><button class="btn small ghost" id="orderReset" onclick="K.resetOrder()">Start over</button></div><div class="fb" id="orderFb"></div></div>'
+    +'<div class="q" id="shot4"><div class="qc-label">Shot 4 of '+NSHOTS+' · type it</div><div class="qt">'+rich(sh.math.q)+'</div><div class="controls" style="margin-top:0">'
       +(sh.math.stack?'<span class="stack" aria-hidden="true">'+sh.math.stack.map(x=>'<span>'+esc(x)+'</span>').join('')+'<span class="bar"></span></span>':'')
       +(sh.math.expr?'<span class="math" style="font-size:1.6rem">'+esc(sh.math.expr)+'</span>':'')
       +numField('mathIn',sh.math.q,'mathBtn')+'<button class="btn small" id="mathBtn" onclick="K.checkMath()">Shoot!</button></div><div class="fb" id="mathFb"></div></div>'
-    +'<div class="q" id="shot5"><div class="qc-label">Shot 5 of 5 · type or talk</div><div class="qt">'+rich(sh.coach.q)+'</div><textarea id="coachIn" placeholder="'+esc(sh.coach.starter||'I think...')+'" autocapitalize="sentences"></textarea><p class="small" style="margin:8px 0 0">Tip: want to talk instead of type? Tap the microphone on the iPad keyboard.</p><div class="controls"><button class="btn small" id="coachBtn" onclick="K.gradeCoach()">Send it to El Niño</button></div><div class="fb" id="coachFb"></div></div>'
+    +'<div class="q" id="shot5"><div class="qc-label">Shot 5 of '+NSHOTS+' · type or talk</div><div class="qt">'+rich(sh.coach.q)+'</div><textarea id="coachIn" placeholder="'+esc(sh.coach.starter||'I think...')+'" autocapitalize="sentences"></textarea><p class="small" style="margin:8px 0 0">Tip: want to talk instead of type? Tap the microphone on the iPad keyboard.</p><div class="controls"><button class="btn small" id="coachBtn" onclick="K.gradeCoach()">Send it to El Niño</button></div><div class="fb" id="coachFb"></div></div>'
+    +(EX.length?'<h3 class="xt">Extra time! '+(EX.length===1?'One more shot.':'Two more shots.')+'</h3>'+EX.map((x,j)=>'<div class="q" id="shot'+(6+j)+'"></div>').join(''):'')
     +'<div class="q golden" id="golden"><div class="qc-label">Golden Goal · extra hard · you can skip it</div><div class="qt">'+rich(sh.golden.q)+'</div><div class="controls" style="margin-top:0">'+(sh.golden.expr?'<span class="math" style="font-size:1.6rem">'+esc(sh.golden.expr)+'</span>':'')+numField('goldIn',sh.golden.q,'goldBtn')+'<button class="btn small" id="goldBtn" onclick="K.checkGolden()">Shoot!</button></div><div class="fb" id="goldFb"></div></div>'
     +'<div class="next"><button class="btn ghost small" onclick="K.back()">Back to the story</button><button class="btn" id="finishBtn" onclick="K.finish()">Final whistle</button></div></section>';
 
@@ -125,7 +128,6 @@ function next(){ goTo(S.step+1); }
 function back(){ if(S.step>1) goTo(S.step-1); }
 function goTo(n){
   const sec = document.querySelector('.step[data-step="'+n+'"]'); if(!sec) return;
-  stopSpeak();
   try{ const ae=document.activeElement; if(ae && ae!==document.body && ae.blur) ae.blur(); }catch(e){}
   $('fab').style.visibility='';
   document.querySelectorAll('.step.shown').forEach(s=>s.classList.remove('shown'));
@@ -187,24 +189,6 @@ function paintWho(){
 }
 function startGame(){ if(!S.pid) return; goTo(1); }
 
-/* ---------- read aloud ---------- */
-let ttsNS=null; const hasSynth = ('speechSynthesis' in window) && (typeof SpeechSynthesisUtterance!=='undefined');
-function refreshSay(){ const on=!!ttsNS||hasSynth; document.querySelectorAll('.say').forEach(b=>{ b.hidden=!on; }); }
-function sayPage(btn){
-  if(btn.classList.contains('on')){ stopSpeak(); return; }
-  const sec=btn.closest('.step'); const txt=[...sec.querySelectorAll('.story')].map(e=>e.textContent.replace(/\s+/g,' ').trim()).join(' ');
-  if(!txt) return; stopSpeak(); btn.classList.add('on');
-  const done=()=>btn.classList.remove('on');
-  if(ttsNS){ try{ ttsNS.speak(txt,{rate:0.9,language:'en'}).then(done,done); }catch(e){ done(); } return; }
-  if(hasSynth){ try{ const u=new SpeechSynthesisUtterance(txt); u.lang='en-US'; u.rate=0.9; u.onend=done; u.onerror=done; window.speechSynthesis.speak(u); }catch(e){ done(); } return; }
-  done();
-}
-function stopSpeak(){
-  try{ if(ttsNS){ const r=ttsNS.stop(); if(r&&r.catch) r.catch(()=>{}); } }catch(e){}
-  try{ if(hasSynth) window.speechSynthesis.cancel(); }catch(e){}
-  document.querySelectorAll('.say.on').forEach(b=>b.classList.remove('on'));
-}
-
 /* ---------- page 1: the guess ---------- */
 function lockGuess(){
   const v=readNum('guessIn');
@@ -251,10 +235,29 @@ function shot(k){ return S.shots[k] || (S.shots[k]={tries:0,done:false,first:fal
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 const goalWord = st => '<span class="pill-ok">'+(st.first?'GOAL! ':'Scored on the rebound! ')+'</span>';
 let shootoutBuilt=false;
-function buildShootout(){ if(shootoutBuilt){ paintBoard(); return; } shootoutBuilt=true; renderShot(1); renderShot(2); buildOrder(); paintBoard(); }
+function buildShootout(){ if(shootoutBuilt){ paintBoard(); return; } shootoutBuilt=true; renderShot(1); renderShot(2); buildOrder(); EX.forEach((x,j)=>{ if(x.kind==='num') renderNum(6+j); else renderShot(6+j); }); paintBoard(); }
+const shotData = k => k>=6 ? EX[k-6] : G.shots[k];
+function renderNum(k){
+  const d=shotData(k), el=$('shot'+k); shot(k);
+  el.innerHTML='<div class="qc-label">Shot '+k+' of '+NSHOTS+' · '+esc(d.label||'hard numbers')+' · type it</div><div class="qt">'+rich(d.q)+'</div><div class="controls" style="margin-top:0">'
+    +(d.stack?'<span class="stack" aria-hidden="true">'+d.stack.map(x=>'<span>'+esc(x)+'</span>').join('')+'<span class="bar"></span></span>':'')
+    +(d.expr?'<span class="math" style="font-size:1.6rem">'+esc(d.expr)+'</span>':'')
+    +numField('xIn-'+k,d.q,'xBtn-'+k)+'<button class="btn small" id="xBtn-'+k+'" onclick="K.checkExtra('+k+')">Shoot!</button></div><div class="fb" id="xFb-'+k+'"></div>';
+}
+function checkExtra(k){
+  const st=shot(k), d=shotData(k); if(st.done) return;
+  const v=readNum('xIn-'+k), fb=$('xFb-'+k); fb.classList.add('show');
+  if(isNaN(v)){ fb.innerHTML='Type a number first!'; return; }
+  st.tries++;
+  if(v===d.answer){ st.done=true; st.first=st.tries===1; fb.innerHTML=goalWord(st)+rich(d.fb); }
+  else if(st.tries===1){ fb.innerHTML=ninoSay('Off the post! Take the rebound. Hint: '+rich(d.hint)); }
+  else { st.done=true; fb.innerHTML='<span class="pill-bad">Saved by the keeper. </span>'+rich(d.fb); }
+  if(st.done){ $('xIn-'+k).blur(); $('xIn-'+k).disabled=true; $('xBtn-'+k).disabled=true; }
+  paintBoard();
+}
 function renderShot(k){
-  const d=G.shots[k], el=$('shot'+k); shot(k);
-  el.innerHTML='<div class="qc-label">Shot '+k+' of 5 · tap</div><div class="qt">'+rich(d.q)+'</div><div class="opts">'+d.opts.map((o,i)=>'<button class="opt" data-i="'+i+'"><span class="k">'+'ABCD'[i]+'</span><span>'+rich(o)+'</span></button>').join('')+'</div><div class="fb"></div>';
+  const d=shotData(k), el=$('shot'+k); shot(k);
+  el.innerHTML='<div class="qc-label">Shot '+k+' of '+NSHOTS+' · '+(k>=6?esc(d.label||'brain teaser')+' · ':'')+'tap</div><div class="qt">'+rich(d.q)+'</div><div class="opts">'+d.opts.map((o,i)=>'<button class="opt" data-i="'+i+'"><span class="k">'+'ABCD'[i]+'</span><span>'+rich(o)+'</span></button>').join('')+'</div><div class="fb"></div>';
   el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
     const st=shot(k); if(st.done||b.disabled) return;
     st.tries++; const ok=(+b.dataset.i)===d.a, fb=el.querySelector('.fb');
@@ -309,7 +312,7 @@ function checkGolden(){
 function shotState(k){ if(k===5) return !S.coach.graded ? '' : (S.coach.stars>=2?'goal':'miss'); const st=shot(k); return !st.done ? '' : (st.first?'goal':'miss'); }
 function paintBoard(){
   let h='<span class="lbl">Shots</span>';
-  for(let k=1;k<=5;k++){ const s=shotState(k); h+='<span class="dot '+s+'" title="Shot '+k+'">'+(s==='goal'?'&#10003;':s==='miss'?'&times;':k)+'</span>'; }
+  for(let k=1;k<=NSHOTS;k++){ const s=shotState(k); h+='<span class="dot '+s+'" title="Shot '+k+'">'+(s==='goal'?'&#10003;':s==='miss'?'&times;':k)+'</span>'; }
   h+='<span class="dot star '+(S.golden.ok?'goal':'')+'" title="Golden Goal">&#9733;</span>';
   $('board').innerHTML=h;
 }
@@ -362,11 +365,12 @@ function rubricChange(){ const n=[...document.querySelectorAll('#coachFb input:c
 /* ---------- final whistle (adapted from the kit's finish()) ---------- */
 function finish(){
   const first=k=>{ const st=shot(k); return st.done&&st.first?1:0; };
-  const shotGoals = first(1)+first(2)+first(3)+first(4)+(S.coach.graded&&S.coach.stars>=2?1:0);
+  const xk = EX.map((x,j)=>6+j);
+  const shotGoals = first(1)+first(2)+first(3)+first(4)+(S.coach.graded&&S.coach.stars>=2?1:0)+xk.reduce((a,k)=>a+first(k),0);
   const todo = [
     [shot(1).done, 'Finish shot 1'], [shot(2).done, 'Finish shot 2'], [shot(3).done, 'Finish shot 3 (the order)'],
     [shot(4).done, 'Finish shot 4 (the math)'], [S.coach.graded, 'Send your coach talk to El Niño (shot 5)']
-  ];
+  ].concat(xk.map(k=>[shot(k).done, 'Finish shot '+k+' (extra time)']));
   const complete = todo.every(t=>t[0]);
   const p=P(); const rec=p.history[G.code];
   let game;
@@ -384,7 +388,7 @@ function finish(){
     const today=shotGoals+1+golden+bonus;
     if(Object.keys(p.history).length===0) badges.push(['1','Kickoff']);
     if(guessClose()) badges.push(['&#9678;','Sharp Shooter']);
-    if(shotGoals===5) badges.push(['&#10003;','Clean Sheet']);
+    if(shotGoals===NSHOTS) badges.push(['&#10003;','Clean Sheet']);
     if(S.coach.stars===3) badges.push(['&#9733;','Playmaker']);
     if(S.golden.ok) badges.push(['G','Golden Boot']);
     if(LATE) badges.push(['S','Super Sub']);
@@ -393,17 +397,17 @@ function finish(){
     if(!LATE){ p.streak=streakAfter; p.best=Math.max(p.best||0,streakAfter); p.lastN=G.n; if(sub) p.subWeek=G.week; }
     badges.forEach(b=>{ if(!p.badges.includes(b[1])) p.badges.push(b[1]); });
     game={ complete:true, late:LATE, today, shotGoals, golden, bonus, streakAfter, sub, stars:S.coach.stars, badges, guess:S.guess, at:new Date().toISOString(),
-      detail:{ firsts:[1,2,3,4].map(first).join(''), riddle:S.riddle.ok?1:0, golden:S.golden.done?(S.golden.ok?'1':'0'):'s' } };
+      detail:{ firsts:[1,2,3,4].concat(xk).map(first).join(''), riddle:S.riddle.ok?1:0, golden:S.golden.done?(S.golden.ok?'1':'0'):'s' } };
     p.history[G.code]=game; L.save(); paintWho();
   } else {
     game={ complete:false, late:LATE, today:shotGoals+(S.golden.ok?2:0), shotGoals, golden:S.golden.ok?2:0, bonus:0, streakAfter:p.streak, stars:S.coach.stars, badges:[] };
   }
   S.game=game;
   goTo(14);
-  $('ringTxt').textContent=game.today; const ring=$('ring'); ring.style.setProperty('--p',0); setTimeout(()=>ring.style.setProperty('--p',Math.min(100,Math.round(game.today/8*100))),60);
-  $('resTitle').textContent = !game.complete ? 'Not full time yet, '+p.name+'!' : game.shotGoals===5 ? 'Full time, '+p.name+'! A perfect shootout!' : game.shotGoals>=3 ? 'Full time, '+p.name+'! Great match!' : 'Full time, '+p.name+'! You played it all the way through!';
+  $('ringTxt').textContent=game.today; const ring=$('ring'); ring.style.setProperty('--p',0); setTimeout(()=>ring.style.setProperty('--p',Math.min(100,Math.round(game.today/(NSHOTS+3)*100))),60);
+  $('resTitle').textContent = !game.complete ? 'Not full time yet, '+p.name+'!' : game.shotGoals===NSHOTS ? 'Full time, '+p.name+'! A perfect shootout!' : game.shotGoals>=3 ? 'Full time, '+p.name+'! Great match!' : 'Full time, '+p.name+'! You played it all the way through!';
   $('resLine').innerHTML = game.complete ? '<span class="num">'+game.today+'</span> goal'+(game.today===1?'':'s')+' banked'+(game.late?' from this replay':' today')+(game.already?' (you already banked this game)':'')+'.' : 'Finish every shot to bank your goals.';
-  $('resDetail').innerHTML = 'Shots: <span class="math">'+game.shotGoals+' of 5</span>'+(game.complete?' · Finished the game: <span class="math">+1</span>':'')+(game.golden?' · Golden Goal: <span class="math">+2</span>':'')+(game.bonus?' · Streak bonus: <span class="math">+1</span>':'');
+  $('resDetail').innerHTML = 'Shots: <span class="math">'+game.shotGoals+' of '+NSHOTS+'</span>'+(game.complete?' · Finished the game: <span class="math">+1</span>':'')+(game.golden?' · Golden Goal: <span class="math">+2</span>':'')+(game.bonus?' · Streak bonus: <span class="math">+1</span>':'');
 
   /* the vault */
   const vault=$('vault');
@@ -462,7 +466,7 @@ function rateWhy(id){ const rec=P().history[G.code]; if(!rec||!rec.rating) retur
 
 function summaryText(){
   const p=P(), g=S.game||{};
-  return 'Lenny\'s Daily Kickoff #'+G.n+' · '+G.title+'\n'+p.name+': '+(g.today||0)+' goals (shots '+(g.shotGoals||0)+' of 5'+(g.golden?', Golden Goal scored':'')+')'+(g.complete?(g.late?' · replay finished':' · finished'):' · not finished yet')+'\nTotal: '+p.goals+' goals · '+leagueFor(p.goals).name+' · streak '+p.streak+(g.badges&&g.badges.length?'\nBadges: '+g.badges.map(b=>b[1]).join(', '):'')+(S.coach.text?'\nMy coach talk: '+S.coach.text:'')+(function(){ const r=(p.history[G.code]||{}).rating; if(!r||!r.stars) return ''; const o=RATE[r.stars>=4?'liked':'better'].find(x=>x[0]===r.why); return '\nMy rating: '+r.stars+' of 5'+(o?' ('+o[1]+')':''); })();
+  return 'Lenny\'s Daily Kickoff #'+G.n+' · '+G.title+'\n'+p.name+': '+(g.today||0)+' goals (shots '+(g.shotGoals||0)+' of '+NSHOTS+(g.golden?', Golden Goal scored':'')+')'+(g.complete?(g.late?' · replay finished':' · finished'):' · not finished yet')+'\nTotal: '+p.goals+' goals · '+leagueFor(p.goals).name+' · streak '+p.streak+(g.badges&&g.badges.length?'\nBadges: '+g.badges.map(b=>b[1]).join(', '):'')+(S.coach.text?'\nMy coach talk: '+S.coach.text:'')+(function(){ const r=(p.history[G.code]||{}).rating; if(!r||!r.stars) return ''; const o=RATE[r.stars>=4?'liked':'better'].find(x=>x[0]===r.why); return '\nMy rating: '+r.stars+' of 5'+(o?' ('+o[1]+')':''); })();
 }
 /* ---------- send the result to the player's grown-ups by email (the kit's "send to Dad", with addresses kept on the device) ---------- */
 function machineLine(){
@@ -552,12 +556,10 @@ async function sendChat(){
 }
 
 /* ---------- start ---------- */
-window.K = { sendResult, saveGrownups, editGrownups, mailtoUrl, rate, rateWhy, next, back, goTo, sayPage, lockGuess, checkRiddle, checkQuick, checkOrder, resetOrder, checkMath, checkGolden, gradeCoach, rubricChange, finish, copyResults,
+window.K = { checkExtra, sendResult, saveGrownups, editGrownups, mailtoUrl, rate, rateWhy, next, back, goTo, lockGuess, checkRiddle, checkQuick, checkOrder, resetOrder, checkMath, checkGolden, gradeCoach, rubricChange, finish, copyResults,
   showNewPlayer, createPlayer, pickPlayer, setKitColor, startGame, openChat, closeChat, sendChat, askChip, state:S };
 if(build()){
   const prog=$('progress'); for(let i=0;i<PAGES;i++){ prog.appendChild(document.createElement('span')); }
-  if(IN_CLAUDE){ try{ window.claude.use('tts').then(t=>{ ttsNS=t||null; refreshSay(); }).catch(()=>{}); }catch(e){} }
-  refreshSay();
   document.addEventListener('click', e=>{ const w=e.target.closest('.word'); if(!w) return; const box=w.closest('.step').querySelector('.defbox'); if(!box) return; box.innerHTML='<b>'+esc(w.textContent)+':</b> '+esc(w.dataset.def); box.classList.add('show'); });
   document.addEventListener('keydown', e=>{ if(e.key!=='Enter') return; const t=e.target; if(t&&t.dataset&&t.dataset.enter){ e.preventDefault(); const b=$(t.dataset.enter); if(b&&!b.disabled) b.click(); } });
   $('pName').addEventListener('input', ()=>{ $('joinMsg').textContent=''; });
