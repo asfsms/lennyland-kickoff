@@ -78,9 +78,23 @@
       "riddle": "footsteps",
       "golden": "6 x 3",
       "pw": "c3Rvb0Igbm9vTSBnbmljbnVvQiBldmxld1Q="
+    },
+    {
+      "n": 7,
+      "code": "LDK-007",
+      "date": "2026-11-23",
+      "week": "2026-W48",
+      "title": "The Man Who Had the Rope Cut",
+      "path": "e/007/",
+      "theme": "How things work",
+      "topic": "How Elisha Otis's spring-and-teeth safety brake made the elevator safe (his 1854 rope-cutting show in New York), the first store elevator of 1857, and the Empire State Building's elevators",
+      "riddle": "an elevator",
+      "golden": "5 x 8",
+      "pw": "aGNpd2RuYVMgZ25pcnBTIG5vZ2FXIGduaWxnZ2lH"
     }
   ],
   "weeks": {
-    "2026-W47": "ZWRhcmFQIGVsa2NpUCB5bGJib1c="
+    "2026-W47": "ZWRhcmFQIGVsa2NpUCB5bGJib1c=",
+    "2026-W48": "ZW5vYm1vclQgZWxkb29OIGduaXplZW5T"
   }
 }

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenny's Daily Kickoff #7 · The Man Who Had the Rope Cut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/engine.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="../../assets/common.js"></script>
+<script>
+/* ===== Game 7: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 7, code: 'LDK-007', date: '2026-11-23', week: '2026-W48',
+  title: 'The Man Who Had the Rope Cut',
+  theme: 'How things work',
+  pw: 'aGNpd2RuYVMgZ25pcnBTIG5vZ2FXIGduaWxnZ2lH',
+  lede: 'Imagine your classroom is on floor 50. No elevator. Only stairs! You would need a snack break on the way up.',
+  guess: { q: 'The Empire State Building is one of the tallest towers in New York City. How many elevators do you think are inside it?', answer: 73, close: 11 },
+  pages: [
+    { scene: 'hoist',   text: 'Long ago, there were lifts. A rope pulled a wooden {platform|A flat floor that can be lifted up.} up, up, up. But ropes can SNAP. So lifts carried boxes, and people took the stairs.' },
+    { scene: 'factory', text: 'In 1852, Elisha Otis was setting up a bed factory in Yonkers, New York. Heavy machines had to go upstairs on a lift. But ropes could break!' },
+    { toy: 'brake',     text: 'So he built a trick. A bendy metal {spring|A piece of metal that bends and pops back.} sat on top of the platform. The side rails had teeth, like a saw. Your turn: cut the rope on two lifts!' },
+    { scene: 'crowd',   text: 'Was it really safe? In 1854, at a giant fair in New York City, Otis rode his platform high above the crowd. Then he had the rope cut!' },
+    { scene: 'safe',    text: 'The platform dropped just a few inches. Then, clunk! The spring popped out and the teeth caught it. Otis was fine, and everybody could see why.' },
+    { scene: 'store',   text: 'Three years later, a fancy store on Broadway got the first elevator made for shoppers. A {steam engine|A machine that uses hot steam to push and pull.} pulled it up. It was slow: just 40 feet each minute.',
+      quick: { q: 'The old elevator climbed 40 feet in one minute. How many feet did it climb in 2 minutes?', expr: '40 + 40 =', answer: 80,
+               hint: 'Think of 4 tens and 4 more tens.', fb: '[[40 + 40 = 80]] feet in 2 minutes. Slow, but nobody had to climb!' } },
+    { toy: 'ride',      text: 'You could beat it by walking up the stairs! But nobody had to climb. Your turn: ride the old elevator up and count the feet by 5s.' },
+    { scene: 'empire',  text: 'Now buildings could grow up, up, UP, because nobody had to climb. The Empire State Building opened in 1931 with more than 100 floors. Inside it are **73 elevators**!', guessBack: true },
+    { toy: 'zoom',      text: 'Without them, you would climb 1,860 steps to the top. No thanks! Your turn: zoom up the tower and count the floors by 10s.' },
+    { scene: 'tryit',   text: '**Spot it in New York!** The old store still stands at Broadway and Broome Street in Manhattan. And every time you ride an elevator, a safety brake is riding with you.',
+      bonus: 'Bonus fact: Builders finished the Empire State Building in just 410 days. That is less than two years!' }
+  ],
+  riddle: { q: 'I go up and down all day, but I never leave the building. I have lots of buttons, but no shirt. What am I?', accept: ['elevat', 'elavat', 'elevet', 'elivat', 'eleva', 'lift'], answer: 'an elevator',
+            hint: 'You press one of my buttons to pick your floor.', explain: 'An elevator! It rides up and down inside a building all day, and its buttons are for floors, not for a shirt.' },
+  shots: {
+    1: { q: 'Why did people take the stairs before Otis built his safety trick?',
+         opts: ['Because stairs were made of candy', 'Because lifts were only for cats', 'Because the rope of a lift could snap', 'Because nobody had invented "up" yet'], a: 2,
+         hint: 'Think about what held the platform up.', fb: 'A lift hung on a rope, and ropes could snap. So lifts carried boxes, not people.' },
+    2: { q: 'How did the platform stop when the rope was cut?',
+         opts: ['A spring popped out and teeth on the rails caught it', 'A giant pillow was under it', 'The crowd held it up with their hands', 'It turned into a balloon'], a: 0,
+         hint: 'Remember the bendy metal part on top, and the rails that looked like a saw.', fb: 'The rope held the spring bent. With the rope cut, the spring popped out and caught the teeth on the rails.' },
+    order: { q: 'How did the elevator grow up? Tap the cards in order, from first to last.',
+             cards: ['Otis builds a lift with a spring and rails with teeth.', 'At a giant fair, he rides up high and has the rope cut.', 'A store on Broadway gets the first elevator for shoppers.', 'The Empire State Building opens with dozens of elevators.'],
+             hint: 'First he had to build it. Then he had to show people it was safe.', fb: 'First Otis built the safety lift. Then he showed it at the fair. Next came the store elevator, and much later the giant tower.' },
+    math: { q: 'Two years is 730 days. The Empire State Building was built in just 410 days. How many fewer days is that?',
+            stack: ['730', '− 410'], answer: 320,
+            hint: 'Take away the ones first ([[0 − 0]]). Then take away the tens ([[3 − 1]]). Then the hundreds.',
+            fb: '[[730 − 410 = 320]] days fewer than two years. That was fast for such a giant tower!' },
+    coach: { q: 'You are the coach! Tell your team: How did the safety trick work, and why did it let buildings get so tall?', starter: 'When the rope was cut, the spring...',
+             ideas: ['when the rope breaks, a spring pops out and catches teeth on the side rails, so the platform stops and people are safe', 'when elevators were safe for people, nobody had to climb all the stairs, so buildings could be built much taller'],
+             rubric: ['I said the spring pops out and the teeth catch it.', 'I said that made lifts safe for people.', 'I said buildings could get taller because nobody had to climb.'],
+             model: 'When the rope was cut, the spring popped out and the teeth on the rails caught it. That made lifts safe for people. Then buildings could get very tall, because nobody had to climb all the stairs.' },
+    extra: [
+      { kind: 'num', q: 'Hard numbers! The Empire State Building has a deck for looking out on floor 86. The top deck is 16 floors higher. Which floor is the top deck on?', stack: ['86', '+ 16'], answer: 102,
+        hint: 'Start with the ones: [[6 + 6 = 12]]. Write the 2 and carry 1 ten.', fb: '[[86 + 16 = 102]]. The top deck is on floor 102.' },
+      { kind: 'tap', q: 'Brain teaser! An elevator starts on floor 3. It goes up 4 floors, then down 2 floors, then up 1 floor. Which floor is it on now?', opts: ['Floor 4', 'Floor 5', 'Floor 6', 'Floor 8'], a: 2,
+        hint: 'Go one step at a time. Up 4 from floor 3 is floor 7. What comes next?', fb: 'Floor 3, up 4 is floor 7. Down 2 is floor 5. Up 1 is floor 6.' }
+    ],
+    golden: { q: 'An elevator holds 8 people. It rides to the top 5 times, and it is full every time. How many people get a ride?', expr: '5 × 8 =', answer: 40,
+              hint: 'Five groups of 8. Or count by 5s, eight times.', fb: '[[5 × 8 = 40]] people. That is a lot of legs that did not have to climb!' }
+  },
+  lesson: 'Today\'s story, "The Man Who Had the Rope Cut": Long ago, lifts were wooden platforms pulled up by a rope. Ropes could snap, so lifts carried boxes and people took the stairs. In 1852 Elisha Otis was setting up a bed factory in Yonkers, New York, and had to lift heavy machines. He built a safety lift: a metal spring on top of the platform, and side rails with teeth like a saw. The rope holds the spring bent. If the rope breaks, the spring pops out and catches the teeth, so the platform stops. In 1854, at a giant fair in New York City, Otis rode the platform high above a crowd and had the rope cut. It dropped only a few inches. In 1857 a store at Broadway and Broome Street got the first elevator for shoppers. A steam engine pulled it, and it climbed 40 feet each minute. The store building is still there. Safe elevators let buildings grow very tall. The Empire State Building opened in 1931. Built in 410 days, it has 102 floors, 73 elevators, and 1,860 steps to the top. It has decks for looking out on floors 86 and 102.',
+  chips: ['How did the spring stop the lift?', 'Is the old store still there?', 'How slow was the first elevator?', 'Who was Elisha Otis?', 'Tell me an elevator fact'],
+  helperQA: [
+    { q: 'How did the spring stop the lift?', a: 'The rope kept the spring bent. When the rope was cut, the spring popped out and caught the teeth on the rails.' },
+    { q: 'Is the old store still there?', a: 'Yes! The building still stands at Broadway and Broome Street in Manhattan. The old elevator is gone, though.' }
+  ],
+  dinner: [
+    'In 1854, Elisha Otis rode a lift high above a crowd in New York City and had the rope cut, and his safety brake caught it after a few inches.',
+    'The first elevator for shoppers opened in 1857 in a store on Broadway, and it climbed only 40 feet each minute.',
+    'The Empire State Building has 73 elevators, and 1,860 steps if you would rather walk.'
+  ],
+  notes: [
+    'Exact: Elisha Graves Otis designed his "safety hoist" in 1852 while setting up a bedstead factory in Yonkers, New York. He showed it at the Crystal Palace exhibition in New York City in 1854, riding the platform up and having the rope cut; sources say it dropped only a few inches. On March 23, 1857 the first passenger safety elevator opened in the E. V. Haughwout store at Broadway and Broome Street (488 Broadway). It was driven by a steam engine in the basement and rose about 40 feet per minute. The five-story building is a New York City landmark and still stands; the elevator itself was removed long ago. The Empire State Building opened in 1931 after 410 days of construction and, by its own fact sheet, has 102 floors, 73 elevators, 1,860 steps from the street to the 102nd floor, and observation decks on floors 86 and 102.',
+    'Where sources disagree: who cut the rope and with what. The engineering society ASME says Otis ordered it cut with an axe, Guinness World Records says an assistant cut it, and other tellings have Otis cutting it himself with a sword or saber. The story only says he "had the rope cut", and the picture shows no tool. One source dates the show to 1853; most say 1854. A famous line Otis is said to have called out to the crowd is left out, because no words are put in a real person\'s mouth. A newspaper of the time called the store six stories; today it is described as five.',
+    'Simplified: the real spring was a flat wagon spring fixed to the top of the platform and to the rope, and its ends (or bars pushed by it) locked into notched wooden guide rails; the toy and pictures show this as one bow that springs out flat. In the first toy the plain lift slides all the way down with boxes on it; nobody is on it. "You could beat it by walking up the stairs" compares 40 feet a minute with an ordinary walk. "Less than two years" for 410 days: two years is 730 days, the number used in the math shot. The toy tower counts to floor 100 only. The figures in the pictures are plain stand-in people, not portraits. Modern elevators hang on several steel cables and still carry safety brakes that grip the rails, which is what the last page means.',
+    'Left out: the accidents that made people afraid of rope lifts are only hinted at with "ropes can SNAP". Otis\'s company still makes elevators today, including those in the Empire State Building; the brand is not pointed out to the children.'
+  ],
+  sources: [
+    { t: 'Encyclopaedia Britannica: Elisha Otis', u: 'https://www.britannica.com/topic/Elisha-Otis' },
+    { t: 'ASME (American Society of Mechanical Engineers): Elisha Graves Otis', u: 'https://www.asme.org/topics-resources/content/elisha-graves-otis' },
+    { t: 'Guinness World Records: first safety elevator', u: 'https://www.guinnessworldrecords.com/world-records/72451-first-safety-elevator-lift' },
+    { t: 'Society of Architectural Historians, SAH Archipedia: Haughwout Building', u: 'https://sah-archipedia.org/node/16865' },
+    { t: 'Empire State Building: facts and figures', u: 'https://www.esbnyc.com/about/facts-figures' }
+  ]
+};
+
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART;
+  const INK = '#1E2140', WOOD = '#C99A5B', WOOD2 = '#8A5A2B', RED = '#C8452D', CREAM = '#FFF4DC', STONE = '#E8E2D0', GOLD = '#F2B632', DARK = '#070B1F';
+  const SHIRTS = ['#D7263D','#1D4ED8','#1F9D6B','#F46036','#7B2CBF','#3FA7D6','#EF5DA8','#F9C80E'];
+  function boxes(x, y){
+    return '<g stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"><rect x="'+(x-30)+'" y="'+(y-24)+'" width="28" height="24" fill="#D9A45B"/><rect x="'+(x+2)+'" y="'+(y-30)+'" width="30" height="30" fill="#E7B872"/><rect x="'+(x-14)+'" y="'+(y-46)+'" width="24" height="22" fill="#D9A45B"/></g>';
+  }
+  /* a rope lift. x = middle, top/bot = ends of the rails, w = width between the rails, py = platform floor.
+     o: teeth (rails like a saw), spring ('bent' | 'out'), cut (the rope is cut), load ('boxes' | 'person' | none) */
+  function lift(x, top, bot, w, py, o){
+    o = o || {};
+    const L = x-w/2, R = x+w/2, fy = py-58, re = o.ropeEnd || top+18;
+    let s = '<rect x="'+(L-12)+'" y="'+top+'" width="12" height="'+(bot-top)+'" fill="'+WOOD+'" stroke="'+INK+'" stroke-width="3"/>'
+          + '<rect x="'+R+'" y="'+top+'" width="12" height="'+(bot-top)+'" fill="'+WOOD+'" stroke="'+INK+'" stroke-width="3"/>';
+    if(o.teeth){
+      for(let y=top+6; y<bot-14; y+=14){
+        s += '<path d="M'+L+' '+y+'l8 7l-8 7z" fill="'+WOOD2+'"/><path d="M'+R+' '+y+'l-8 7l8 7z" fill="'+WOOD2+'"/>';
+      }
+    }
+    s += '<rect x="'+(L-18)+'" y="'+(top-10)+'" width="'+(w+36)+'" height="12" rx="3" fill="'+WOOD2+'" stroke="'+INK+'" stroke-width="3"/>';
+    const apex = o.spring==='bent' ? fy-20 : fy-3;
+    if(o.cut){
+      s += '<path d="M'+x+' '+(top+2)+'V'+re+'" stroke="'+INK+'" stroke-width="4" stroke-linecap="round"/><path d="M'+(x-6)+' '+(re+8)+'l6 -8l6 8" fill="none" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>';
+    } else {
+      s += '<path d="M'+x+' '+(top+2)+'V'+apex+'" stroke="'+INK+'" stroke-width="4" stroke-linecap="round"/>';
+    }
+    /* the platform: a floor, two posts and a top bar */
+    s += '<g stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"><rect x="'+(L+10)+'" y="'+py+'" width="'+(w-20)+'" height="10" fill="'+WOOD+'"/>'
+       + '<rect x="'+(L+12)+'" y="'+fy+'" width="7" height="58" fill="'+WOOD+'"/><rect x="'+(R-19)+'" y="'+fy+'" width="7" height="58" fill="'+WOOD+'"/>'
+       + '<rect x="'+(L+10)+'" y="'+(fy-4)+'" width="'+(w-20)+'" height="8" fill="'+WOOD+'"/></g>';
+    if(o.spring==='bent') s += '<path d="M'+(x-26)+' '+(fy-5)+'Q'+x+' '+(fy-36)+' '+(x+26)+' '+(fy-5)+'" fill="none" stroke="'+RED+'" stroke-width="6" stroke-linecap="round"/>';
+    if(o.spring==='out')  s += '<path d="M'+(L+2)+' '+(fy-8)+'H'+(R-2)+'" stroke="'+RED+'" stroke-width="6" stroke-linecap="round"/>';
+    if(o.load==='boxes') s += boxes(x, py);
+    if(o.load==='person') s += A.person(x, py, '#1D4ED8', true);
+    return s;
+  }
+  function crowdRow(x0, x1, y){
+    let s='', i=0; for(let x=x0; x<=x1; x+=36){ s += A.person(x, y, SHIRTS[i%SHIRTS.length], i%3===0); i++; } return s;
+  }
+  /* a five-floor store front; x, w = left edge and width; the roof is at y = 62, the street at y = 262 */
+  function storeFront(x, w, cols){
+    let s = '<rect x="'+x+'" y="62" width="'+w+'" height="200" fill="'+STONE+'" stroke="'+INK+'" stroke-width="3"/><rect x="'+(x-6)+'" y="54" width="'+(w+12)+'" height="10" fill="#B9B29C" stroke="'+INK+'" stroke-width="3"/>';
+    const gap = w/cols;
+    for(let f=0; f<5; f++){
+      const y = 62+f*40;
+      if(f>0) s += '<path d="M'+x+' '+y+'h'+w+'" stroke="'+INK+'" stroke-width="2"/>';
+      for(let c=0; c<cols; c++){
+        const wx = x+gap*c+gap/2-9;
+        s += '<path d="M'+wx.toFixed(1)+' '+(y+34)+'v-16a9 9 0 0 1 18 0v16z" fill="'+(f===4?'#FFE9A8':'#3FA7D6')+'" stroke="'+INK+'" stroke-width="2"/>';
+      }
+    }
+    return s;
+  }
+  /* a tall tower with steps and a spire; x = middle, base = street line, h = height */
+  function tower(x, base, h, w){
+    const a=h*0.56, b=h*0.24, c=h*0.12, d=h*0.08;
+    let s = '<g fill="#8FA3C8" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round">'
+      + '<rect x="'+(x-w/2)+'" y="'+(base-a)+'" width="'+w+'" height="'+a+'"/>'
+      + '<rect x="'+(x-w*0.36)+'" y="'+(base-a-b)+'" width="'+(w*0.72)+'" height="'+b+'"/>'
+      + '<rect x="'+(x-w*0.2)+'" y="'+(base-a-b-c)+'" width="'+(w*0.4)+'" height="'+c+'"/></g>'
+      + '<path d="M'+x+' '+(base-a-b-c)+'v'+(-d)+'" stroke="'+INK+'" stroke-width="5" stroke-linecap="round"/>';
+    for(let y=base-a+12; y<base-10; y+=16) for(let k=0;k<4;k++) s += '<rect x="'+(x-w/2+8+k*(w-16)/4+3).toFixed(1)+'" y="'+y.toFixed(1)+'" width="7" height="8" fill="#FFD34D"/>';
+    return s;
+  }
+
+  /* toy 1: two lifts, and what happens when the rope is cut */
+  function brakePic(mode, cut){
+    const spring = mode==='spring';
+    let s = '<rect width="640" height="300" fill="'+CREAM+'"/><rect y="270" width="640" height="30" fill="#B58A5A"/>';
+    if(!mode){
+      s += lift(190, 30, 270, 120, 130, {load:'boxes'}) + lift(450, 30, 270, 120, 130, {teeth:true, spring:'bent', load:'boxes'})
+         + A.tag(130, 232, 120, 'plain lift') + A.tag(366, 232, 168, 'lift with a spring');
+      return s;
+    }
+    if(!cut){
+      s += lift(320, 30, 270, 120, 130, {teeth:spring, spring:spring?'bent':null, load:'boxes'})
+         + A.tag(20, 20, spring?168:120, spring?'lift with a spring':'plain lift') + A.tag(440, 60, 170, 'The rope holds it.');
+      if(spring) s += A.tag(440, 100, 170, 'The spring is bent.');
+      return s;
+    }
+    if(spring){
+      s += lift(320, 30, 270, 120, 142, {teeth:true, spring:'out', cut:true, load:'boxes'})
+         + A.tag(20, 20, 168, 'lift with a spring') + A.text(530, 110, 34, 'Caught!', RED) + A.tag(440, 130, 180, 'The teeth hold it.');
+    } else {
+      s += lift(320, 30, 270, 120, 260, {cut:true})
+         + '<g stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"><rect x="286" y="232" width="28" height="24" fill="#D9A45B" transform="rotate(-14 300 244)"/><rect x="322" y="228" width="30" height="30" fill="#E7B872" transform="rotate(10 337 243)"/><rect x="400" y="246" width="24" height="22" fill="#D9A45B" transform="rotate(24 412 257)"/></g>'
+         + A.tag(20, 20, 120, 'plain lift') + A.text(530, 110, 30, 'Whoosh!', RED) + A.tag(440, 130, 180, 'All the way down!');
+    }
+    return s;
+  }
+  /* toy 2: the old store elevator, feet = how high the car is (0 to 40) */
+  function ridePic(feet){
+    const y = 236 - feet*4.5;
+    let s = '<rect width="640" height="300" fill="'+STONE+'"/><rect y="262" width="640" height="38" fill="#8A8E9B"/>'
+      + '<rect x="270" y="20" width="100" height="242" fill="#4A4C58" stroke="'+INK+'" stroke-width="3"/>';
+    for(let f=0; f<=40; f+=10){
+      const ty = 262 - f*4.5;
+      s += '<path d="M250 '+ty+'h20" stroke="'+INK+'" stroke-width="3"/>' + A.text(240, ty+6, 17, f+' ft', INK, 'end');
+    }
+    s += '<path d="M320 22V'+(y-34)+'" stroke="#fff" stroke-width="3"/>'
+      + '<rect x="284" y="'+(y-34)+'" width="72" height="60" rx="6" fill="'+GOLD+'" stroke="'+INK+'" stroke-width="3"/>' + A.person(308, y+24, '#D7263D') + A.person(334, y+24, '#1D4ED8');
+    /* a clock that fills up in one minute */
+    const ang = feet/40*2*Math.PI, cx=500, cy=130, r=56;
+    s += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#fff" stroke="'+INK+'" stroke-width="4"/>';
+    if(feet>=40) s += '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-8)+'" fill="#FFD34D"/>';
+    else if(feet>0) s += '<path d="M'+cx+' '+cy+'V'+(cy-r+8)+'A'+(r-8)+' '+(r-8)+' 0 '+(ang>Math.PI?1:0)+' 1 '+(cx+(r-8)*Math.sin(ang)).toFixed(1)+' '+(cy-(r-8)*Math.cos(ang)).toFixed(1)+'Z" fill="#FFD34D"/>';
+    s += '<path d="M'+cx+' '+cy+'L'+(cx+(r-12)*Math.sin(ang)).toFixed(1)+' '+(cy-(r-12)*Math.cos(ang)).toFixed(1)+'" stroke="'+INK+'" stroke-width="5" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="'+INK+'"/>'
+      + A.tag(430, 204, 140, 'one minute') + A.tag(40, 20, 150, 'the old elevator');
+    return s;
+  }
+  /* toy 3: a ride up the giant tower, floor = 0 to 100 */
+  function zoomPic(floor){
+    const y = 262 - floor*1.9;
+    let s = [[40,30],[110,70],[170,24],[420,40],[600,84],[560,26],[30,130],[470,110]].map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2" fill="#FFF6C9"/>').join('')
+      + A.skyline(20,[50,70,40,60,50,64,44],DARK,262) + A.skyline(420,[60,44,70,50,64,40,56,48,60],DARK,262)
+      + '<rect y="262" width="640" height="38" fill="'+DARK+'"/>'
+      + '<rect x="270" y="60" width="100" height="202" fill="#8FA3C8" stroke="'+INK+'" stroke-width="3"/><rect x="296" y="34" width="48" height="26" fill="#8FA3C8" stroke="'+INK+'" stroke-width="3"/><path d="M320 34V12" stroke="'+INK+'" stroke-width="5" stroke-linecap="round"/>'
+      + '<rect x="306" y="72" width="28" height="190" fill="#2A3A74"/>';
+    for(let f=0; f<=100; f+=20){
+      const ty = 262 - f*1.9;
+      s += '<path d="M252 '+ty+'h18" stroke="#fff" stroke-width="3"/>' + A.text(244, ty+6, 16, String(f), '#fff', 'end');
+    }
+    s += '<rect x="308" y="'+(y-14)+'" width="24" height="14" rx="3" fill="#FFD34D" stroke="'+INK+'" stroke-width="2"/>'
+      + A.text(500, 120, 26, 'Floor', '#fff') + A.text(500, 172, 54, String(floor), '#FFD34D');
+    return s;
+  }
+
+  window.SCENES = {
+    hoist(){
+      return A.frame('<rect width="640" height="300" fill="'+CREAM+'"/><rect y="262" width="640" height="38" fill="#B58A5A"/>'
+        + lift(200, 34, 262, 120, 160, {load:'boxes'})
+        + '<path d="M192 84l8 -8l-8 -8l8 -8" fill="none" stroke="'+RED+'" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'
+        + A.tag(286, 56, 160, 'The rope can snap!') + '<path d="M286 70H212" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        + A.tag(14, 214, 104, 'boxes only')
+        + '<path d="M400 262V242H430V222H460V202H490V182H520V162H550V142H580V122H640V262Z" fill="#D9C7A3" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
+        + A.person(445, 222, '#D7263D') + A.person(535, 162, '#1F9D6B')
+        + A.tag(330, 110, 196, 'People take the stairs.'));
+    },
+    factory(){
+      return A.frame(A.sun(70,56)
+        + '<rect y="262" width="640" height="38" fill="#9CB58A"/>'
+        + '<rect x="350" y="70" width="260" height="192" fill="#C8694A" stroke="'+INK+'" stroke-width="3"/><path d="M350 166h260" stroke="'+INK+'" stroke-width="3"/>'
+        + '<rect x="376" y="92" width="76" height="74" fill="#3A2A22" stroke="'+INK+'" stroke-width="3"/>'
+        + [0,1].map(i=>'<rect x="'+(486+i*58)+'" y="100" width="36" height="44" fill="#BFE3FA" stroke="'+INK+'" stroke-width="3"/>').join('')
+        + [0,1,2].map(i=>'<rect x="'+(376+i*80)+'" y="194" width="44" height="48" fill="#BFE3FA" stroke="'+INK+'" stroke-width="3"/>').join('')
+        + A.tag(410, 34, 140, 'bed factory')
+        + '<rect x="96" y="196" width="104" height="66" rx="6" fill="#8A8E9B" stroke="'+INK+'" stroke-width="3"/><circle cx="128" cy="228" r="20" fill="#C9CED6" stroke="'+INK+'" stroke-width="3"/><circle cx="128" cy="228" r="6" fill="'+INK+'"/><rect x="160" y="208" width="28" height="40" fill="#C9CED6" stroke="'+INK+'" stroke-width="3"/>'
+        + A.tag(74, 156, 148, 'heavy machine')
+        + '<path d="M214 196Q280 96 362 124" fill="none" stroke="'+INK+'" stroke-width="4" stroke-dasharray="4 10" stroke-linecap="round"/><path d="M350 112l14 12l-17 8" fill="none" stroke="'+INK+'" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'
+        + A.person(262, 262, '#1D4ED8', false, true)
+        + A.tag(150, 20, 150, 'Yonkers, 1852'));
+    },
+    crowd(){
+      return A.frame('<rect width="640" height="300" fill="'+CREAM+'"/>'
+        + '<path d="M30 262V150Q320 -70 610 150V262" fill="#E3F3FB" stroke="#3FA7D6" stroke-width="5"/><path d="M130 262V86M510 262V86M30 150H610" stroke="#3FA7D6" stroke-width="3" opacity="0.7"/>'
+        + '<rect y="262" width="640" height="38" fill="#B58A5A"/>'
+        + lift(320, 30, 262, 120, 122, {teeth:true, spring:'bent', load:'person'})
+        + crowdRow(52, 232, 262) + crowdRow(408, 590, 262)
+        + A.tag(20, 16, 196, 'New York City, 1854') + A.tag(424, 70, 180, 'The rope gets cut!') + '<path d="M424 84L330 60" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>');
+    },
+    safe(){
+      return A.frame('<rect width="640" height="300" fill="'+CREAM+'"/>'
+        + '<g transform="translate(0,-10) scale(1.6)">' + lift(200, -30, 220, 120, 150, {teeth:true, spring:'out', cut:true, ropeEnd:44, load:'person'}) + '</g>'
+        + A.text(108, 110, 34, 'CLUNK!', RED)
+        + A.tag(448, 66, 180, 'The spring pops out.') + '<path d="M448 80L414 122" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        + A.tag(448, 176, 150, 'Teeth catch it.') + '<path d="M448 190L424 150" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        + A.tag(6, 250, 196, 'It fell a few inches.'));
+    },
+    store(){
+      return A.frame(A.sun(70,50)
+        + '<rect y="262" width="640" height="38" fill="#8A8E9B"/>'
+        + storeFront(150, 240, 5)
+        + '<rect x="390" y="62" width="80" height="200" fill="#4A4C58" stroke="'+INK+'" stroke-width="3"/><rect x="390" y="262" width="80" height="36" fill="#6A4A3A" stroke="'+INK+'" stroke-width="3"/>'
+        + '<path d="M430 64V150" stroke="#fff" stroke-width="3"/><rect x="404" y="150" width="52" height="32" rx="4" fill="'+GOLD+'" stroke="'+INK+'" stroke-width="3"/>'
+        + '<rect x="404" y="270" width="34" height="22" rx="3" fill="'+RED+'" stroke="'+INK+'" stroke-width="3"/><circle cx="452" cy="281" r="10" fill="#C9CED6" stroke="'+INK+'" stroke-width="3"/>'
+        + [1,2,3,4,5].map(n=>A.text(136, 262-(n-1)*40-12, 18, String(n), INK, 'end')).join('')
+        + A.tag(486, 152, 130, 'the elevator') + A.tag(486, 266, 140, 'steam engine')
+        + A.tag(190, 14, 160, 'Broadway, 1857')
+        + A.person(40, 262, '#7B2CBF') + A.person(84, 262, '#F46036', true));
+    },
+    empire(){
+      return A.frame(A.nightSky()
+        + A.skyline(20,[60,84,50,70,56],DARK,262) + A.skyline(300,[60,80,50,70,56,76,48,66,54,72,50,64,58,70],DARK,262)
+        + tower(210, 262, 250, 100)
+        + '<rect y="262" width="640" height="38" fill="'+DARK+'"/>'
+        + A.text(440, 104, 84, '73', '#FFD34D') + A.tag(350, 118, 180, 'elevators inside') + A.tag(18, 20, 140, 'opened in 1931'), true);
+    },
+    tryit(){
+      return A.frame(A.sun(580,50)
+        + '<rect y="262" width="640" height="38" fill="#8A8E9B"/>'
+        + storeFront(340, 230, 5)
+        + '<path d="M210 262V70" stroke="'+INK+'" stroke-width="6" stroke-linecap="round"/>' + A.tag(110, 72, 100, 'Broadway') + A.tag(210, 104, 110, 'Broome St')
+        + A.person(70, 262, '#F9C80E', true) + A.person(270, 262, '#1D4ED8')
+        + A.tag(20, 16, 170, 'It is still there!'));
+    }
+  };
+
+  /* ===== the three things to play with ===== */
+  window.TOYS = {
+    brake: {
+      title: 'Your turn: cut the rope!', cap: 'Pick a lift. Then cut its rope. Try both lifts!', hint: 'Cut the rope on both lifts first.',
+      init(box, api){
+        let mode=null, cut=false; const tried={};
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn" data-m="plain">Plain lift</button><button class="btn small toybtn" data-m="spring">Lift with a spring</button><button class="btn small toybtn" data-m="cut">Cut the rope!</button></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), msg=box.querySelector('.msg'), bs=box.querySelectorAll('.toybtn');
+        function draw(){
+          pic.innerHTML=A.frame(brakePic(mode, cut));
+          const choosing = !mode || cut;
+          bs[0].disabled = !choosing || !!tried.plain; bs[1].disabled = !choosing || !!tried.spring; bs[2].disabled = choosing;
+          msg.textContent = !mode ? 'Two lifts full of boxes. Which rope will you cut first?'
+            : !cut ? (mode==='plain' ? 'The plain lift hangs on its rope. Nothing else holds it.' : 'The rope pulls the red spring into a bend. See the teeth on the rails?')
+            : mode==='plain' ? 'Whoosh! Nothing stops the plain lift. Good thing it only had boxes on it.' : 'The spring popped out flat and the teeth caught it. The lift dropped just a little!';
+        }
+        bs.forEach(b=>{ b.onclick=()=>{
+          const m=b.dataset.m;
+          if(m==='cut'){ if(!mode || cut) return; cut=true; tried[mode]=true; }
+          else { if(tried[m]) return; mode=m; cut=false; }
+          draw();
+          if(tried.plain && tried.spring) api.done();
+        }; });
+        draw();
+      }
+    },
+    ride: {
+      title: 'Your turn: the slow ride', cap: 'Tap the button to ride up. Count the feet by 5s!', hint: 'Ride all the way up to 40 feet first.',
+      init(box, api){
+        let feet=0;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Up 5 feet</button><div class="readout">Feet: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          pic.innerHTML=A.frame(ridePic(feet)); out.textContent=String(feet);
+          msg.textContent = feet===0 ? 'All aboard! Watch the clock while you ride.' : feet<40 ? feet+' feet. Keep counting by 5s!' : '40 feet! That took one whole minute.';
+        }
+        btn.onclick=()=>{ if(feet>=40) return; feet+=5; draw(); if(feet>=40){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    zoom: {
+      title: 'Your turn: zoom to the top', cap: 'Tap the button to zoom up. Count the floors by 10s!', hint: 'Zoom all the way up to floor 100 first.',
+      init(box, api){
+        let floor=0;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Up 10 floors</button><div class="readout">Floor: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          pic.innerHTML=A.frame(zoomPic(floor), true); out.textContent=String(floor);
+          msg.textContent = floor===0 ? 'You are on the street. Going up!' : floor<100 ? 'Floor '+floor+'. Keep counting by 10s!' : 'Floor 100! You are almost at the very top, and your legs are not even tired.';
+        }
+        btn.onclick=()=>{ if(floor>=100) return; floor+=10; draw(); if(floor>=100){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    }
+  };
+})();
+</script>
+<script src="../../assets/engine.js"></script>
+</body>
+</html>
