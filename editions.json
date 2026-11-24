@@ -91,6 +91,19 @@
       "riddle": "an elevator",
       "golden": "5 x 8",
       "pw": "aGNpd2RuYVMgZ25pcnBTIG5vZ2FXIGduaWxnZ2lH"
+    },
+    {
+      "n": 8,
+      "code": "LDK-008",
+      "date": "2026-11-24",
+      "week": "2026-W48",
+      "title": "The Guitar Nobody Could Hear",
+      "path": "e/008/",
+      "theme": "Music",
+      "topic": "How the quiet guitar got loud: bigger guitars, metal cones, then George Beauchamp's magnet-and-wire pickup and the 1932 Frying Pan electric guitar, and how fast a guitar string wiggles",
+      "riddle": "a guitar",
+      "golden": "6 x 6",
+      "pw": "c25hUCBnbml5ckYgZ25pbGdnaVcgb3dULXl0aGdpRQ=="
     }
   ],
   "weeks": {

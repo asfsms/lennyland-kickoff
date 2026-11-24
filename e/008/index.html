@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenny's Daily Kickoff #8 · The Guitar Nobody Could Hear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/engine.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="../../assets/common.js"></script>
+<script>
+/* ===== Game 8: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 8, code: 'LDK-008', date: '2026-11-24', week: '2026-W48',
+  title: 'The Guitar Nobody Could Hear',
+  theme: 'Music',
+  pw: 'c25hUCBnbml5ckYgZ25pbGdnaVcgb3dULXl0aGdpRQ==',
+  lede: 'Shh! Listen hard. A guitar is playing in a big, loud band. Can you hear it? Nope. Not one note!',
+  guess: { q: 'Pluck the thickest string on a guitar and it wiggles back and forth. How many times do you think it wiggles in just one second?', answer: 82, close: 12 },
+  pages: [
+    { scene: 'band',      text: 'About 100 years ago, dance bands were LOUD. Horns honked. Drums boomed. The poor guitar sounded like a mouse at a parade. Guitar players needed help!' },
+    { scene: 'bigger',    text: 'Try one: build a bigger guitar. A bigger box of wood makes a bigger sound. It helped a little. But the horns still won.' },
+    { scene: 'cones',     text: 'Try two: a guitar player named George Beauchamp asked a builder for help. The builder put three shiny metal {cones|Shapes like party hats.} inside a guitar. Louder! But still not loud enough.' },
+    { toy: 'strings',     text: 'Then George tried something wild: a {magnet|A thing that pulls on iron and steel.} with wire wrapped around it. When a steel string wiggles over it, a tiny bit of electricity runs into the wire! Your turn: pluck three strings.' },
+    { scene: 'fryingpan', text: 'In the early 1930s, George and his friends built a guitar around that trick. It had a round body and a long neck. It looked like a frying pan! So that is what people called it.' },
+    { toy: 'path',        text: 'The tiny electricity runs down a cable to a box called an {amplifier|A machine that makes a small sound signal big.}. The box makes it BIG. Then a speaker turns it back into sound. Your turn: send a note!' },
+    { scene: 'wiggle',    text: 'But how fast does a string wiggle? Pluck the thickest string, and it wiggles back and forth about **82 times** every second! That is too fast to see. It just looks fuzzy.', guessBack: true },
+    { toy: 'count',       text: 'A thinner string wiggles even faster. The next string wiggles 110 times every second. Faster wiggles make a higher sound. Your turn: count the wiggles by 10s!' },
+    { scene: 'stage',     text: 'The Frying Pan went on sale in 1932. At last, a guitar could be heard over a whole band. Soon electric guitars were everywhere.',
+      quick: { q: 'The thickest string wiggles about 41 times in half a second. How many times is that in two halves, one whole second?', expr: '41 + 41 =', answer: 82,
+               hint: 'Add the ones first. Then add the tens: 4 tens and 4 more tens.', fb: '[[41 + 41 = 82]] wiggles in one second. Fuzzy!' } },
+    { scene: 'museum',    text: '**Spot it in New York!** A real Frying Pan guitar from about 1934 belongs to the Metropolitan Museum of Art in Manhattan. It is made of metal, and it really does look like a pan.',
+      bonus: 'Bonus fact: You played the Frying Pan lying flat on your lap, not hanging from a strap.' }
+  ],
+  riddle: { q: 'I have a long neck, but I never wear a scarf. I have six strings, but I am not a puppet. What am I?', accept: ['guitar', 'gitar', 'guiter', 'gutar', 'giutar', 'guitr', 'gitter', 'guittar'], answer: 'a guitar',
+            hint: 'You pluck my strings to make music.', explain: 'A guitar! The long thin part is called the neck, and most guitars have six strings.' },
+  shots: {
+    1: { q: 'Why did guitar players need a new idea about 100 years ago?',
+         opts: ['Because guitars kept running away', 'Because loud horns and drums covered up the quiet guitar', 'Because all the wood was used for pancakes', 'Because guitars were afraid of the dark'], a: 1,
+         hint: 'Think about the mouse at the parade.', fb: 'Dance bands were loud. Horns and drums covered up the guitar, so nobody could hear it.' },
+    2: { q: 'How does the magnet trick work?',
+         opts: ['The magnet shouts the notes', 'The magnet makes the string taller', 'A tiny drummer lives inside the wire', 'A steel string wiggles over the magnet, and electricity runs into the wire'], a: 3,
+         hint: 'What did the wiggling steel string make in the wire?', fb: 'When a steel string wiggles over a magnet wrapped in wire, a tiny bit of electricity runs into the wire.' },
+    order: { q: 'How did the guitar get louder? Tap the cards in order, from first to last.',
+             cards: ['Builders make a bigger guitar.', 'A builder puts three metal cones inside a guitar.', 'George tries a magnet with wire wrapped around it.', 'The Frying Pan guitar goes on sale.'],
+             hint: 'The first two tries used no electricity at all.', fb: 'First came a bigger guitar. Then the metal cones. Next the magnet and wire, and then the Frying Pan went on sale.' },
+    math: { q: 'The thinnest guitar string wiggles about 330 times every second. The string from our counting game wiggles 110 times. How many more wiggles does the thinnest string make?',
+            stack: ['330', '− 110'], answer: 220,
+            hint: 'Take away the ones first ([[0 − 0]]). Then take away the tens ([[3 − 1]]). Then the hundreds.',
+            fb: '[[330 − 110 = 220]] more wiggles every second. That is why it sounds so high!' },
+    coach: { q: 'You are the coach! Tell your team: How does an electric guitar turn a wiggling string into a LOUD sound?', starter: 'When the steel string wiggles over the magnet...',
+             ideas: ['a steel string wiggles over a magnet with wire wrapped around it, and that makes a tiny bit of electricity in the wire', 'the electricity runs down a cable to an amplifier, which makes it big, and a speaker turns it back into loud sound'],
+             rubric: ['I said the steel string wiggles over a magnet with wire.', 'I said that makes a tiny bit of electricity.', 'I said the amplifier makes it big and the speaker makes the sound.'],
+             model: 'When the steel string wiggles over the magnet, a tiny bit of electricity runs into the wire. It goes down a cable to the amplifier, and the amplifier makes it big. Then the speaker turns it into a loud sound.' },
+    extra: [
+      { kind: 'num', q: 'Hard numbers! One guitar string wiggles about 147 times in a second. The string next to it wiggles 196 times. You pluck one, then the other, for one second each. How many wiggles is that in all?', stack: ['147', '+ 196'], answer: 343,
+        hint: 'Start with the ones: [[7 + 6 = 13]]. Write the 3 and carry 1 ten.', fb: '[[147 + 196 = 343]] wiggles in just two seconds.' },
+      { kind: 'tap', q: 'Brain teaser! A magnet pulls on steel and iron. Wiggle each of these over the magnet and wire. Three would make electricity. Which one would not?', opts: ['A steel guitar string', 'An iron nail', 'A rubber band', 'A steel paper clip'], a: 2,
+        hint: 'Which one would a magnet NOT pull on?', fb: 'The rubber band! A magnet does not pull on rubber, so it makes no electricity in the wire.' }
+    ],
+    golden: { q: 'A guitar has 6 strings. A music shop hangs 6 guitars on the wall. How many strings are on the wall?', expr: '6 × 6 =', answer: 36,
+              hint: 'Six groups of 6. You know [[6 × 5 = 30]]. Add one more group.', fb: '[[6 × 6 = 36]] strings. That is a lot of wiggling!' }
+  },
+  lesson: 'Today\'s story, "The Guitar Nobody Could Hear": About 100 years ago, dance bands were loud. Horns and drums covered up the quiet guitar. Bigger guitars helped a little. Then a guitar player named George Beauchamp asked a builder, John Dopyera, for help, and the builder put three metal cones inside a guitar. It was louder, but still not loud enough. Then George tried a magnet with wire wrapped around it. When a steel string wiggles over the magnet, a tiny bit of electricity runs into the wire. Rubber and nylon strings do not work, because a magnet does not pull on them. In the early 1930s George and his friends built a guitar with a round body and a long neck. People called it the Frying Pan. It went on sale in 1932. The electricity runs down a cable to an amplifier, which makes it big, and a speaker turns it into sound. The thickest guitar string wiggles about 82 times a second, the next one 110 times, and the thinnest about 330 times. Faster wiggles make a higher sound. A Frying Pan from about 1934 belongs to the Metropolitan Museum of Art in New York.',
+  chips: ['How does the magnet make electricity?', 'Why was it called the Frying Pan?', 'Why does a rubber band not work?', 'How fast does a string wiggle?', 'Tell me a guitar fact'],
+  helperQA: [
+    { q: 'How does the magnet make electricity?', a: 'The steel string wiggles over a magnet that has wire wrapped around it. Each wiggle pushes a tiny bit of electricity into the wire.' },
+    { q: 'Why was it called the Frying Pan?', a: 'It had a round body and a long neck, so it looked just like a frying pan.' }
+  ],
+  dinner: [
+    'About 100 years ago, guitars were so quiet that nobody could hear them over the horns and drums in a dance band.',
+    'An electric guitar works because a steel string wiggles over a magnet wrapped in wire, and that makes a tiny bit of electricity.',
+    'The thickest guitar string wiggles back and forth about 82 times every second, and one of the first electric guitars was called the Frying Pan.'
+  ],
+  notes: [
+    'Exact: Acoustic guitars were drowned out by horns and percussion in 1920s dance orchestras. John Dopyera built the resonator guitar at the request of the steel guitar player George Beauchamp; the "tricone" has three metal cones, and the two men formed the National company in 1927. Beauchamp then designed a pickup with a coil of wire and two horseshoe magnets. The guitar built around it, nicknamed the Frying Pan for its round body and long neck, went on sale in 1932, and its patent was filed in 1934 and granted in 1937. The Metropolitan Museum of Art owns an A-22 "Frying Pan" of about 1934 in cast aluminum (object 2016.557a-d); when this game was written its page listed it on view in Gallery 684 at The Met Fifth Avenue, but displays change, so check before a visit.',
+    'Rounded: in standard tuning the six open strings vibrate at 82.41, 110, 146.83, 196, 246.94 and 329.63 times a second. The game says "about 82", 110, "about 147", 196 and "about 330". Each count is one full back-and-forth of the string. "About 100 years ago" means the 1920s.',
+    'Where sources disagree: the wooden test version of the Frying Pan is dated 1931 by some sources and 1932 by others, so the story says "the early 1930s". The Met calls the Frying Pan the first commercially successful electric guitar; other writers keep that title for later guitars, so the story says only "one of the first". Other people were also working on electric guitars at the time.',
+    'Simplified: "George and his friends" stands for Beauchamp, Paul Barth, Adolph Rickenbacker and others in their small company. The real pickup had two horseshoe magnets arching over the strings with the coil of wire between them; the toys show one magnet block under one string. In the first toy a rubber band and a nylon string make no electricity because they are not magnetic, which is true of magnetic pickups; nylon-string guitars use other kinds of pickups or microphones. The pictures show plain stand-in people and made-up guitars, with no brand marks. The Frying Pan was a "Hawaiian" lap steel guitar, played flat on the lap with a metal bar.',
+    'Left out: bigger guitars and resonator guitars did not disappear, and are still played today. Nothing dark was left out of this story.'
+  ],
+  sources: [
+    { t: 'The Metropolitan Museum of Art: A-22 Model, "Frying Pan", Electro Hawaiian Guitar', u: 'https://www.metmuseum.org/art/collection/search/729575' },
+    { t: 'Wikipedia: Frying Pan (guitar)', u: 'https://en.wikipedia.org/wiki/Frying_Pan_(guitar)' },
+    { t: 'Wikipedia: Resonator guitar', u: 'https://en.wikipedia.org/wiki/Resonator_guitar' },
+    { t: 'Yamaha Musical Instrument Guide: the structure of the electric guitar (how a pickup works)', u: 'https://www.yamaha.com/en/musical_instrument_guide/electric_guitar/mechanism/mechanism002.html' },
+    { t: 'Reverb: Who Really Invented the Electric Guitar?', u: 'https://reverb.com/news/who-really-invented-the-electric-guitar' }
+  ]
+};
+
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART;
+  const INK = '#1E2140', WOOD = '#D9A45B', WOOD2 = '#8A5A2B', RED = '#C8452D', CREAM = '#FFF4DC', GOLD = '#F2B632', SILVER = '#C9CED6', DARK = '#070B1F', FLOOR = '#B58A5A';
+  const SHIRTS = ['#D7263D','#1D4ED8','#1F9D6B','#F46036','#7B2CBF','#3FA7D6','#EF5DA8','#F9C80E'];
+  /* sound rings going to the right from (x, y); n = how many, r0 = first size */
+  function arcs(x, y, n, color, r0){
+    let s=''; for(let i=0;i<n;i++){ const r=(r0||14)+i*12; s += '<path d="M'+(x+r*0.5).toFixed(1)+' '+(y-r).toFixed(1)+'Q'+(x+r*1.3).toFixed(1)+' '+y+' '+(x+r*0.5).toFixed(1)+' '+(y+r).toFixed(1)+'" fill="none" stroke="'+color+'" stroke-width="4" stroke-linecap="round"/>'; }
+    return s;
+  }
+  /* a plain wooden guitar standing up. x = middle, y = bottom of the body, s = size. o.cones: three metal cones */
+  function guitar(x, y, s, o){
+    o = o || {};
+    let g = '<g stroke="'+INK+'" stroke-width="3" stroke-linejoin="round">'
+      + '<rect x="'+(x-6*s)+'" y="'+(y-176*s)+'" width="'+(12*s)+'" height="'+(84*s)+'" fill="'+WOOD2+'"/>'
+      + '<rect x="'+(x-10*s)+'" y="'+(y-198*s)+'" width="'+(20*s)+'" height="'+(24*s)+'" rx="3" fill="'+WOOD2+'"/>'
+      + '<circle cx="'+x+'" cy="'+(y-80*s)+'" r="'+(27*s)+'" fill="'+WOOD+'"/><circle cx="'+x+'" cy="'+(y-36*s)+'" r="'+(36*s)+'" fill="'+WOOD+'"/></g>'
+      + '<circle cx="'+x+'" cy="'+(y-66*s)+'" r="'+(20*s)+'" fill="'+WOOD+'"/>';
+    if(o.cones){
+      g += [[-15,-28],[15,-28],[0,-54]].map(p=>'<circle cx="'+(x+p[0]*s)+'" cy="'+(y+p[1]*s)+'" r="'+(13*s)+'" fill="'+SILVER+'" stroke="'+INK+'" stroke-width="3"/><circle cx="'+(x+p[0]*s)+'" cy="'+(y+p[1]*s)+'" r="'+(4*s)+'" fill="'+INK+'"/>').join('');
+    } else {
+      g += '<circle cx="'+x+'" cy="'+(y-62*s)+'" r="'+(10*s)+'" fill="#3A2A22" stroke="'+INK+'" stroke-width="2"/>';
+      g += '<rect x="'+(x-14*s)+'" y="'+(y-24*s)+'" width="'+(28*s)+'" height="'+(6*s)+'" fill="'+WOOD2+'" stroke="'+INK+'" stroke-width="2"/>';
+    }
+    g += [-3,0,3].map(d=>'<path d="M'+(x+d*s)+' '+(y-176*s)+'V'+(y-(o.cones?12:22)*s)+'" stroke="#fff" stroke-width="1.5"/>').join('');
+    return g;
+  }
+  /* the Frying Pan guitar lying flat. x, y = middle of the round body, s = size */
+  function pan(x, y, s){
+    return '<g stroke="'+INK+'" stroke-width="3" stroke-linejoin="round">'
+      + '<rect x="'+(x+30*s)+'" y="'+(y-9*s)+'" width="'+(170*s)+'" height="'+(18*s)+'" fill="'+SILVER+'"/>'
+      + '<rect x="'+(x+198*s)+'" y="'+(y-13*s)+'" width="'+(34*s)+'" height="'+(26*s)+'" rx="4" fill="'+SILVER+'"/>'
+      + '<circle cx="'+x+'" cy="'+y+'" r="'+(44*s)+'" fill="'+SILVER+'"/></g>'
+      + [-5,0,5].map(d=>'<path d="M'+(x-26*s)+' '+(y+d*s)+'H'+(x+214*s)+'" stroke="'+INK+'" stroke-width="1.5"/>').join('')
+      + '<rect x="'+(x-30*s)+'" y="'+(y-10*s)+'" width="'+(6*s)+'" height="'+(20*s)+'" fill="'+INK+'"/>'
+      + '<rect x="'+(x-4*s)+'" y="'+(y-18*s)+'" width="'+(18*s)+'" height="'+(36*s)+'" rx="5" fill="'+RED+'" stroke="'+INK+'" stroke-width="3"/>';
+  }
+  function horn(x, y){
+    return '<path d="M'+x+' '+(y-4)+'h30l22 -14v36l-22 -14h-30z" fill="'+GOLD+'" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>';
+  }
+  function crowdRow(x0, x1, y){
+    let s='', i=0; for(let x=x0; x<=x1; x+=36){ s += A.person(x, y, SHIRTS[i%SHIRTS.length], i%2===0); i++; } return s;
+  }
+  /* a string between two posts. plucked = draw it as a fuzzy blur */
+  function stringLine(x0, x1, y, color, w, plucked, amp){
+    let s = '<rect x="'+(x0-12)+'" y="'+(y-22)+'" width="12" height="60" fill="'+WOOD2+'" stroke="'+INK+'" stroke-width="3"/><rect x="'+x1+'" y="'+(y-22)+'" width="12" height="60" fill="'+WOOD2+'" stroke="'+INK+'" stroke-width="3"/>';
+    const m=(x0+x1)/2, a=amp||22;
+    if(plucked){
+      s += '<path d="M'+x0+' '+y+'Q'+m+' '+(y-a*2)+' '+x1+' '+y+'Q'+m+' '+(y+a*2)+' '+x0+' '+y+'Z" fill="'+color+'" opacity="0.3"/>'
+         + '<path d="M'+x0+' '+y+'Q'+m+' '+(y-a*2)+' '+x1+' '+y+'" fill="none" stroke="'+color+'" stroke-width="'+w+'"/><path d="M'+x0+' '+y+'Q'+m+' '+(y+a*2)+' '+x1+' '+y+'" fill="none" stroke="'+color+'" stroke-width="'+w+'"/>';
+    } else {
+      s += '<path d="M'+x0+' '+y+'H'+x1+'" stroke="'+color+'" stroke-width="'+w+'" stroke-linecap="round"/>';
+    }
+    return s;
+  }
+  /* a magnet with wire wrapped around it; x, y = top left, glow = it is making electricity */
+  function magnet(x, y, glow){
+    let s = glow ? '<circle cx="'+(x+30)+'" cy="'+(y+22)+'" r="46" fill="#FFD34D" opacity="0.6"/>' : '';
+    s += '<rect x="'+x+'" y="'+y+'" width="60" height="44" rx="5" fill="'+RED+'" stroke="'+INK+'" stroke-width="3"/>';
+    for(let i=0;i<5;i++) s += '<path d="M'+(x+6+i*11)+' '+(y+44)+'l8 -44" stroke="#F46036" stroke-width="4" stroke-linecap="round"/><path d="M'+(x+6+i*11)+' '+(y+44)+'l8 -44" stroke="#FFD9A0" stroke-width="1.5" stroke-linecap="round"/>';
+    return s;
+  }
+  const KINDS = { rubber:['rubber band','#C9703F',8], nylon:['nylon string','#3FA7D6',5], steel:['steel string','#6E7480',4] };
+
+  /* toy 1: three strings over a magnet */
+  function stringsPic(kind, plucked){
+    let s = '<rect width="640" height="300" fill="'+CREAM+'"/><rect y="262" width="640" height="38" fill="'+FLOOR+'"/>';
+    const live = kind==='steel' && plucked;
+    /* the screen that shows electricity */
+    s += '<path d="M290 172H360V150H440" fill="none" stroke="'+(live?GOLD:INK)+'" stroke-width="5" stroke-linejoin="round"/>'
+       + '<rect x="440" y="96" width="176" height="108" rx="10" fill="#22264A" stroke="'+INK+'" stroke-width="3"/>'
+       + (live ? '<path d="M452 150l14 -30l14 60l14 -60l14 60l14 -60l14 60l14 -60l14 60l14 -60l14 60l10 -30" fill="none" stroke="#7CF29A" stroke-width="4" stroke-linejoin="round"/>'
+               : '<path d="M452 150H604" stroke="#7CF29A" stroke-width="4" stroke-linecap="round"/>')
+       + A.tag(456, 212, 144, 'electricity screen');
+    s += magnet(230, 150, live) + A.tag(196, 204, 150, 'magnet and wire');
+    if(!kind){
+      s += stringLine(60, 430, 112, '#B9B29C', 3, false) + A.tag(20, 20, 130, 'Pick a string.');
+      return s;
+    }
+    const k = KINDS[kind];
+    s += stringLine(60, 430, 112, k[1], k[2], plucked) + A.tag(20, 20, 140, k[0]);
+    if(plucked) s += live ? A.text(528, 70, 28, 'Electricity!', RED) : A.text(528, 70, 28, 'Nothing.', INK);
+    return s;
+  }
+  /* toy 2: the path of one note; step 0 to 5 */
+  function pathPic(step){
+    let s = '<rect width="640" height="300" fill="'+CREAM+'"/><rect y="262" width="640" height="38" fill="'+FLOOR+'"/>';
+    s += '<path d="M180 138H270V226H400" fill="none" stroke="'+(step>=3?GOLD:INK)+'" stroke-width="'+(step>=3?7:5)+'" stroke-linejoin="round"/>';
+    s += magnet(120, 116, step>=2) + stringLine(50, 250, 86, '#6E7480', 4, step>=1, 12);
+    s += A.tag(20, 20, 120, 'steel string') + A.tag(20, 176, 150, 'magnet and wire') + A.tag(290, 234, 70, 'cable');
+    s += '<rect x="400" y="110" width="160" height="152" rx="10" fill="#3A2A22" stroke="'+INK+'" stroke-width="3"/>'
+       + '<circle cx="480" cy="200" r="44" fill="#6E7480" stroke="'+INK+'" stroke-width="3"/><circle cx="480" cy="200" r="16" fill="'+INK+'"/>'
+       + '<circle cx="420" cy="130" r="8" fill="'+(step>=4?'#7CF29A':SILVER)+'" stroke="'+INK+'" stroke-width="2"/>'
+       + A.tag(420, 70, 120, 'amplifier');
+    if(step>=4) s += A.text(495, 140, 22, 'BIGGER!', '#FFD34D');
+    if(step>=5) s += arcs(566, 200, 4, RED, 16) + A.text(632, 100, 24, 'LOUD!', RED, 'end');
+    return s;
+  }
+  /* toy 3: count the wiggles of one string in one second; n = 0 to 110 */
+  function countPic(n){
+    let s = '<rect width="640" height="300" fill="'+CREAM+'"/><rect y="262" width="640" height="38" fill="'+FLOOR+'"/>';
+    s += stringLine(50, 390, 76, '#6E7480', 4, n>0, 14) + A.tag(20, 14, 150, 'the next string');
+    const ang = n/110*2*Math.PI, cx=220, cy=190, r=56;
+    s += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#fff" stroke="'+INK+'" stroke-width="4"/>';
+    if(n>=110) s += '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-8)+'" fill="#FFD34D"/>';
+    else if(n>0) s += '<path d="M'+cx+' '+cy+'V'+(cy-r+8)+'A'+(r-8)+' '+(r-8)+' 0 '+(ang>Math.PI?1:0)+' 1 '+(cx+(r-8)*Math.sin(ang)).toFixed(1)+' '+(cy-(r-8)*Math.cos(ang)).toFixed(1)+'Z" fill="#FFD34D"/>';
+    s += '<path d="M'+cx+' '+cy+'L'+(cx+(r-12)*Math.sin(ang)).toFixed(1)+' '+(cy-(r-12)*Math.cos(ang)).toFixed(1)+'" stroke="'+INK+'" stroke-width="5" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="'+INK+'"/>'
+       + A.tag(40, 176, 110, 'one second');
+    s += A.text(520, 120, 26, 'Wiggles', INK) + A.text(520, 180, 58, String(n), RED);
+    return s;
+  }
+
+  window.SCENES = {
+    band(){
+      return A.frame('<rect width="640" height="300" fill="'+CREAM+'"/><rect y="262" width="640" height="38" fill="'+FLOOR+'"/>'
+        + A.person(60, 262, '#1D4ED8') + horn(72, 236) + arcs(126, 236, 3, RED)
+        + A.person(60, 170, '#7B2CBF') + horn(72, 144) + arcs(126, 144, 3, RED)
+        + A.text(238, 150, 30, 'HONK!', RED)
+        + '<ellipse cx="330" cy="222" rx="44" ry="12" fill="#fff" stroke="'+INK+'" stroke-width="3"/><path d="M286 222v34a44 12 0 0 0 88 0v-34" fill="'+RED+'" stroke="'+INK+'" stroke-width="3"/><ellipse cx="330" cy="222" rx="44" ry="12" fill="#fff" stroke="'+INK+'" stroke-width="3"/>'
+        + A.person(330, 206, '#1F9D6B', true) + A.text(330, 120, 30, 'BOOM!', RED)
+        + guitar(540, 262, 0.62) + A.person(486, 262, '#F46036', false, true)
+        + A.text(590, 150, 15, 'plink', INK)
+        + A.tag(404, 20, 220, 'Nobody can hear the guitar.'));
+    },
+    bigger(){
+      return A.frame('<rect width="640" height="300" fill="'+CREAM+'"/><rect y="262" width="640" height="38" fill="'+FLOOR+'"/>'
+        + guitar(150, 262, 0.8) + arcs(190, 220, 1, RED) + A.tag(110, 30, 80, 'guitar')
+        + '<path d="M250 180h70M300 164l22 16l-22 16" fill="none" stroke="'+INK+'" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
+        + guitar(430, 262, 1.2) + arcs(490, 200, 2, RED) + A.tag(500, 30, 124, 'bigger guitar')
+        + A.tag(482, 258, 144, 'a little louder'));
+    },
+    cones(){
+      return A.frame('<rect width="640" height="300" fill="'+CREAM+'"/><rect y="262" width="640" height="38" fill="'+FLOOR+'"/>'
+        + guitar(300, 262, 1.25, {cones:true}) + arcs(362, 200, 3, RED)
+        + A.tag(20, 150, 170, 'three metal cones') + '<path d="M190 164L266 214" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        + A.person(110, 262, '#1D4ED8', true)
+        + A.tag(440, 30, 90, 'Louder!') + A.tag(440, 240, 186, 'But not loud enough.'));
+    },
+    fryingpan(){
+      return A.frame('<rect width="640" height="300" fill="'+CREAM+'"/>'
+        + pan(150, 120, 1.5)
+        + A.tag(60, 16, 110, 'round body') + A.tag(330, 60, 100, 'long neck')
+        + A.tag(214, 172, 150, 'magnet and wire') + '<path d="M214 186L176 150" stroke="'+INK+'" stroke-width="3" stroke-linecap="round"/>'
+        + '<g stroke="'+INK+'" stroke-width="3"><rect x="130" y="236" width="150" height="14" rx="6" fill="#3A2A22"/><circle cx="96" cy="243" r="40" fill="#4A4C58"/><circle cx="96" cy="243" r="30" fill="#6E7480"/></g>'
+        + A.tag(300, 230, 126, 'a frying pan') + A.text(540, 250, 34, 'Twins!', RED));
+    },
+    wiggle(){
+      return A.frame('<rect width="640" height="300" fill="'+CREAM+'"/><rect y="262" width="640" height="38" fill="'+FLOOR+'"/>'
+        + stringLine(50, 590, 80, '#6E7480', 5, true, 20)
+        + A.tag(20, 14, 170, 'the thickest string')
+        + A.text(250, 220, 90, '82', RED) + A.tag(320, 170, 200, 'wiggles every second') + A.tag(320, 206, 150, 'Too fast to see!'));
+    },
+    stage(){
+      return A.frame(A.nightSky()
+        + '<rect x="120" y="190" width="400" height="30" fill="#6A4A3A" stroke="'+INK+'" stroke-width="3"/>'
+        + A.person(240, 190, '#F9C80E') + '<g transform="translate(206,168) scale(0.3)">' + pan(0, 0, 1) + '</g>'
+        + '<rect x="330" y="120" width="70" height="70" rx="8" fill="#3A2A22" stroke="'+INK+'" stroke-width="3"/><circle cx="365" cy="158" r="22" fill="#6E7480" stroke="'+INK+'" stroke-width="3"/>'
+        + arcs(410, 150, 5, '#FFD34D', 16)
+        + '<rect y="262" width="640" height="38" fill="'+DARK+'"/>'
+        + crowdRow(60, 590, 268)
+        + A.tag(20, 20, 60, '1932') + A.tag(130, 60, 240, 'Now everybody can hear it!'), true);
+    },
+    museum(){
+      return A.frame(A.sun(70,50)
+        + '<rect y="262" width="640" height="38" fill="#8A8E9B"/>'
+        + '<path d="M40 104L190 50L340 104Z" fill="#E8E2D0" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/><rect x="50" y="104" width="280" height="14" fill="#E8E2D0" stroke="'+INK+'" stroke-width="3"/>'
+        + [0,1,2,3,4].map(i=>'<rect x="'+(66+i*58)+'" y="118" width="20" height="118" fill="#fff" stroke="'+INK+'" stroke-width="3"/>').join('')
+        + '<rect x="40" y="236" width="300" height="12" fill="#E8E2D0" stroke="'+INK+'" stroke-width="3"/><rect x="26" y="248" width="328" height="14" fill="#E8E2D0" stroke="'+INK+'" stroke-width="3"/>'
+        + A.tag(70, 14, 240, 'Metropolitan Museum of Art')
+        + '<rect x="400" y="120" width="220" height="100" rx="8" fill="#DDF2FB" stroke="'+INK+'" stroke-width="4"/><rect x="420" y="220" width="180" height="42" fill="#6A4A3A" stroke="'+INK+'" stroke-width="3"/>'
+        + '<g transform="translate(446,170) scale(0.6)">' + pan(0, 0, 1) + '</g>'
+        + A.tag(424, 80, 172, 'the real Frying Pan')
+        + A.person(374, 262, '#D7263D', true));
+    }
+  };
+
+  /* ===== the three things to play with ===== */
+  window.TOYS = {
+    strings: {
+      title: 'Your turn: pluck three strings!', cap: 'Pick a string. Then pluck it. Try all three!', hint: 'Pluck all three strings first.',
+      init(box, api){
+        let kind=null, plucked=false; const tried={};
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn" data-m="rubber">Rubber band</button><button class="btn small toybtn" data-m="nylon">Nylon string</button><button class="btn small toybtn" data-m="steel">Steel string</button><button class="btn small toybtn" data-m="pluck">Pluck it!</button></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), msg=box.querySelector('.msg'), bs=box.querySelectorAll('.toybtn');
+        function draw(){
+          pic.innerHTML=A.frame(stringsPic(kind, plucked));
+          const choosing = !kind || plucked;
+          bs.forEach(b=>{ const m=b.dataset.m; b.disabled = m==='pluck' ? choosing : (!choosing || !!tried[m]); });
+          msg.textContent = !kind ? 'Three strings to test. Which one will make electricity?'
+            : !plucked ? 'The '+KINDS[kind][0]+' is over the magnet. Pluck it and watch the screen!'
+            : kind==='rubber' ? 'The rubber band wiggles, but the screen stays flat. A magnet does not pull on rubber.'
+            : kind==='nylon' ? 'The nylon string wiggles, but the screen stays flat. A magnet does not pull on nylon.'
+            : 'The steel string wiggles and the screen jumps! A magnet pulls on steel, so the wiggle makes electricity.';
+        }
+        bs.forEach(b=>{ b.onclick=()=>{
+          const m=b.dataset.m;
+          if(m==='pluck'){ if(!kind || plucked) return; plucked=true; tried[kind]=true; }
+          else { if(tried[m] || (kind && !plucked)) return; kind=m; plucked=false; }
+          draw();
+          if(tried.rubber && tried.nylon && tried.steel) api.done();
+        }; });
+        draw();
+      }
+    },
+    path: {
+      title: 'Your turn: send a note!', cap: 'Tap the button to follow one note, step by step.', hint: 'Follow the note all the way to the speaker first.',
+      init(box, api){
+        let step=0;
+        const LINES = ['The guitar is quiet. Tap to pluck the string!', 'Step 1: The steel string wiggles.', 'Step 2: The magnet and wire turn the wiggle into a tiny bit of electricity.', 'Step 3: The electricity runs down the cable.', 'Step 4: The amplifier makes it bigger. Much bigger!', 'Step 5: The speaker pushes the air. Now everybody can hear the guitar!'];
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Pluck the string</button></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), msg=box.querySelector('.msg');
+        function draw(){ pic.innerHTML=A.frame(pathPic(step)); msg.textContent=LINES[step]; if(step>0) btn.textContent = step<5 ? 'Next step' : 'LOUD!'; }
+        btn.onclick=()=>{ if(step>=5) return; step++; draw(); if(step>=5){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    count: {
+      title: 'Your turn: count the wiggles', cap: 'Tap the button and count the wiggles by 10s!', hint: 'Count all the way up to 110 first.',
+      init(box, api){
+        let n=0;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">10 more wiggles</button><div class="readout">Wiggles: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          pic.innerHTML=A.frame(countPic(n)); out.textContent=String(n);
+          msg.textContent = n===0 ? 'Pluck! Watch the clock while you count.' : n<110 ? n+' wiggles. Keep counting by 10s!' : '110 wiggles! And that was just ONE second.';
+        }
+        btn.onclick=()=>{ if(n>=110) return; n+=10; draw(); if(n>=110){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    }
+  };
+})();
+</script>
+<script src="../../assets/engine.js"></script>
+</body>
+</html>
