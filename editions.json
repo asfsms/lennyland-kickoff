@@ -104,6 +104,19 @@
       "riddle": "a guitar",
       "golden": "6 x 6",
       "pw": "c25hUCBnbml5ckYgZ25pbGdnaVcgb3dULXl0aGdpRQ=="
+    },
+    {
+      "n": 9,
+      "code": "LDK-009",
+      "date": "2026-11-25",
+      "week": "2026-W48",
+      "title": "The Parade Balloons That Flew Away",
+      "path": "e/009/",
+      "theme": "Bed-Stuy, Brooklyn and New York",
+      "topic": "How New York's Thanksgiving parade swapped tired zoo animals for giant balloons (1924 to 1927), why helium floats, the years the balloons were let go, and why one balloon now needs up to 100 helpers",
+      "riddle": "a balloon",
+      "golden": "5 x 9",
+      "pw": "c2RyaWJnbmltbXVIIG11aWxlSCBnbmlsd29yRyBkZXJkbnVI"
     }
   ],
   "weeks": {

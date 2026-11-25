@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lenny's Daily Kickoff #9 · The Parade Balloons That Flew Away</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/engine.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="../../assets/common.js"></script>
+<script>
+/* ===== Game 9: the content for this day. The engine (assets/engine.js) does everything else. ===== */
+window.GAME = {
+  n: 9, code: 'LDK-009', date: '2026-11-25', week: '2026-W48',
+  title: 'The Parade Balloons That Flew Away',
+  theme: 'Bed-Stuy, Brooklyn and New York',
+  pw: 'c2RyaWJnbmltbXVIIG11aWxlSCBnbmlsd29yRyBkZXJkbnVI',
+  lede: 'ROAR! Growl! It is parade day in New York, a long, long time ago. Real bears are walking down the street. And they are GRUMPY.',
+  guess: { q: 'Today a giant parade balloon floats on ropes, and people hold the ropes. How many people do you think it can take to hold just ONE giant balloon?', answer: 100, close: 15 },
+  pages: [
+    { scene: 'zoo',     text: 'In 1924, a big store called Macy\'s held its first parade. Bears, elephants, camels and monkeys from the Central Park Zoo walked six long miles. The tired animals roared and growled. Little kids got scared!' },
+    { scene: 'poles',   text: 'Try one: in 1927, a {puppeteer|A person who makes puppets and moves them in shows.} named Tony Sarg designed giant balloons to take their place. Balloons never growl! Helpers carried them down the street on poles.' },
+    { toy: 'gas',       text: 'Try two: in 1928, the balloons were filled with {helium|A gas that is lighter than air.}. Helium is lighter than air, so a helium balloon floats up all by itself. Your turn: fill a balloon three ways and let go!' },
+    { scene: 'letgo',   text: 'But what do you do with giant balloons when the parade ends? In 1928, the helpers just let go! Up, up, up they went. A hummingbird balloon came down in the East River. Splash!' },
+    { toy: 'valve',     text: 'Try three: soon, each balloon got a {valve|A tiny door that lets gas out slowly.} to leak helium slowly, and a tag with an address. Find a balloon, send it back, win a prize! Your turn: bring one down softly.' },
+    { scene: 'sizes',   text: 'People raced to find them! And they were BIG. One early tiger balloon was 60 feet long. An elephant balloon was 20 feet long. Imagine finding THAT in your yard.',
+      quick: { q: 'Line them up nose to tail: the 60-foot tiger and the 20-foot elephant. How many feet long is the line?', expr: '60 + 20 =', answer: 80,
+               hint: 'Count the tens: 6 tens and 2 more tens.', fb: '[[60 + 20 = 80]] feet of balloon. That is about as long as two school buses!' } },
+    { scene: 'plane',   text: 'But giant balloons got in the way of airplanes. So after 1932, nobody let them go anymore. From then on, every balloon stayed on its ropes.' },
+    { scene: 'helpers', text: 'And those ropes need holding! Helium pulls up hard, and wind pushes too. Today it can take as many as **100 people** to hold just ONE giant balloon.', guessBack: true },
+    { toy: 'count',     text: 'The helpers walk under the balloon and hold its ropes the whole way. Too few helpers, and it pulls away! Your turn: count the helpers by 10s.' },
+    { scene: 'today',   text: '**Spot it in New York!** The parade is on Thanksgiving morning. It walks 2.5 miles through Manhattan, down to 34th Street. On the street or on TV, look under each giant balloon. Can you spot the helpers?',
+      bonus: 'Bonus fact: On a very windy day, the giant balloons are not allowed to fly.' }
+  ],
+  riddle: { q: 'I am full, but I never eat. I fly, but I have no wings. Let go of my string and I am gone! What am I?', accept: ['balloon', 'baloon', 'ballon', 'balon', 'ballun', 'balun', 'ballown', 'bloon'], answer: 'a balloon',
+            hint: 'You can blow me up for a birthday party.', explain: 'A balloon! It is full of air or helium, and a helium balloon flies away if you let go of its string.' },
+  shots: {
+    1: { q: 'Why did the parade swap real zoo animals for balloons?',
+         opts: ['Because the tired animals roared and growled, and little kids got scared', 'Because the elephants kept eating the floats', 'Because the bears wanted to ride the subway', 'Because the camels forgot the way'], a: 0,
+         hint: 'Think about the GRUMPY bears.', fb: 'The animals were tired from the six-mile walk. They roared and growled, and that scared little kids.' },
+    2: { q: 'How does a helium balloon float up all by itself?',
+         opts: ['Tiny birds push it from inside', 'It is afraid of the ground', 'Helium is lighter than air', 'The rope is made of magic'], a: 2,
+         hint: 'What did you find out when you filled the balloon three ways?', fb: 'Helium is lighter than air. So a balloon full of helium floats up.' },
+    order: { q: 'What happened to the parade? Tap the cards in order, from first to last.',
+             cards: ['Real zoo animals walk in the parade.', 'Giant balloons are carried on poles.', 'Helium balloons are let go into the sky.', 'Every balloon stays on its ropes.'],
+             hint: 'The story starts with a ROAR and ends with ropes.', fb: 'First came real animals. Then balloons on poles. Next, helium balloons were let go. Today they stay on their ropes.' },
+    math: { q: 'The first parade started at 145th Street. It ended at 34th Street. How many streets apart is that?',
+            stack: ['145', '− 34'], answer: 111,
+            hint: 'Take away the ones first ([[5 − 4]]). Then take away the tens ([[4 − 3]]). The hundred stays.',
+            fb: '[[145 − 34 = 111]] streets. No wonder the animals got tired!' },
+    coach: { q: 'You are the coach! Tell your team: Why does ONE giant parade balloon need so many helpers?', starter: 'The balloon is full of helium, and helium...',
+             ideas: ['helium is lighter than air, so a giant balloon full of helium pulls up hard', 'many helpers hold the ropes so the balloon does not fly away, and long ago balloons that were let go caused trouble'],
+             rubric: ['I said helium is lighter than air.', 'I said the balloon pulls up, or the wind pushes it.', 'I said the helpers hold the ropes so it does not fly away.'],
+             model: 'The balloon is full of helium, and helium is lighter than air. So the balloon pulls up really hard, and the wind pushes it too. Lots of helpers hold the ropes so it does not fly away.' },
+    extra: [
+      { kind: 'num', q: 'Hard numbers! Not every balloon needs 100 helpers. One year, one balloon had about 65. Imagine two balloons that size, side by side. How many helpers is that?', stack: ['65', '+ 65'], answer: 130,
+        hint: 'Start with the ones: [[5 + 5 = 10]]. Write the 0 and carry 1 ten.', fb: '[[65 + 65 = 130]] helpers for just two balloons.' },
+      { kind: 'tap', q: 'Brain teaser! Four balloons float in a line. The bird is first. The fish is last. The tiger is in front of the elephant. Who is second?', opts: ['The elephant', 'The tiger', 'The fish', 'The bird'], a: 1,
+        hint: 'Put the bird first and the fish last. Two spots are left in the middle.', fb: 'The tiger! The line is bird, tiger, elephant, fish.' }
+    ],
+    golden: { q: '9 giant balloons float by. Under each one, 5 helpers wave at you. How many helpers are waving?', expr: '5 × 9 =', answer: 45,
+              hint: 'Count by 5s, nine times. Or think of [[5 × 10 = 50]] and take one 5 away.', fb: '[[5 × 9 = 45]] waving helpers. Wave back!' }
+  },
+  lesson: 'Today\'s story, "The Parade Balloons That Flew Away": In 1924, a New York store called Macy\'s held its first parade. Bears, elephants, camels and monkeys from the Central Park Zoo walked six miles, from 145th Street to 34th Street. The tired animals roared and growled, and little kids got scared. In 1927, a puppeteer named Tony Sarg designed giant balloons to take their place. Helpers carried them on poles. In 1928, the balloons were filled with helium, a gas that is lighter than air, so they floated up. A balloon full of air sinks slowly, and one full of water drops fast. After the 1928 parade the helpers let the balloons go. A hummingbird balloon came down in the East River. Soon each balloon got a valve to leak helium slowly and a tag with an address. People who sent one back got a prize. An early tiger balloon was 60 feet long and an elephant 20 feet. Balloons got in the way of airplanes, so after 1932 nobody let them go. Today as many as 100 people hold the ropes of one giant balloon. The Thanksgiving parade walks 2.5 miles. On very windy days the balloons are not allowed to fly.',
+  chips: ['Why does helium float?', 'Why did they let the balloons go?', 'Who was Tony Sarg?', 'Why so many helpers?', 'Tell me a parade fact'],
+  helperQA: [
+    { q: 'Why does helium float?', a: 'Helium is a gas that is lighter than air. So a balloon full of helium gets pushed up, like a beach ball in a pool.' },
+    { q: 'Why did they stop letting the balloons go?', a: 'Giant balloons in the sky got in the way of airplanes. So after 1932, every balloon stayed on its ropes.' }
+  ],
+  dinner: [
+    'In 1924, a big New York store\'s first parade had real bears, elephants, camels and monkeys from the Central Park Zoo.',
+    'Long ago, the giant parade balloons were let go at the end, and people who found one and sent it back got a prize.',
+    'Today it can take as many as 100 people to hold the ropes of just one giant parade balloon.'
+  ],
+  notes: [
+    'Exact: The first Macy\'s parade was on November 27, 1924, from 145th Street and Convent Avenue in Harlem to the store at 34th Street, about six miles, with bears, elephants, camels and monkeys on loan from the Central Park Zoo. History.com says the roars and growls of the tired animals frightened young spectators and they were replaced by balloons in 1927. Tony Sarg, a puppeteer and theatrical designer, designed the balloons, which were made by Goodyear in Akron, Ohio. Balloons were released at the end of the parade from 1928 until 1932. In 1928 a hummingbird balloon came down in the East River. The Smithsonian gives an early elephant as 20 feet long and a tiger as 60 feet long. Today\'s route is 2.5 miles and ends at 34th Street. The math shot counts street numbers (145 − 34); the real walk also went along several avenues.',
+    'Where sources disagree: (1) Helium. History.com calls the 1927 balloon helium-filled; Smithsonian and Untapped New York say the 1927 balloons were held up on poles by handlers and helium came in 1928. The story follows the second account. (2) What happened in 1928. One source says the released balloons all burst; TIME lists where several came down (Long Island, the East River). The story says only that they went up and that one came down in the river. (3) The prize. TIME says a $100 reward, others say a gift or store credit, so the story says "a prize". (4) Helpers. NBC says 80 to 100 handlers per giant balloon, an older Time Out count says 70 to 100, and a 2015 CBS report gives about 65 for one balloon. The story says "as many as 100", and the hard-numbers shot uses the 65. (5) When the valve and address tag arrived: Smithsonian says 1929, TIME describes them on the balloons released in 1928, so the story says "soon". (6) Whether the first balloons of 1927 were animals: the best known was a cartoon cat, which the story does not name or draw, so it says only "giant balloons". The picture for 1927 shows a made-up tiger; the real tiger balloon is usually dated 1928.',
+    'Simplified: the first toy shows a party-size balloon. An air-filled balloon sinks because its rubber skin makes it a little heavier than the air around it; helium rises because it is much lighter than air. The second toy shows the idea of the slow-leak valve, not its real design, and "four puffs" is made up. In the third toy the balloon rises when it has too few helpers; real balloons are also tied to small vehicles, and the count of 100 is the top of the range. "About as long as two school buses" assumes buses of 35 to 45 feet. The windy-day fact is a New York City rule: giant balloons are grounded when steady winds pass 23 mph or gusts pass 34 mph (reported by centralpark.com on November 24, 2026). The pictures show made-up balloon animals and plain stand-in people, with no real characters or brand marks.',
+    'Left out: the reasons the releases ended were frightening. Released balloons tangled with airplanes in 1931 and 1932 (everyone landed safely), one caught fire on a wire, and a tiger balloon was torn apart by people pulling on it. The child\'s text says only that balloons "got in the way of airplanes". The store is named once because the parade carries its name.'
+  ],
+  sources: [
+    { t: 'History.com: The First Macy\'s Thanksgiving Day Parade', u: 'https://www.history.com/articles/the-first-macys-thanksgiving-day-parade' },
+    { t: 'Smithsonian Magazine: The Puppeteer Who Brought Balloons to the Thanksgiving Day Parade', u: 'https://www.smithsonianmag.com/arts-culture/the-puppeteer-who-brought-balloons-to-the-thanksgiving-day-parade-180947863/' },
+    { t: 'TIME: the history of the Thanksgiving parade balloons', u: 'https://time.com/3594677/balloons-thanksgiving-history' },
+    { t: 'Untapped New York: When the Thanksgiving Day Parade balloons were released', u: 'https://untappedcities.com/2023/11/22/thanksgiving-day-parade-balloon-release/' },
+    { t: 'NBC Insider: Why don\'t the parade balloons fly away? (balloon handlers)', u: 'https://www.nbc.com/nbc-insider/why-dont-macys-thanksgiving-day-parade-balloons-fly-away' }
+  ]
+};
+
+/* ===== pictures for this story (original drawings made of simple shapes) ===== */
+(function(){
+  const A = window.ART;
+  const INK = '#1E2140', RED = '#C8452D', GREY = '#9AA3B2', GREY2 = '#7C8496', ORANGE = '#F28C28', BROWN = '#8A5A2B', BLUE = '#3FA7D6', GREEN = '#1F9D6B', ROAD = '#8A8E9B', GRASS = '#7CC47A', CITY = '#A9B8D6', GOLD = '#F2B632';
+  const SHIRTS = ['#D7263D','#1D4ED8','#1F9D6B','#F46036','#7B2CBF','#3FA7D6','#EF5DA8','#F9C80E'];
+  /* a made-up animal drawn around (x, y); s = size. o.legs: a real animal with legs; o.shine: a shiny balloon */
+  function animal(kind, x, y, s, o){
+    o = o || {};
+    let g = '<g transform="translate('+x+','+y+') scale('+s+')" stroke="'+INK+'" stroke-width="'+(3/s).toFixed(2)+'" stroke-linejoin="round" stroke-linecap="round">';
+    const legs = (xs, top, h, fill) => o.legs ? xs.map(lx=>'<rect x="'+(lx-6)+'" y="'+top+'" width="12" height="'+h+'" rx="3" fill="'+fill+'"/>').join('') : '';
+    const eye = (ex, ey) => '<circle cx="'+ex+'" cy="'+ey+'" r="3" fill="'+INK+'" stroke="none"/>';
+    let shine = '';
+    if(kind==='elephant'){
+      g += legs([-30,-10,14,34], 20, 30, GREY2)
+        + '<path d="M-48 -6q-14 6 -10 22" fill="none"/>'
+        + '<ellipse cx="0" cy="0" rx="50" ry="32" fill="'+GREY+'"/>'
+        + '<circle cx="48" cy="-12" r="24" fill="'+GREY+'"/>'
+        + '<path d="M66 -4q16 6 12 36" fill="none" stroke="'+INK+'" stroke-width="'+(13/1).toFixed(0)+'"/><path d="M66 -4q16 6 12 36" fill="none" stroke="'+GREY+'" stroke-width="8"/>'
+        + '<ellipse cx="36" cy="-12" rx="12" ry="19" fill="'+GREY2+'"/>' + eye(56, -18);
+      shine = '<ellipse cx="-14" cy="-16" rx="18" ry="7" fill="#fff" opacity="0.6" stroke="none"/>';
+    } else if(kind==='tiger'){
+      g += legs([-40,-20,22,42], 14, 26, ORANGE)
+        + '<path d="M-58 -4q-22 -8 -18 -28" fill="none" stroke="'+INK+'" stroke-width="9"/><path d="M-58 -4q-22 -8 -18 -28" fill="none" stroke="'+ORANGE+'" stroke-width="5"/>'
+        + '<ellipse cx="0" cy="0" rx="60" ry="24" fill="'+ORANGE+'"/>'
+        + [-34,-14,6,26].map(sx=>'<path d="M'+sx+' -20l6 16" stroke="'+INK+'" stroke-width="5" fill="none"/>').join('')
+        + '<path d="M50 -24l4 -14l10 10zM70 -24l8 -12l4 14z" fill="'+ORANGE+'"/>'
+        + '<circle cx="62" cy="-8" r="20" fill="'+ORANGE+'"/>' + eye(58, -12) + eye(70, -12) + '<path d="M58 -1q6 5 12 0" fill="none"/>';
+      shine = '<ellipse cx="-10" cy="-13" rx="20" ry="5" fill="#fff" opacity="0.6" stroke="none"/>';
+    } else if(kind==='bear'){
+      g += legs([-28,-8,12,30], 18, 28, BROWN)
+        + '<ellipse cx="0" cy="0" rx="46" ry="30" fill="'+BROWN+'"/>'
+        + '<circle cx="30" cy="-36" r="8" fill="'+BROWN+'"/><circle cx="54" cy="-36" r="8" fill="'+BROWN+'"/>'
+        + '<circle cx="42" cy="-18" r="21" fill="'+BROWN+'"/><ellipse cx="50" cy="-10" rx="10" ry="7" fill="#D9A45B"/>' + eye(38, -22) + eye(50, -24)
+        + '<path d="M44 -8q6 6 12 0" fill="#fff"/>';
+    } else if(kind==='fish'){
+      g += '<path d="M-44 0l-28 -22v44z" fill="'+BLUE+'"/><ellipse cx="0" cy="0" rx="50" ry="26" fill="'+BLUE+'"/><path d="M-6 -24l12 -16l10 18z" fill="'+BLUE+'"/>' + eye(30, -6) + '<path d="M36 8q6 2 10 -2" fill="none"/>';
+      shine = '<ellipse cx="-8" cy="-12" rx="18" ry="5" fill="#fff" opacity="0.6" stroke="none"/>';
+    } else { /* bird: a hummingbird with a long beak */
+      g += '<path d="M-26 2l-30 14l6 -22z" fill="'+GREEN+'"/><path d="M-6 -10l-26 -34l40 22z" fill="#7CF29A"/><ellipse cx="0" cy="0" rx="30" ry="17" fill="'+GREEN+'"/>'
+        + '<path d="M40 -12L84 -8" stroke="'+INK+'" stroke-width="5" fill="none"/><circle cx="30" cy="-10" r="13" fill="'+GREEN+'"/>' + eye(34, -13);
+      shine = '<ellipse cx="-6" cy="-7" rx="12" ry="4" fill="#fff" opacity="0.6" stroke="none"/>';
+    }
+    if(o.shine) g += shine;
+    return g + '</g>';
+  }
+  function line(x1, y1, x2, y2, w, color){ return '<path d="M'+x1+' '+y1+'L'+x2+' '+y2+'" stroke="'+(color||INK)+'" stroke-width="'+(w||2)+'" stroke-linecap="round"/>'; }
+  function street(){ return '<rect y="262" width="640" height="38" fill="'+ROAD+'"/>'; }
+  function crowd(x0, x1, y, step, up){ let s='', i=0; for(let x=x0; x<=x1; x+=step){ s += A.person(x, y, SHIRTS[i%SHIRTS.length], up); i++; } return s; }
+  /* a round party balloon; x, y = middle */
+  function party(x, y, color, flat){
+    if(flat) return '<path d="M'+(x-34)+' '+y+'q10 -16 26 -6q14 -14 24 2q16 -4 18 6z" fill="'+color+'" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>';
+    return '<path d="M'+x+' '+(y+34)+'q-8 14 0 30" fill="none" stroke="'+INK+'" stroke-width="2"/><ellipse cx="'+x+'" cy="'+y+'" rx="30" ry="36" fill="'+color+'" stroke="'+INK+'" stroke-width="3"/><path d="M'+(x-6)+' '+(y+35)+'h12l-6 8z" fill="'+color+'" stroke="'+INK+'" stroke-width="2"/><ellipse cx="'+(x-10)+'" cy="'+(y-14)+'" rx="8" ry="12" fill="#fff" opacity="0.6"/>';
+  }
+  const GAS = { air:['air','#EF5DA8'], helium:['helium','#F9C80E'], water:['water','#3FA7D6'] };
+
+  /* toy 1: fill a balloon three ways and let go */
+  function gasPic(kind, gone){
+    let s = '<rect y="0" width="640" height="36" fill="#E8E2D0"/>' + line(0, 36, 640, 36, 3) + '<rect y="262" width="640" height="38" fill="#B58A5A"/>'
+      + A.tag(20, 4, 80, 'ceiling') + A.tag(20, 268, 60, 'floor');
+    s += A.person(250, 262, '#1D4ED8', !gone && !!kind);
+    if(!kind){ s += A.tag(330, 130, 180, 'Pick what goes inside.'); return s; }
+    const k = GAS[kind];
+    if(!gone){ s += party(300, 150, k[1]) + A.tag(360, 130, 150, 'full of '+k[0]); return s; }
+    if(kind==='helium') s += party(330, 74, k[1]) + line(300, 150, 300, 190, 4, GOLD) + line(292, 160, 300, 150, 4, GOLD) + line(308, 160, 300, 150, 4, GOLD) + A.text(470, 100, 28, 'Up it goes!', RED);
+    else if(kind==='air') s += party(330, 196, k[1]) + line(300, 110, 300, 150, 4, GOLD) + line(292, 140, 300, 150, 4, GOLD) + line(308, 140, 300, 150, 4, GOLD) + A.text(480, 190, 26, 'It sinks slowly.', INK);
+    else s += party(330, 262, k[1], true) + [[-50,-16],[-30,-34],[4,-40],[36,-30],[56,-12]].map(p=>'<ellipse cx="'+(330+p[0])+'" cy="'+(262+p[1])+'" rx="5" ry="8" fill="'+BLUE+'" stroke="'+INK+'" stroke-width="2"/>').join('') + A.text(480, 190, 30, 'SPLASH!', RED);
+    return s;
+  }
+  /* toy 2: a slow leak brings the balloon down; step 0 to 4 */
+  function valvePic(step){
+    const y = 60 + step*36, sc = 1 - step*0.07;
+    let s = A.sun(580, 46) + '<rect y="250" width="640" height="50" fill="'+GRASS+'"/>'
+      + '<rect x="40" y="190" width="90" height="60" fill="#FFF4DC" stroke="'+INK+'" stroke-width="3"/><path d="M30 190l55 -40l55 40z" fill="'+RED+'" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/><rect x="74" y="216" width="22" height="34" fill="'+BROWN+'" stroke="'+INK+'" stroke-width="3"/>';
+    s += animal('fish', 320, y, 1.25*sc, {shine:true});
+    s += '<rect x="'+(316)+'" y="'+(y+30*sc).toFixed(0)+'" width="12" height="10" fill="'+GOLD+'" stroke="'+INK+'" stroke-width="2"/>';
+    if(step>0 && step<4) s += [0,1,2].map(i=>'<circle cx="'+(312+i*10)+'" cy="'+(y+56+i*8).toFixed(0)+'" r="'+(3+i)+'" fill="#fff" stroke="'+INK+'" stroke-width="1.5"/>').join('') + A.text(322, (y+100), 18, 'psss', INK);
+    s += line(360, y+10, 392, y+50, 2) + '<rect x="380" y="'+(y+48)+'" width="'+(step>=4?150:44)+'" height="26" rx="4" fill="#fff" stroke="'+INK+'" stroke-width="2"/>';
+    if(step>=4) s += A.text(455, y+67, 16, 'Send me home!', RED) + A.person(190, 262, '#7B2CBF', true) + A.text(190, 206, 20, 'Found it!', INK);
+    else s += A.text(402, y+67, 15, 'tag', INK);
+    s += A.tag(20, 14, 150, step>=4 ? 'A soft landing!' : 'high in the sky') ;
+    if(step<4) s += A.tag(180, y+26>200?200:y+30, 60, 'valve');
+    return s;
+  }
+  /* toy 3: count the helpers by 10s; n = 0 to 100 */
+  function countPic(n){
+    const y = 54 + n*0.5;
+    let s = street();
+    for(let i=0;i<n;i++){ const row=Math.floor(i/50), col=i%50; s += A.person(26+col*12, 262+row*30, SHIRTS[Math.floor(i/10)%SHIRTS.length]); }
+    s += animal('elephant', 300, y, 1.3, {shine:true});
+    const feet = n===0 ? y+90 : 226;
+    [-50,-20,10,40].forEach((d,i)=>{ s += line(300+d, y+40, n===0 ? 300+d : 300+d*4-20, feet, 2); });
+    if(n<100) s += line(470, y+10, 470, y-22, 5, RED) + line(460, y-10, 470, y-22, 5, RED) + line(480, y-10, 470, y-22, 5, RED);
+    s += A.text(560, 96, 24, 'Helpers', INK) + A.text(560, 156, 58, String(n), RED);
+    s += A.tag(20, 14, 170, n>=100 ? 'Steady at last!' : 'It is pulling up!');
+    return s;
+  }
+
+  window.SCENES = {
+    zoo(){
+      return A.frame(A.sun(70, 50) + A.skyline(380, [70,110,84,130,96,120,76,104,90,124,80], CITY, 262) + street()
+        + animal('bear', 150, 214, 1, {legs:true}) + animal('elephant', 330, 204, 1.05, {legs:true})
+        + A.text(160, 150, 34, 'ROAR!', RED) + A.text(350, 130, 28, 'GROWL!', RED)
+        + A.person(500, 262, '#EF5DA8', true) + A.person(530, 262, '#3FA7D6', true) + A.person(560, 262, '#F9C80E', true)
+        + A.tag(470, 180, 130, 'Scared kids!') + A.tag(20, 14, 60, '1924'));
+    },
+    poles(){
+      let s = A.skyline(20, [90,120,70,110,84], CITY, 262) + street();
+      [200, 290, 380].forEach((x,i)=>{ s += line(x, 150, x, 236, 5, BROWN) + A.person(x-14, 262, SHIRTS[i], true); });
+      s += animal('tiger', 290, 124, 1.9, {shine:true});
+      return A.frame(s + A.tag(440, 200, 180, 'A balloon on poles') + A.tag(470, 50, 150, 'It never growls!'));
+    },
+    letgo(){
+      return A.frame(A.skyline(20, [60,90,70,100,64,84], CITY, 232)
+        + '<rect y="232" width="400" height="68" fill="'+ROAD+'"/><rect x="400" y="232" width="240" height="68" fill="'+BLUE+'"/>'
+        + animal('elephant', 150, 70, 0.9, {shine:true}) + line(140, 100, 132, 150) + line(160, 100, 168, 150)
+        + animal('fish', 330, 110, 0.8, {shine:true}) + line(326, 132, 320, 176)
+        + animal('bird', 500, 236, 1.1, {shine:true})
+        + [[-70,-8],[-52,-24],[60,-22],[84,-6]].map(p=>'<ellipse cx="'+(500+p[0])+'" cy="'+(236+p[1])+'" rx="5" ry="8" fill="#DDF2FB" stroke="'+INK+'" stroke-width="2"/>').join('')
+        + crowd(60, 300, 290, 48, true)
+        + A.tag(20, 14, 150, '1928: Let go!') + A.tag(440, 150, 120, 'East River') + A.text(520, 120, 30, 'Splash!', RED));
+    },
+    sizes(){
+      let s = '<rect y="250" width="640" height="50" fill="'+GRASS+'"/>';
+      s += animal('tiger', 232, 130, 2.6, {shine:true});
+      s += line(36, 214, 444, 214, 4, RED) + line(36, 204, 36, 224, 4, RED) + line(444, 204, 444, 224, 4, RED) + A.tag(190, 222, 100, '60 feet long');
+      s += animal('elephant', 530, 140, 0.95, {shine:true});
+      s += line(476, 214, 612, 214, 4, RED) + line(476, 204, 476, 224, 4, RED) + line(612, 204, 612, 224, 4, RED) + A.tag(494, 222, 100, '20 feet long');
+      return A.frame(s + A.person(460, 290, '#1D4ED8') + A.tag(20, 262, 130, 'tiger balloon') + A.tag(470, 60, 150, 'elephant balloon'));
+    },
+    plane(){
+      return A.frame(A.sun(70, 50) + A.skyline(200, [50,80,60,96,70,88,56,76,64,90], CITY, 300)
+        + '<g stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"><path d="M70 150h120q24 0 24 -12q0 -12 -24 -12h-90l-22 -22h-14z" fill="#fff"/><path d="M120 138l-30 34h26l40 -34z" fill="'+RED+'"/><circle cx="218" cy="138" r="5" fill="'+INK+'"/></g>'
+        + line(222, 120, 222, 156, 5)
+        + animal('fish', 470, 110, 1.15, {shine:true}) + line(460, 142, 452, 200) + line(486, 142, 494, 200)
+        + A.text(330, 120, 44, '?', RED)
+        + A.tag(20, 200, 250, 'Balloons got in the way.') + A.tag(360, 240, 260, '1932: no more letting go!'));
+    },
+    helpers(){
+      let s = street();
+      for(let i=0;i<50;i++) s += A.person(26+i*12, 262, SHIRTS[Math.floor(i/5)%SHIRTS.length]);
+      for(let i=0;i<50;i++) s += A.person(26+i*12, 292, SHIRTS[(Math.floor(i/5)+3)%SHIRTS.length]);
+      [-50,-20,10,40].forEach(d=>{ s += line(250+d, 118, 250+d*4, 228, 2); });
+      s += animal('elephant', 250, 70, 1.45, {shine:true});
+      return A.frame(s + A.text(520, 110, 72, '100', RED) + A.tag(424, 126, 196, 'helpers for ONE balloon'));
+    },
+    today(){
+      let s = A.sun(70, 50) + A.skyline(10, [120,160,100,180,130], CITY, 262) + A.skyline(500, [150,110,170,130,100,140], CITY, 262) + street();
+      s += crowd(180, 420, 262, 24);
+      [-40,-10,20,50].forEach(d=>{ s += line(300+d, 132, 300+d*2.6, 228, 2); });
+      s += animal('tiger', 300, 90, 1.7, {shine:true});
+      return A.frame(s + A.tag(440, 14, 190, 'Thanksgiving morning') + A.tag(214, 196, 172, 'Spot the helpers!') );
+    }
+  };
+
+  /* ===== the three things to play with ===== */
+  window.TOYS = {
+    gas: {
+      title: 'Your turn: fill a balloon three ways!', cap: 'Pick what goes inside. Then let go. Try all three!', hint: 'Try air, helium and water first.',
+      init(box, api){
+        let kind=null, gone=false; const tried={};
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn" data-m="air">Air</button><button class="btn small toybtn" data-m="helium">Helium</button><button class="btn small toybtn" data-m="water">Water</button><button class="btn small toybtn" data-m="go">Let go!</button></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), msg=box.querySelector('.msg'), bs=box.querySelectorAll('.toybtn');
+        function draw(){
+          pic.innerHTML=A.frame(gasPic(kind, gone));
+          const choosing = !kind || gone;
+          bs.forEach(b=>{ const m=b.dataset.m; b.disabled = m==='go' ? choosing : (!choosing || !!tried[m]); });
+          msg.textContent = !kind ? 'Three balloons to test. Which one will float up?'
+            : !gone ? 'The balloon is full of '+kind+'. Let go and watch!'
+            : kind==='air' ? 'The air balloon sinks slowly to the floor. With its rubber skin, it is a tiny bit heavier than the air around it.'
+            : kind==='water' ? 'SPLASH! Water is much heavier than air, so the water balloon drops fast.'
+            : 'The helium balloon floats up to the ceiling! Helium is lighter than air.';
+        }
+        bs.forEach(b=>{ b.onclick=()=>{
+          const m=b.dataset.m;
+          if(m==='go'){ if(!kind || gone) return; gone=true; tried[kind]=true; }
+          else { if(tried[m] || (kind && !gone)) return; kind=m; gone=false; }
+          draw();
+          if(tried.air && tried.helium && tried.water) api.done();
+        }; });
+        draw();
+      }
+    },
+    valve: {
+      title: 'Your turn: bring the balloon down softly!', cap: 'Tap the button to let a little helium out, puff by puff.', hint: 'Bring the balloon all the way down first.',
+      init(box, api){
+        let step=0;
+        const LINES = ['The fish balloon is high over the houses. Open the valve a little!', 'Psss! A little helium leaks out. The balloon sinks a bit.', 'Psss! Less helium, less lift. Down it comes.', 'Psss! Almost there. Nice and slow.', 'A soft landing in a yard! The tag tells the finder where to send it.'];
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">Let a little helium out</button></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), msg=box.querySelector('.msg');
+        function draw(){ pic.innerHTML=A.frame(valvePic(step)); msg.textContent=LINES[step]; if(step>=4) btn.textContent='Landed!'; }
+        btn.onclick=()=>{ if(step>=4) return; step++; draw(); if(step>=4){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    },
+    count: {
+      title: 'Your turn: count the helpers', cap: 'Tap the button and count the helpers by 10s!', hint: 'Count all the way up to 100 first.',
+      init(box, api){
+        let n=0;
+        box.innerHTML='<div class="pic"></div><div class="controls"><button class="btn small toybtn">10 more helpers</button><div class="readout">Helpers: <b class="num out">0</b></div></div><p class="cap msg" style="margin-top:12px"></p>';
+        const pic=box.querySelector('.pic'), btn=box.querySelector('.toybtn'), out=box.querySelector('.out'), msg=box.querySelector('.msg');
+        function draw(){
+          pic.innerHTML=A.frame(countPic(n)); out.textContent=String(n);
+          msg.textContent = n===0 ? 'Nobody is holding the ropes. The balloon is pulling up!' : n<100 ? n+' helpers. It still pulls up. Keep counting by 10s!' : '100 helpers! Now the giant balloon is steady.';
+        }
+        btn.onclick=()=>{ if(n>=100) return; n+=10; draw(); if(n>=100){ btn.disabled=true; api.done(); } };
+        draw();
+      }
+    }
+  };
+})();
+</script>
+<script src="../../assets/engine.js"></script>
+</body>
+</html>
